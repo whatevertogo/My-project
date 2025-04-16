@@ -10,6 +10,13 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public Color currentColor;
     public float duration;
 
+    public Renderer CellRenderer;
+
+    private void Awake()
+    {
+        CellRenderer = GetComponent<Renderer>();
+    }
+
     #region 颜色管理
     public void SetColor(Color targetcolor, bool smooth)
     {
@@ -57,6 +64,7 @@ public class SquareCell : MonoBehaviour, ISquareCell
     {
         return currentColor;
     }
+
 
     #endregion
     // 存储邻居的列表

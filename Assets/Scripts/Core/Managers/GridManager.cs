@@ -35,11 +35,11 @@ public class GridManager : Singleton<GridManager>
                 GameObject cellObj = GameObject.CreatePrimitive(PrimitiveType.Quad);
                 cellObj.name = $"Cell_{x}_{y}";
                 cellObj.transform.position = new Vector3(x * SquareMetrics.cellSize, y * SquareMetrics.cellSize, 0);
-                cellObj.transform.localScale = Vector3.one * 0.95f;
+                cellObj.transform.localScale = Vector3.one * 0.98f;
                 cellObj.transform.parent = this.transform;
 
                 var renderer = cellObj.GetComponent<Renderer>();
-                // renderer.material.color = (x + y) % 2 == 0 ? Color.gray : Color.white;
+                renderer.material.color = Color.black;
 
                 var cell = cellObj.AddComponent<SquareCell>();
                 cell.Init(new SquareCoordinates(x, y)); // 只用Init方法初始化
