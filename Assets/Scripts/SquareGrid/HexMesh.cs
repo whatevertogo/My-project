@@ -1,11 +1,10 @@
 
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class HexMesh : MonoBehaviour
 {
     public MeshFilter meshFilter;
-
     public MeshRenderer meshRenderer;
 
     private void Awake()
@@ -14,7 +13,11 @@ public class HexMesh : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
 
     }
+    private void Start()
+    {
+        meshRenderer.material.color = Color.black;
+    }
 
-    
+
 
 }

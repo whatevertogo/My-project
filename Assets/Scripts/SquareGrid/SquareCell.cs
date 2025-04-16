@@ -1,11 +1,64 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System;
+using System.Collections;
 
 public class SquareCell : MonoBehaviour, ISquareCell
 {
     public SquareCoordinates Coordinates { get; set; }
+    public Color currentColor;
+    public float duration;
 
+    #region 颜色管理
+    public void SetColor(Color targetcolor, bool smooth)
+    {
+        if (smooth)
+        {
+            StartCoroutine(SmoothColorChange(targetColor: targetcolor));
+        }
+        else
+        {
+            currentColor = targetcolor;
+            GetComponent<Renderer>().material.color = targetcolor;
+        }
+    }
+
+    private IEnumerator SmoothColorChange(Color targetColor)
+    {
+        Color startColor = currentColor;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime / duration); // 归一化的时间值
+
+            // 使用Mathf.SmoothStep使过渡更加平滑
+            float smoothT = Mathf.SmoothStep(0f, 1f, t);
+
+            // 计算当前颜色
+            Color newColor = Color.Lerp(startColor, targetColor, smoothT);
+
+            // 更新当前颜色和渲染器颜色
+            currentColor = newColor;
+            GetComponent<Renderer>().material.color = newColor;
+
+            // 等待下一帧
+            yield return null;
+        }
+
+        // 确保最终颜色精确匹配目标颜色
+        currentColor = targetColor;
+        GetComponent<Renderer>().material.color = targetColor;
+    }
+
+    public Color GetColor()
+    {
+        return currentColor;
+    }
+
+    #endregion
     // 存储邻居的列表
     [ReadOnly(true)]
     [SerializeField] private readonly SquareCell[] neighbors = new SquareCell[4];
