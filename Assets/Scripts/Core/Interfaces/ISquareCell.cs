@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -5,6 +6,12 @@ using UnityEngine;
 /// </summary>
 public interface ISquareCell
 {
+    void Init(SquareCoordinates coordinates);
     SquareCoordinates GetCoordinates();
     Vector3 GetWorldPosition();
+    void SetNeighbor(SquareDirection direction, SquareCell neighbor);
+    SquareCell GetNeighbor(SquareDirection direction);
+    IReadOnlyList<SquareCell> GetNeighbors();
+    bool TryGetNeighbor(SquareDirection direction, out SquareCell neighbor);
+
 }

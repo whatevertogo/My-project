@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 public class SquareCell : MonoBehaviour, ISquareCell
 {
     public SquareCoordinates Coordinates { get; set; }
 
     // 存储邻居的列表
-    private readonly SquareCell[] neighbors = new SquareCell[4];
+    [ReadOnly(true)]
+    [SerializeField] private readonly SquareCell[] neighbors = new SquareCell[4];
 
     public Vector3 GetWorldPosition()
     {

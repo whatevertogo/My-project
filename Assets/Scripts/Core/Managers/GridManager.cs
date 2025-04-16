@@ -39,7 +39,7 @@ public class GridManager : Singleton<GridManager>
                 cellObj.transform.parent = this.transform;
 
                 var renderer = cellObj.GetComponent<Renderer>();
-                renderer.material.color = (x + y) % 2 == 0 ? Color.gray : Color.white;
+                // renderer.material.color = (x + y) % 2 == 0 ? Color.gray : Color.white;
 
                 var cell = cellObj.AddComponent<SquareCell>();
                 cell.Init(new SquareCoordinates(x, y)); // 只用Init方法初始化
