@@ -7,9 +7,7 @@ public struct SquareCoordinates : IEquatable<SquareCoordinates>
 {
     [SerializeField] private int x, y;
 
-    [ReadOnly(true)]
     public int X => x;
-    [ReadOnly(true)]
     public int Y => y;
 
     public SquareCoordinates(int x, int y)
@@ -32,8 +30,15 @@ public struct SquareCoordinates : IEquatable<SquareCoordinates>
 
     // 转换为世界坐标
     public Vector3 ToWorldPosition()
-        => new Vector3(x * Square.SideLength, y * Square.SideLength, 0);
+        => new Vector3(x * SquareMetrics.cellSize, y * SquareMetrics.cellSize, 0);
 
+    public static SquareCoordinates FromWorldPosition(Vector3 worldPosition)
+        => new SquareCoordinates(
+            Mathf.RoundToInt(worldPosition.x * SquareMetrics.InverseSideLength),
+            Mathf.RoundToInt(worldPosition.y * SquareMetrics.InverseSideLength)
+        );
+
+    #region 运算符重载
     public bool Equals(SquareCoordinates other)
         => x == other.x && y == other.y;
 
@@ -42,5 +47,6 @@ public struct SquareCoordinates : IEquatable<SquareCoordinates>
 
     public override int GetHashCode()
         => HashCode.Combine(x, y);
+    #endregion
 }
 

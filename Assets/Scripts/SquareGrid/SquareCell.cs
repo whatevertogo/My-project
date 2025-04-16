@@ -1,13 +1,24 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class SquareCell : ISquareCell
+public class SquareCell : MonoBehaviour, ISquareCell
 {
-    public SquareCoordinates Coordinates { get; private set; }
+    public SquareCoordinates Coordinates { get; set; }
 
     // 存储邻居的列表
     private readonly SquareCell[] neighbors = new SquareCell[4];
 
+    public Vector3 GetWorldPosition()
+    {
+        return Coordinates.ToWorldPosition();
+    }
+
+    public void Init(SquareCoordinates coordinates)
+    {
+        this.Coordinates = coordinates;
+    }
+
+    #region 邻居方法
     // 提供设置邻居的方法（应由网格管理器调用）
     public void SetNeighbor(SquareDirection direction, SquareCell neighbor)
     {
@@ -15,23 +26,6 @@ public class SquareCell : ISquareCell
         if (index >= 0 && index < neighbors.Length)
             neighbors[index] = neighbor;
     }
-
-    public SquareCell(SquareCoordinates coordinates)
-    {
-        Coordinates = coordinates;
-    }
-
-
-
-    public SquareCell(int x, int y) : this(new SquareCoordinates(x, y)) { }
-
-    // 通过 Square.SideLength 的倒数进行世界坐标转格子坐标
-    public SquareCell(Vector3 worldPosition) : this(
-        new SquareCoordinates(
-            Mathf.RoundToInt(worldPosition.x * Square.InverseSideLength),
-            Mathf.RoundToInt(worldPosition.y * Square.InverseSideLength)))
-    { }
-
     /// <summary>
     /// 获取指定方向的邻居
     /// </summary>
@@ -65,11 +59,7 @@ public class SquareCell : ISquareCell
         neighbor = null;
         return false;
     }
-
-    public Vector3 GetWorldPosition()
-    {
-        return Coordinates.ToWorldPosition();
-    }
+    #endregion
 
     #region 运算符重载
     public override bool Equals(object obj)
@@ -96,4 +86,5 @@ public class SquareCell : ISquareCell
         throw new System.NotImplementedException();
     }
     #endregion
+
 }
