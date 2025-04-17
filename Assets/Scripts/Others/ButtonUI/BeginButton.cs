@@ -13,10 +13,10 @@ public class BeginButton : MonoBehaviour
         button1.onClick.AddListener(OnClick);
     }
 
-
     private void OnClick()
     {
         SceneManager.LoadSceneAsync(NextScenceName);
     }
+    
 
 }
