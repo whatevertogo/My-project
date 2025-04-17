@@ -4,19 +4,21 @@ using UnityEngine.UI;
 
 public class BeginButton : MonoBehaviour
 {
-
-    public Button button1;
+    private Button button;
     public string NextScenceName;
 
+    public void Awake()
+    {
+        button = GetComponent<Button>();
+    }
     public void Start()
     {
-        button1.onClick.AddListener(OnClick);
+        button.onClick.AddListener(() =>
+        {
+            SceneManager.LoadSceneAsync(NextScenceName);
+        });
     }
 
-    private void OnClick()
-    {
-        SceneManager.LoadSceneAsync(NextScenceName);
-    }
-    
+
 
 }

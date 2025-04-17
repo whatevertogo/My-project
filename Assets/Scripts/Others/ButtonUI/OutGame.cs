@@ -4,8 +4,12 @@ using UnityEngine.UI;
 public class OutGame : MonoBehaviour
 {
 
-    public Button button1;
+    private Button button1;
 
+    public void Awake()
+    {
+        button1 = GetComponent<Button>();
+    }
     public void Start()
     {
         button1.onClick.AddListener(Onclick);
