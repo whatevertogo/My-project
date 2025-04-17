@@ -9,6 +9,8 @@ public class GridManager : Singleton<GridManager>
 
     public Dictionary<SquareCoordinates, SquareMetrics> SquareCoordinates_SquareMetrics;
 
+    public Vector3 GetGridCenter() => new Vector3(width / 2, height / 2, 0);
+
     private SquareCell[,] cells;
     public IEnumerable<SquareCell> AllCells
     {
@@ -39,7 +41,7 @@ public class GridManager : Singleton<GridManager>
                 cellObj.transform.parent = this.transform;
 
                 var renderer = cellObj.GetComponent<Renderer>();
-                renderer.material.color = Color.black;
+                renderer.material.color = new Color(64 / 255, 0, 64 / 255);
 
                 var cell = cellObj.AddComponent<SquareCell>();
                 cell.Init(new SquareCoordinates(x, y)); // 只用Init方法初始化

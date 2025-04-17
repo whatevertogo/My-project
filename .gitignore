@@ -73,6 +73,7 @@ crashlytics-build.properties
 [Aa]ssets/AddressableAssetsData/*/buildlog.txt
 [Aa]ssets/AddressableAssetsData/*/link.xml
 [Aa]ssets/AddressableAssetsData/*/aa.meta
+[Aa]ssets/TextMesh Pro
 
 # Rider
 .idea/

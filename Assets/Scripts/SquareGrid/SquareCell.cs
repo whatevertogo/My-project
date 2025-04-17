@@ -8,7 +8,7 @@ public class SquareCell : MonoBehaviour, ISquareCell
 {
     public SquareCoordinates Coordinates { get; set; }
     public Color currentColor;
-    public float duration;
+    public float duration = 1f;
 
     public Renderer CellRenderer;
 
@@ -27,7 +27,7 @@ public class SquareCell : MonoBehaviour, ISquareCell
         else
         {
             currentColor = targetcolor;
-            GetComponent<Renderer>().material.color = targetcolor;
+            CellRenderer.material.color = targetcolor;
         }
     }
 
