@@ -13,8 +13,8 @@ public class Settings : MonoBehaviour
 
     public void Start()
     {
-        button1.onClick.AddListener(() => { SettingsPanel.SetActive(false); });
         SettingsPanel.SetActive(false);
+        button1.onClick.AddListener(() => { SettingsPanel.SetActive(true); });
     }
 
 }

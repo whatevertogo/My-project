@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class BeginButton : MonoBehaviour
 {
     private Button button;
-    public string NextScenceName;
+    public int index;
 
     public void Awake()
     {
@@ -15,7 +15,7 @@ public class BeginButton : MonoBehaviour
     {
         button.onClick.AddListener(() =>
         {
-            SceneManager.LoadSceneAsync(NextScenceName);
+            SceneManager.LoadSceneAsync(index);
         });
     }
 

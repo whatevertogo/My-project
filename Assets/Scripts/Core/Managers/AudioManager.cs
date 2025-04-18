@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using CDTU.Utils;
 using UnityEngine;
@@ -6,9 +5,12 @@ using UnityEngine;
 public class AudioManager : SingletonDD<AudioManager>
 {
     [Range(0, 1)]
-    public float MusicVolume;
+    private float musicVolume;
     [Range(0, 1)]
-    public float AllVolume;
+    private float allVolume;
+
+    public float MusicVolume { get => musicVolume; set => musicVolume = value; }
+    public float AllVolume { get => allVolume; set => allVolume = value; }
 
     public class Name_AudioClip
     {
@@ -27,21 +29,7 @@ public class AudioManager : SingletonDD<AudioManager>
             Name_AudioClipDic.Add(name_AudioClip.AudioName, name_AudioClip.AudioClip);
         }
 
-
     }
-
-    private void Start()
-    {
-    }
-
-    private void Update()
-    {
-    }
-
-
-
-
-
 
 
 
