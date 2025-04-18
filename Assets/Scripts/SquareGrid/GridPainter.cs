@@ -10,7 +10,7 @@ public class GridPainter : Singleton<GridPainter>
     protected override void Awake()
     {
         base.Awake();
-        playerGridComponent = Player.Instance.playerGridComponent;
+        playerGridComponent = GetComponent<PlayerGridComponent>();
     }
     private void Start()
     {

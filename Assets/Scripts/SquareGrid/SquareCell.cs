@@ -68,7 +68,6 @@ public class SquareCell : MonoBehaviour, ISquareCell
 
     #endregion
     // 存储邻居的列表
-    [ReadOnly(true)]
     [SerializeField] private readonly SquareCell[] neighbors = new SquareCell[4];
 
     public Vector3 GetWorldPosition()

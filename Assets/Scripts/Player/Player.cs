@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using CDTU.Utils;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class Player : Singleton<Player>
     public float moveCooldown = 1f; // 可在 Inspector 设置冷却时间
     public float CooldownTimer { get; set; } = 0f;
 
+    [ReadOnly]
     public Vector3 BeginPosition;
 
     private void Start()
@@ -41,9 +43,26 @@ public class Player : Singleton<Player>
         Vector2 input = GameInput.Instance.MoveInput;
         if (input == Vector2.zero) return;
 
-        Vector3 moveDir = new Vector3(input.x, 0, input.y).normalized;
-        transform.position += moveDir * moveDistance;
+        // 将输入转为离散方向：左右或上下
+        Vector2Int dir = new Vector2Int(
+            input.x > 0 ? 1 : input.x < 0 ? -1 : 0,
+            input.y > 0 ? 1 : input.y < 0 ? -1 : 0
+        );
+        if (dir == Vector2Int.zero) return;
 
-        CooldownTimer = moveCooldown; // 重置冷却
+        // 确保当前格子存在
+        if (playerGridComponent?.currentCell == null) return;
+
+        // 计算目标格子世界坐标
+        Vector3 originPos = playerGridComponent.currentCell.transform.position;
+        Vector3 targetPos = originPos + new Vector3(dir.x * moveDistance, 0, dir.y * moveDistance);
+
+        // 检查目标格子是否存在
+        var nextCell = GridManager.Instance.GetCell(targetPos);
+        if (nextCell == null) return;
+
+        // 移动玩家并重置冷却
+        transform.position = targetPos;
+        CooldownTimer = moveCooldown;
     }
 }

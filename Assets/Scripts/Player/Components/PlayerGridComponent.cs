@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class PlayerGridComponent : MonoBehaviour
 {
+    [ReadOnly]
     public SquareCell currentCell;
-    public Player player;
     public event EventHandler<OnCellChangedEventArgs> OnCellChanged; // 事件回调
 
     #region 事件
@@ -18,6 +18,18 @@ public class PlayerGridComponent : MonoBehaviour
     }
     #endregion
 
+    private void Start()
+    {
+        // 初始化当前格子为玩家初始位置所在格子并对齐到格子中心
+        var initCell = GridManager.Instance.GetCell(transform.position);
+        if (initCell != null)
+        {
+            currentCell = initCell;
+            transform.position = currentCell.transform.position;
+            OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
+        }
+    }
+
     private void Update()
     {
         // 获取玩家当前位置对应的格子
@@ -29,14 +41,5 @@ public class PlayerGridComponent : MonoBehaviour
         }
     }
 
-    public void SetPlayer(Player player)
-    {
-        this.player = player;
-    }
-
-    public Player GetPlayer()
-    {
-        return player;
-    }
 
 }
