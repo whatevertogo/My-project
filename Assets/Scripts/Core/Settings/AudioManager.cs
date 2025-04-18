@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class AudioManager : SingletonDD<AudioManager>
 {
+    [Range(0, 1)]
     public float MusicVolume;
+    [Range(0, 1)]
     public float AllVolume;
 
     public class Name_AudioClip
@@ -25,6 +27,15 @@ public class AudioManager : SingletonDD<AudioManager>
             Name_AudioClipDic.Add(name_AudioClip.AudioName, name_AudioClip.AudioClip);
         }
 
+
+    }
+
+    private void Start()
+    {
+    }
+
+    private void Update()
+    {
     }
 
 
