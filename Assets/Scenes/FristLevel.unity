@@ -224,6 +224,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1010826480}
   - component: {fileID: 1010826479}
+  - component: {fileID: 1010826481}
   m_Layer: 0
   m_Name: GridManager
   m_TagString: Untagged
@@ -243,8 +244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7a5ee278f78c554d9f97a271a8fba95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 10
-  height: 10
+  width: 21
+  height: 21
 --- !u!4 &1010826480
 Transform:
   m_ObjectHideFlags: 0
@@ -260,6 +261,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1010826481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1010826478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec19ac162d12f594b82d33213b18bf1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 519420031}
 --- !u!1 &1320701988
 GameObject:
   m_ObjectHideFlags: 0

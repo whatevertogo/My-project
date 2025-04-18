@@ -1,0 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CameraControler : MonoBehaviour
+{
+    [SerializeField] private Camera mainCamera;
+
+
+
+    public void Start()
+    {
+        Vector3 middleGrid = GridManager.Instance.GetGridCenter();
+        mainCamera.gameObject.transform.position = middleGrid + Vector3.forward * -10f;
+    }
+
+
+
+}
