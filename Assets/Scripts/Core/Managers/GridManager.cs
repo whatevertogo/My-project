@@ -51,7 +51,7 @@ public class GridManager : Singleton<GridManager>
                 // 获取格子对象的渲染器组件
                 var renderer = cellObj.GetComponent<Renderer>();
                 // 设置格子的材质颜色
-                renderer.material.color = new Color(64 / 255, 0, 64 / 255);
+                renderer.material.color = new Color(64 / 255f, 0, 64 / 255f);
 
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();

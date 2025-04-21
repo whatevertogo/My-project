@@ -3,43 +3,37 @@ using UnityEngine;
 
 public class PlayerGridComponent : MonoBehaviour
 {
-    [ReadOnly]
     public SquareCell currentCell;
-    public event EventHandler<OnCellChangedEventArgs> OnCellChanged; // 事件回调
+    public event EventHandler<OnCellChangedEventArgs> OnCellChanged;
 
-    #region 事件
-    public class OnCellChangedEventArgs
+    public class OnCellChangedEventArgs : EventArgs
     {
-        public SquareCell cell;
-        public OnCellChangedEventArgs(SquareCell cell)
+        public SquareCell cell { get; }
+        public OnCellChangedEventArgs(SquareCell newCell)
         {
-            this.cell = cell;
-        }
-    }
-    #endregion
-
-    private void Start()
-    {
-        // 初始化当前格子为玩家初始位置所在格子并对齐到格子中心
-        var initCell = GridManager.Instance.GetCell(transform.position);
-        if (initCell != null)
-        {
-            currentCell = initCell;
-            transform.position = currentCell.transform.position;
-            OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
+            cell = newCell;
         }
     }
 
-    private void Update()
+    // 移除 Update 方法，格子更新逻辑已移至 Player.cs
+    // private void Update()
+    // {
+    //     SquareCell newCell = GridManager.Instance.GetCell(transform.position);
+    //     if (newCell != null && newCell != currentCell)
+    //     {
+    //         currentCell = newCell;
+    //         OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
+    //     }
+    // }
+
+    // 添加一个公共方法来设置当前格子并触发事件，由 Player.cs 调用
+    public void SetCurrentCell(SquareCell cell)
     {
-        // 获取玩家当前位置对应的格子
-        var cell = GridManager.Instance.GetCell(transform.position); // 你需要有GridManagerInstance的引用
-        if (cell is not null && cell != currentCell)
+        if (cell != currentCell)
         {
             currentCell = cell;
-            OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell)); // 触发事件
+            OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
+            Debug.Log($"Player entered cell: {currentCell.Coordinates}"); // 可选：添加日志
         }
     }
-
-
 }

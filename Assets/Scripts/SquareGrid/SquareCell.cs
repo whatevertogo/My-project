@@ -77,6 +77,10 @@ public class SquareCell : MonoBehaviour, ISquareCell
     {
         this.Coordinates = coordinates;
     }
+    public SquareCoordinates GetCoordinates()
+    {
+        return Coordinates; ;
+    }
 
     #region 邻居方法
     // 提供设置邻居的方法（应由网格管理器调用）
@@ -141,10 +145,6 @@ public class SquareCell : MonoBehaviour, ISquareCell
         return $"SquareCell({Coordinates})";
     }
 
-    public SquareCoordinates GetCoordinates()
-    {
-        throw new System.NotImplementedException();
-    }
     #endregion
 
 }
