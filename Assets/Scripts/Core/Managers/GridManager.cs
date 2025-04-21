@@ -7,8 +7,6 @@ public class GridManager : Singleton<GridManager>
     public int width = 10;
     public int height = 10;
 
-    public Dictionary<SquareCoordinates, SquareMetrics> SquareCoordinates_SquareMetrics;
-
     public Vector3 GetGridCenter() => new Vector3(width / 2, height / 2, 0);
 
     private SquareCell[,] cells;
@@ -82,5 +80,15 @@ public class GridManager : Singleton<GridManager>
     {
         var coord = SquareCoordinates.FromWorldPosition(worldPosition); // 推荐在SquareCoordinates实现此静态方法
         return GetCell(coord.X, coord.Y);
+    }
+
+    public Vector3 WorldToGridCoordinates(Vector2 worldPosition)
+    {
+        var coord = SquareCoordinates.FromWorldPosition(worldPosition); // 推荐在SquareCoordinates实现此静态方法
+        return new Vector3(coord.X, coord.Y, 0);
+    }
+    public Vector3 GridToWorldCoordinates(Vector2 gridPosition)
+    {
+        return new Vector3(gridPosition.x * SquareMetrics.cellSize, gridPosition.y * SquareMetrics.cellSize, 0);
     }
 }
