@@ -1,7 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System;
 using System.Collections;
 
 public class SquareCell : MonoBehaviour, ISquareCell

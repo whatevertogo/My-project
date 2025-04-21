@@ -23,7 +23,6 @@ public class GameInput : Singleton<GameInput>
     private void OnPlayerMove(InputAction.CallbackContext context)
     {
         MoveInput = context.ReadValue<Vector2>();
-
     }
 
 }
