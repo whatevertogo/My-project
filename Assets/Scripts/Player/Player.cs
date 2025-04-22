@@ -9,13 +9,12 @@ public class Player : Singleton<Player>
     public float moveCooldown = 1f; // 可在 Inspector 设置冷却时间
     public float CooldownTimer { get; set; } = 0f;
     private bool isMoving = false; // 添加移动状态标志
+    public float duration;
 
-    [ReadOnly]
-    public Vector3 BeginPosition;
 
     private void Start()
     {
-        BeginPosition = GridManager.Instance.GetGridCenter();
+        gameObject.transform.position = GridManager.Instance.GetGridCenter();
         if (moveCooldown <= 0)
         {
             Debug.LogWarning("moveCooldown must be a positive value. Setting it to the default value of 1f.");
@@ -108,7 +107,7 @@ public class Player : Singleton<Player>
     {
         Vector3 startPos = transform.position;
         float elapsedTime = 0f;
-        float duration = moveCooldown; // 记录当前冷却时间
+        duration = moveCooldown; // 记录当前冷却时间
 
         // 如果持续时间过短，直接设置位置以避免除零错误或瞬移
         if (duration <= 0f)

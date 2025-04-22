@@ -79,7 +79,7 @@ public class SquareCell : MonoBehaviour, ISquareCell
     }
     public SquareCoordinates GetCoordinates()
     {
-        return Coordinates; ;
+        return Coordinates;
     }
 
     #region 邻居方法

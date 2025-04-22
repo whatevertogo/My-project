@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerGridComponent : MonoBehaviour
 {
+    [ReadOnly]
     public SquareCell currentCell;
     public event EventHandler<OnCellChangedEventArgs> OnCellChanged;
 
