@@ -61,34 +61,46 @@ public class GridManager : Singleton<GridManager>
                 cells[x, y] = cell;
             }
         }
-        // 生成后立即设置邻居
-        // 遍历网格的每一列
+
+        // 设置所有方向的邻居关系（包括对角线）
         for (int x = 0; x < width; x++)
         {
-            // 遍历网格的每一行
             for (int y = 0; y < height; y++)
             {
-                // 获取当前遍历到的格子
-                var cell = cells[x, y];
-                // 遍历四个方向，假设SquareDirection只有4个方向
-                for (int d = 0; d < 4; d++) 
-                {
-                    // 将整数转换为SquareDirection枚举类型
-                    SquareDirection dir = (SquareDirection)d;
-                    // 获取该方向的偏移量
-                    var (dx, dy) = dir.GetOffset();
-                    // 计算邻居格子的x坐标
-                    int nx = x + dx;
-                    // 计算邻居格子的y坐标
-                    int ny = y + dy;
-                    // 检查邻居格子的坐标是否在网格范围内
-                    if (nx >= 0 && nx < width && ny >= 0 && ny < height)
-                    {
-                        // 如果在范围内，设置当前格子在该方向的邻居
-                        cell.SetNeighbor(dir, cells[nx, ny]);
-                    }
-                }
+                SquareCell cell = cells[x, y];
+                
+                // 基本方向
+                SetNeighborIfValid(cell, x, y, SquareDirection.N);
+                SetNeighborIfValid(cell, x, y, SquareDirection.S);
+                SetNeighborIfValid(cell, x, y, SquareDirection.E);
+                SetNeighborIfValid(cell, x, y, SquareDirection.W);
+                
+                // 对角线方向
+                if (x > 0 && y < height - 1) // 左上
+                    cell.SetNeighbor(SquareDirection.NW, cells[x - 1, y + 1]);
+                    
+                if (x < width - 1 && y < height - 1) // 右上
+                    cell.SetNeighbor(SquareDirection.NE, cells[x + 1, y + 1]);
+                    
+                if (x > 0 && y > 0) // 左下
+                    cell.SetNeighbor(SquareDirection.SW, cells[x - 1, y - 1]);
+                    
+                if (x < width - 1 && y > 0) // 右下
+                    cell.SetNeighbor(SquareDirection.SE, cells[x + 1, y - 1]);
             }
+        }
+    }
+
+    // 辅助方法：检查并设置指定方向的邻居
+    private void SetNeighborIfValid(SquareCell cell, int x, int y, SquareDirection direction)
+    {
+        var (dx, dy) = direction.GetOffset();
+        int nx = x + dx;
+        int ny = y + dy;
+        
+        if (nx >= 0 && nx < width && ny >= 0 && ny < height)
+        {
+            cell.SetNeighbor(direction, cells[nx, ny]);
         }
     }
 

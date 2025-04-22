@@ -1,6 +1,8 @@
+using System.Linq;
 using UnityEngine;
-using System.Collections.Generic;
 using CDTU.Utils;
+using System.Collections.Generic;
+
 public class GridPainter : Singleton<GridPainter>
 {
     private PlayerGridComponent playerGridComponent;
@@ -23,14 +25,15 @@ public class GridPainter : Singleton<GridPainter>
         {
             currentCellRenderer = playerGridComponent.currentCell.CellRenderer;
         }
+        PaintArea(playerGridComponent.currentCell);
     }
 
     private void OnPlayerCellChanged(object sender, PlayerGridComponent.OnCellChangedEventArgs e)
     {
-        // 若当前cell的HexMesh发生变化，及时更新引用
         if (e.cell is not null && e.cell.CellRenderer is not null && e.cell.CellRenderer != currentCellRenderer)
         {
             currentCellRenderer = e.cell.CellRenderer;
+            Debug.Log($"Current cell renderer updated: {currentCellRenderer.name}");
         }
         PaintArea(e.cell);
     }
@@ -38,20 +41,17 @@ public class GridPainter : Singleton<GridPainter>
     private void PaintArea(SquareCell centerCell)
     {
         if (centerCell == null) return;
-        // 向前4格，左右各1格，后方不变色
-        for (int dx = -1; dx <= 1; dx++)
+        
+        // 获取九宫格范围内所有有效的格子，无需手动处理空值
+        var validCells = centerCell.GetNineGridCells();
+        
+        // 处理每个有效的格子
+        foreach (var cell in validCells)
         {
-            for (int dy = 0; dy < 3; dy++) // dy=0为当前位置，1~2为前方
+            if (!activatedCells.Contains(cell))
             {
-                int x = centerCell.Coordinates.X + dx;
-                int y = centerCell.Coordinates.Y + dy;
-                SquareCell cell = GridManager.Instance.GetCell(x, y);
-                if (cell != null && !activatedCells.Contains(cell))
-                {
-                    // 可扩展：如cell.IsObstacle等属性判断
-                    cell.SetColor(Color.white, true);
-                    activatedCells.Add(cell);
-                }
+                activatedCells.Add(cell);
+                cell.SetColor(Color.white, true);
             }
         }
     }

@@ -270,6 +270,7 @@ GameObject:
   - component: {fileID: 621430823}
   - component: {fileID: 621430826}
   - component: {fileID: 621430825}
+  - component: {fileID: 621430827}
   m_Layer: 0
   m_Name: Player1
   m_TagString: Untagged
@@ -371,6 +372,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveCooldown: 1
   duration: 1
+  input: {x: 0, y: 0}
+  spriteRenderer: {fileID: 0}
+--- !u!114 &621430827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 621430822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f4cbb0c259ca9e4ab9473263b341aee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentCellRenderer: {fileID: 0}
 --- !u!1 &1010826478
 GameObject:
   m_ObjectHideFlags: 0

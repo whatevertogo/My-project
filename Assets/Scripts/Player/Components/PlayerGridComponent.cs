@@ -45,7 +45,6 @@ public class PlayerGridComponent : MonoBehaviour
         {
             currentCell = cell;
             OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
-            Debug.Log($"Player entered cell: {currentCell.Coordinates}"); // 可选：添加日志
         }
     }
 }

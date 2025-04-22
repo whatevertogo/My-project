@@ -10,6 +10,8 @@ public class Player : Singleton<Player>
     public float CooldownTimer { get; set; } = 0f;
     private bool isMoving = false; // 添加移动状态标志
     public float duration;
+    public Vector2 input;
+    [SerializeField] private SpriteRenderer spriteRenderer; // 添加精灵渲染器引用
 
 
     protected override void Awake()
@@ -32,6 +34,7 @@ public class Player : Singleton<Player>
             this.enabled = false;
             return;
         }
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
 
@@ -59,22 +62,31 @@ public class Player : Singleton<Player>
     /// 尝试根据玩家输入移动玩家角色。
     /// 该方法会处理玩家输入，检查移动的有效性，并在条件满足时执行移动操作。
     /// </summary>
-    private IEnumerator TryMove() // 改为 IEnumerator
+    private IEnumerator TryMove()
     {
         isMoving = true; // 开始移动
 
+        // 从游戏输入管理器获取玩家的移动输入
+        input = GameInput.Instance.MoveInput;
         try // 使用 try...finally 确保 isMoving 总能被重置
         {
-            // 从游戏输入管理器获取玩家的移动输入
-            Vector2 input = GameInput.Instance.MoveInput;
             // 如果玩家没有输入移动指令，则直接返回，不执行后续移动逻辑
             if (input == Vector2.zero) yield break; // 在协程中用 yield break 退出
 
+            if (input.x > 0)
+            {
+                spriteRenderer.flipX = true; // 向右移动时不翻转
+            }
+            else if (input.x < 0)
+            {
+                spriteRenderer.flipX = false;
+            }
+
             // 将输入转为离散方向：左右或上下
             Vector2Int dir = new Vector2Int(
-                input.x > 0 ? 1 : input.x < 0 ? -1 : 0,
-                input.y > 0 ? 1 : input.y < 0 ? -1 : 0
-            );
+            input.x > 0 ? 1 : input.x < 0 ? -1 : 0,
+            input.y > 0 ? 1 : input.y < 0 ? -1 : 0
+        );
 
             // 如果转换后的方向向量为零向量，说明没有有效的移动方向，直接返回
             if (dir == Vector2Int.zero) yield break;

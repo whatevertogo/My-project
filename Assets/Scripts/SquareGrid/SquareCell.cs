@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System;
+using System.Linq;
 
 public class SquareCell : MonoBehaviour, ISquareCell
 {
@@ -9,6 +11,9 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public float duration = 1f;
 
     public Renderer CellRenderer;
+
+    // 存储邻居的列表，包括自身和8个方向的邻居
+    [SerializeField] private readonly SquareCell[] neighbors = new SquareCell[9];
 
     private void Awake()
     {
@@ -66,7 +71,6 @@ public class SquareCell : MonoBehaviour, ISquareCell
 
     #endregion
     // 存储邻居的列表
-    [SerializeField] private readonly SquareCell[] neighbors = new SquareCell[4];
 
     public Vector3 GetWorldPosition()
     {
@@ -83,30 +87,44 @@ public class SquareCell : MonoBehaviour, ISquareCell
     }
 
     #region 邻居方法
-    // 提供设置邻居的方法（应由网格管理器调用）
+    /// <summary>
+    /// 设置指定方向的邻居格子
+    /// </summary>
+    /// <param name="direction">邻居的方向</param>
+    /// <param name="neighbor">要设置的邻居格子</param>
     public void SetNeighbor(SquareDirection direction, SquareCell neighbor)
     {
         int index = (int)direction;
         if (index >= 0 && index < neighbors.Length)
+        {
             neighbors[index] = neighbor;
+        }
+        else
+        {
+            Debug.LogError($"无效的方向: {direction}，方向值应该在0到{neighbors.Length - 1}之间");
+        }
     }
+
     /// <summary>
-    /// 获取指定方向的邻居
+    /// 获取指定方向的邻居格子
     /// </summary>
+    /// <param name="direction">要获取的邻居方向</param>
+    /// <returns>指定方向的邻居格子，如果方向无效或邻居不存在则返回null</returns>
     public SquareCell GetNeighbor(SquareDirection direction)
     {
-        int index = (int)direction;
-        if (index >= 0 && index < neighbors.Length)
-            return neighbors[index];
+        if (TryGetNeighbor(direction, out SquareCell neighbor))
+        {
+            return neighbor;
+        }
         return null;
     }
 
     /// <summary>
-    /// 获取所有邻居（只读）
+    /// 获取所有有效的邻居（不包括null值）
     /// </summary>
     public IReadOnlyList<SquareCell> GetNeighbors()
     {
-        return System.Array.AsReadOnly(neighbors);
+        return neighbors.Where(n => n != null).ToList().AsReadOnly();
     }
 
     /// <summary>
@@ -122,6 +140,14 @@ public class SquareCell : MonoBehaviour, ISquareCell
         }
         neighbor = null;
         return false;
+    }
+
+    /// <summary>
+    /// 获取所有邻居格子（包括中心格子自身），过滤掉无效的邻居
+    /// </summary>
+    public List<SquareCell> GetAllNeighborsAndSelf()
+    {
+        return neighbors.Where(cell => cell != null).ToList();
     }
     #endregion
 
@@ -147,4 +173,25 @@ public class SquareCell : MonoBehaviour, ISquareCell
 
     #endregion
 
+    /// <summary>
+    /// 获取以当前格子为中心的九宫格范围内所有有效的格子
+    /// </summary>
+    /// <returns>包含自身和所有有效邻居的列表</returns>
+    public List<SquareCell> GetNineGridCells()
+    {
+        var validCells = new List<SquareCell> { this }; // 添加中心格子（自身）
+        
+        // 遍历所有可能的方向（除了Center）
+        foreach (SquareDirection dir in System.Enum.GetValues(typeof(SquareDirection)))
+        {
+            if (dir == SquareDirection.Center) continue;
+            
+            if (TryGetNeighbor(dir, out SquareCell neighbor))
+            {
+                validCells.Add(neighbor);
+            }
+        }
+        
+        return validCells;
+    }
 }

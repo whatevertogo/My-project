@@ -11,15 +11,11 @@ public class GameInput : Singleton<GameInput>
     {
         base.Awake();
         gameInputController = new GameInputController();
-        gameInputController.Player.Enable();        
-    }    private void Start()
-    {
-        gameInputController.Player.PlayerMoveww.performed += OnPlayerMove;
+        gameInputController.Player.Enable();
     }
-
-    private void OnPlayerMove(InputAction.CallbackContext context)
+    private void Update()
     {
-        MoveInput = context.ReadValue<Vector2>();
+        MoveInput = gameInputController.Player.PlayerMoveww.ReadValue<Vector2>();
     }
 
 }
