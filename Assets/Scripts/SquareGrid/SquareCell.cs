@@ -22,6 +22,11 @@ public class SquareCell : MonoBehaviour, ISquareCell
         CellRenderer = GetComponent<Renderer>();
     }
 
+    private void Start()
+    {
+        InitializerFactory.GetGridInitializer(cellType).Init(GetGridType());
+    }
+
     #region 颜色管理
     public void SetColor(Color targetcolor, bool smooth)
     {
