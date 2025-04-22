@@ -9,9 +9,10 @@ public static class RandomGridType
     public static GridType GetRandomGridType()
     {
         float r = Random.Range(0, 1);
-        if (r < 0.5f) return GridType.SimpleSquare;
-        if (r < 0.8f) return GridType.BirdSquare;
-        if (r < 1f) return GridType.TreeSquare;
+        if (r < 0.98f)
+            return GridType.SimpleSquare;
+        else
+            return GridType.BirdSquare;
         throw new System.Exception("随机生成的网格类型不在预期范围内！");
     }
 }

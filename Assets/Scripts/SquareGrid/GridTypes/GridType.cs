@@ -9,8 +9,4 @@ public enum GridType
     /// 带有鸟的网格
     /// </summary>
     BirdSquare,
-    /// <summary>
-    /// 带有树的网格
-    /// </summary>
-    TreeSquare,
 }

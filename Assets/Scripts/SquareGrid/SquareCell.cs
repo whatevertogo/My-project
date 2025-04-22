@@ -152,7 +152,7 @@ public class SquareCell : MonoBehaviour, ISquareCell
         return neighbors.Where(cell => cell != null).ToList();
     }
 
-     /// <summary>
+    /// <summary>
     /// 获取以当前格子为中心的九宫格范围内所有有效的格子
     /// </summary>
     /// <returns>包含自身和所有有效邻居的列表</returns>
@@ -197,7 +197,7 @@ public class SquareCell : MonoBehaviour, ISquareCell
 
     #endregion
 
-    #region 网格类型
+    #region 网格方法
     public void SetGridType(GridType type)
     {
         cellType = type;
@@ -205,6 +205,10 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public GridType GetGridType()
     {
         return cellType;
+    }
+    public void ResetGridType()
+    {
+        cellType = GridType.SimpleSquare;
     }
     #endregion
 }

@@ -36,6 +36,7 @@ public class GridPainter : Singleton<GridPainter>
             Debug.Log($"Current cell renderer updated: {currentCellRenderer.name}");
         }
         PaintArea(e.cell);
+        
     }
 
     private void PaintArea(SquareCell centerCell)
