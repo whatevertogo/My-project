@@ -26,6 +26,17 @@ public class PlayerGridComponent : MonoBehaviour
     //         OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
     //     }
     // }
+    public void Start()
+    {
+        // 尝试获取当前格子
+        currentCell = GridManager.Instance.GetCell(transform.position);
+        if (currentCell == null)
+        {
+            Debug.LogError("Player is not on a valid cell. Please check the player's position.");
+            return;
+        }
+        OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
+    }
 
     // 添加一个公共方法来设置当前格子并触发事件，由 Player.cs 调用
     public void SetCurrentCell(SquareCell cell)

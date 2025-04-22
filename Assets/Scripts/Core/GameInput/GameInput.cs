@@ -4,25 +4,17 @@ using UnityEngine.InputSystem;
 
 public class GameInput : Singleton<GameInput>
 {
-    public PlayerController PlayerController;
+    public GameInputController gameInputController;
 
     public Vector2 MoveInput { get; private set; }
     protected override void Awake()
     {
         base.Awake();
-    }
-
-    private void Start()
+        gameInputController = new GameInputController();
+        gameInputController.Player.Enable();        
+    }    private void Start()
     {
-        if(PlayerController.Player.PlayerMove is not null)
-        {
-            PlayerController.Player.PlayerMove.Enable();
-        }
-        else
-        {
-            Debug.LogError("PlayerMove action is null. Please check the Input Action setup.");
-        }
-        PlayerController.Player.PlayerMove.performed += OnPlayerMove;
+        gameInputController.Player.PlayerMoveww.performed += OnPlayerMove;
     }
 
     private void OnPlayerMove(InputAction.CallbackContext context)

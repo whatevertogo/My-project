@@ -12,9 +12,10 @@ public class Player : Singleton<Player>
     public float duration;
 
 
-    private void Start()
+    protected override void Awake()
     {
         gameObject.transform.position = GridManager.Instance.GetGridCenter();
+
         if (moveCooldown <= 0)
         {
             Debug.LogWarning("moveCooldown must be a positive value. Setting it to the default value of 1f.");
@@ -23,7 +24,7 @@ public class Player : Singleton<Player>
 
         // 尝试获取组件
         playerGridComponent = GetComponent<PlayerGridComponent>();
-        if (playerGridComponent == null)
+        if (playerGridComponent is null)
         {
             // 如果获取失败，则记录错误或警告
             Debug.LogError("PlayerGridComponent not found on the Player GameObject. Please add the component.");
@@ -74,6 +75,7 @@ public class Player : Singleton<Player>
                 input.x > 0 ? 1 : input.x < 0 ? -1 : 0,
                 input.y > 0 ? 1 : input.y < 0 ? -1 : 0
             );
+
             // 如果转换后的方向向量为零向量，说明没有有效的移动方向，直接返回
             if (dir == Vector2Int.zero) yield break;
 
@@ -82,7 +84,8 @@ public class Player : Singleton<Player>
 
             // 计算目标格子世界坐标
             Vector3 originPos = playerGridComponent.currentCell.transform.position;
-            Vector3 targetPos = originPos + new Vector3(dir.x * moveDistance, 0, dir.y * moveDistance);
+            Vector3 targetPos = originPos + new Vector3(dir.x * moveDistance, dir.y * moveDistance, 0f);
+            // 将目标坐标转换为格子坐标
 
             // 检查目标格子是否存在
             SquareCell nextCell = GridManager.Instance.GetCell(targetPos);
@@ -112,8 +115,8 @@ public class Player : Singleton<Player>
         // 如果持续时间过短，直接设置位置以避免除零错误或瞬移
         if (duration <= 0f)
         {
-             transform.position = targetPos;
-             yield break; // 退出协程
+            transform.position = targetPos;
+            yield break; // 退出协程
         }
 
         while (elapsedTime < duration)
