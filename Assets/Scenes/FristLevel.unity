@@ -373,7 +373,6 @@ MonoBehaviour:
   moveCooldown: 1
   duration: 1
   input: {x: 0, y: 0}
-  spriteRenderer: {fileID: 0}
 --- !u!114 &621430827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,8 +416,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7a5ee278f78c554d9f97a271a8fba95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 21
-  height: 21
+  width: 25
+  height: 25
 --- !u!4 &1010826480
 Transform:
   m_ObjectHideFlags: 0

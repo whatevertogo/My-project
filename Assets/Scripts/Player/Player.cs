@@ -10,8 +10,9 @@ public class Player : Singleton<Player>
     public float CooldownTimer { get; set; } = 0f;
     private bool isMoving = false; // 添加移动状态标志
     public float duration;
+    [ReadOnly]
     public Vector2 input;
-    [SerializeField] private SpriteRenderer spriteRenderer; // 添加精灵渲染器引用
+    private SpriteRenderer spriteRenderer; // 添加精灵渲染器引用
 
 
     protected override void Awake()
@@ -40,8 +41,6 @@ public class Player : Singleton<Player>
 
     private void Update()
     {
-        // 移除在此处获取组件的逻辑，已移至 Start
-
         // 移除在此处打印坐标的逻辑，可移至 PlayerGridComponent 的 OnCellChanged 事件处理
 
         if (CooldownTimer > 0)

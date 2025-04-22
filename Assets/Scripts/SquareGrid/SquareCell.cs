@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using System;
 using System.Linq;
 
 public class SquareCell : MonoBehaviour, ISquareCell
@@ -9,6 +8,9 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public SquareCoordinates Coordinates { get; set; }
     public Color currentColor;
     public float duration = 1f;
+
+    [ReadOnly]
+    public GridType cellType = GridType.None; // 默认值为None
 
     public Renderer CellRenderer;
 
@@ -149,6 +151,28 @@ public class SquareCell : MonoBehaviour, ISquareCell
     {
         return neighbors.Where(cell => cell != null).ToList();
     }
+
+     /// <summary>
+    /// 获取以当前格子为中心的九宫格范围内所有有效的格子
+    /// </summary>
+    /// <returns>包含自身和所有有效邻居的列表</returns>
+    public List<SquareCell> GetNineGridCells()
+    {
+        var validCells = new List<SquareCell> { this }; // 添加中心格子（自身）
+
+        // 遍历所有可能的方向（除了Center）
+        foreach (SquareDirection dir in System.Enum.GetValues(typeof(SquareDirection)))
+        {
+            if (dir == SquareDirection.Center) continue;
+
+            if (TryGetNeighbor(dir, out SquareCell neighbor))
+            {
+                validCells.Add(neighbor);
+            }
+        }
+
+        return validCells;
+    }
     #endregion
 
     #region 运算符重载
@@ -173,25 +197,14 @@ public class SquareCell : MonoBehaviour, ISquareCell
 
     #endregion
 
-    /// <summary>
-    /// 获取以当前格子为中心的九宫格范围内所有有效的格子
-    /// </summary>
-    /// <returns>包含自身和所有有效邻居的列表</returns>
-    public List<SquareCell> GetNineGridCells()
+    #region 网格类型
+    public void SetGridType(GridType type)
     {
-        var validCells = new List<SquareCell> { this }; // 添加中心格子（自身）
-        
-        // 遍历所有可能的方向（除了Center）
-        foreach (SquareDirection dir in System.Enum.GetValues(typeof(SquareDirection)))
-        {
-            if (dir == SquareDirection.Center) continue;
-            
-            if (TryGetNeighbor(dir, out SquareCell neighbor))
-            {
-                validCells.Add(neighbor);
-            }
-        }
-        
-        return validCells;
+        cellType = type;
     }
+    public GridType GetGridType()
+    {
+        return cellType;
+    }
+    #endregion
 }

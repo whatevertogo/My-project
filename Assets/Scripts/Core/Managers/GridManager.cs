@@ -53,10 +53,13 @@ public class GridManager : Singleton<GridManager>
                 // 设置格子的材质颜色
                 renderer.material.color = new Color(64 / 255f, 0, 64 / 255f);
 
+
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
+                // 设置格子的随机type
+                cell.SetGridType(RandomGridType.GetRandomGridType());
                 // 调用Init方法初始化SquareCell组件，传入格子的坐标
-                cell.Init(new SquareCoordinates(x, y)); 
+                cell.Init(new SquareCoordinates(x, y));
                 // 将初始化好的格子存储到二维数组中
                 cells[x, y] = cell;
             }
@@ -68,23 +71,23 @@ public class GridManager : Singleton<GridManager>
             for (int y = 0; y < height; y++)
             {
                 SquareCell cell = cells[x, y];
-                
+
                 // 基本方向
                 SetNeighborIfValid(cell, x, y, SquareDirection.N);
                 SetNeighborIfValid(cell, x, y, SquareDirection.S);
                 SetNeighborIfValid(cell, x, y, SquareDirection.E);
                 SetNeighborIfValid(cell, x, y, SquareDirection.W);
-                
+
                 // 对角线方向
                 if (x > 0 && y < height - 1) // 左上
                     cell.SetNeighbor(SquareDirection.NW, cells[x - 1, y + 1]);
-                    
+
                 if (x < width - 1 && y < height - 1) // 右上
                     cell.SetNeighbor(SquareDirection.NE, cells[x + 1, y + 1]);
-                    
+
                 if (x > 0 && y > 0) // 左下
                     cell.SetNeighbor(SquareDirection.SW, cells[x - 1, y - 1]);
-                    
+
                 if (x < width - 1 && y > 0) // 右下
                     cell.SetNeighbor(SquareDirection.SE, cells[x + 1, y - 1]);
             }
@@ -97,7 +100,7 @@ public class GridManager : Singleton<GridManager>
         var (dx, dy) = direction.GetOffset();
         int nx = x + dx;
         int ny = y + dy;
-        
+
         if (nx >= 0 && nx < width && ny >= 0 && ny < height)
         {
             cell.SetNeighbor(direction, cells[nx, ny]);

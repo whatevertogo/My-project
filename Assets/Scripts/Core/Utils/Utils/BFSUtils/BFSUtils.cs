@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 /// <summary>
 /// 通用的BFS（广度优先搜索）工具类
@@ -105,13 +104,13 @@ public class BFSUtil<T>
     /// <param name="getNeighbors">获取节点邻接关系的委托函数</param>
     /// <param name="comparer">自定义节点比较器，默认为EqualityComparer<T>.Default</param>
     /// <returns>从起点到终点的最短路径列表，如果不存在路径则返回空列表</returns>
-    public List<T> FindShortestPath(T start, T end, Func<T, IEnumerable<T>> getNeighbors, IEqualityComparer<T> comparer = null)
+    public List<T> FindShortestPath(T start, T end, Func<T, IEnumerable<T>> getNeighbors, IEqualityComparer<T> comparer = default)
     {
         // 边界检查：如果起点或终点为空，直接返回空路径
         if (start == null || end == null) return new List<T>();
         
-        // 设置比较器，如果未提供则使用默认比较器
-        comparer = comparer ?? EqualityComparer<T>.Default;
+        // // 设置比较器，如果未提供则使用默认比较器
+        // comparer = comparer ?? EqualityComparer<T>.Default;
         
         // 特殊情况：起点和终点相同，直接返回包含起点的单元素路径
         if (comparer.Equals(start, end)) return new List<T> { start };
