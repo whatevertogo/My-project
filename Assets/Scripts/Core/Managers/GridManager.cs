@@ -53,7 +53,7 @@ public class GridManager : Singleton<GridManager>
                 // 设置格子的材质颜色
                 renderer.material.color = new Color(64 / 255f, 0, 64 / 255f);
 
-
+                //todo-保证两个临近的type不同
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
                 // 设置格子的随机type

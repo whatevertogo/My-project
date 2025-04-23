@@ -15,7 +15,12 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public Renderer CellRenderer;
 
     // 存储邻居的列表，包括自身和8个方向的邻居
-    [SerializeField] private readonly SquareCell[] neighbors = new SquareCell[9];
+    [ReadOnly]
+    [SerializeField] private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
+    
+    [ReadOnly]
+    [SerializeField] private SquareCell[] neighbors = new SquareCell[8];
+
 
     private void Awake()
     {
@@ -102,13 +107,13 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public void SetNeighbor(SquareDirection direction, SquareCell neighbor)
     {
         int index = (int)direction;
-        if (index >= 0 && index < neighbors.Length)
+        if (index >= 0 && index < neighborsAndSelf.Length)
         {
-            neighbors[index] = neighbor;
+            neighborsAndSelf[index] = neighbor;
         }
         else
         {
-            Debug.LogError($"无效的方向: {direction}，方向值应该在0到{neighbors.Length - 1}之间");
+            Debug.LogError($"无效的方向: {direction}，方向值应该在0到{neighborsAndSelf.Length - 1}之间");
         }
     }
 
@@ -129,9 +134,9 @@ public class SquareCell : MonoBehaviour, ISquareCell
     /// <summary>
     /// 获取所有有效的邻居（不包括null值）
     /// </summary>
-    public IReadOnlyList<SquareCell> GetNeighbors()
+    public IReadOnlyList<SquareCell> GetneighborsAndSelf()
     {
-        return neighbors.Where(n => n != null).ToList().AsReadOnly();
+        return neighborsAndSelf.Where(n => n != null).ToList().AsReadOnly();
     }
 
     /// <summary>
@@ -140,9 +145,9 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public bool TryGetNeighbor(SquareDirection direction, out SquareCell neighbor)
     {
         int index = (int)direction;
-        if (index >= 0 && index < neighbors.Length && neighbors[index] != null)
+        if (index >= 0 && index < neighborsAndSelf.Length && neighborsAndSelf[index] != null)
         {
-            neighbor = neighbors[index];
+            neighbor = neighborsAndSelf[index];
             return true;
         }
         neighbor = null;
@@ -152,9 +157,9 @@ public class SquareCell : MonoBehaviour, ISquareCell
     /// <summary>
     /// 获取所有邻居格子（包括中心格子自身），过滤掉无效的邻居
     /// </summary>
-    public List<SquareCell> GetAllNeighborsAndSelf()
+    public List<SquareCell> GetAllneighborsAndSelfAndSelf()
     {
-        return neighbors.Where(cell => cell != null).ToList();
+        return neighborsAndSelf.Where(cell => cell != null).ToList();
     }
 
     /// <summary>
@@ -214,6 +219,12 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public void ResetGridType()
     {
         cellType = GridType.SimpleSquare;
+    }
+    public bool HasNeighborWithType(SquareCell squareCell, GridType type)
+    {
+        // 通过获取所有邻居格子（包括自身）来检查是否有相同类型的邻居
+        neighbors = GetAllneighborsAndSelfAndSelf().Where(cell => cell.GetGridType() != GridType.BirdSquare).ToArray();
+        return neighbors.Any(neighbor => neighbor.GetGridType() == type);
     }
     #endregion
 }
