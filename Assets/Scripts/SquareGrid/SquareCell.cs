@@ -17,7 +17,7 @@ public class SquareCell : MonoBehaviour, ISquareCell
     // 存储邻居的列表，包括自身和8个方向的邻居
     [ReadOnly]
     [SerializeField] private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
-    
+
     [ReadOnly]
     [SerializeField] private SquareCell[] neighbors = new SquareCell[8];
 
@@ -227,4 +227,5 @@ public class SquareCell : MonoBehaviour, ISquareCell
         return neighbors.Any(neighbor => neighbor.GetGridType() == type);
     }
     #endregion
+    
 }

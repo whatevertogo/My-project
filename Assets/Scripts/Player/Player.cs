@@ -10,6 +10,7 @@ public class Player : Singleton<Player>
     public float CooldownTimer { get; set; } = 0f;
     private bool isMoving = false; // 添加移动状态标志
     public float duration;
+    public Vector3 MousePosition; // 获取鼠标世界坐标
     [ReadOnly]
     public Vector2 input;
     private SpriteRenderer spriteRenderer; // 添加精灵渲染器引用
@@ -42,7 +43,7 @@ public class Player : Singleton<Player>
     private void Update()
     {
         // 移除在此处打印坐标的逻辑，可移至 PlayerGridComponent 的 OnCellChanged 事件处理
-
+        MousePosition = MouseTool.GetMouseWorldPosition(); 
         if (CooldownTimer > 0)
         {
             CooldownTimer -= Time.deltaTime;
