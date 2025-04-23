@@ -13,11 +13,7 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public GridType cellType = GridType.None; // 默认值为None
     public Renderer CellRenderer;
     // 存储邻居的列表，包括自身和8个方向的邻居
-    [ReadOnly]
     [SerializeField] private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
-
-    [ReadOnly]
-    [SerializeField] private SquareCell[] neighbors = new SquareCell[8];
     private bool isExplored = false; // 是否已探索
     public bool IsExplored
     {
@@ -224,12 +220,6 @@ public class SquareCell : MonoBehaviour, ISquareCell
     public void ResetGridType()
     {
         cellType = GridType.SimpleSquare;
-    }
-    public bool HasNeighborWithType(SquareCell squareCell, GridType type)
-    {
-        // 通过获取所有邻居格子（包括自身）来检查是否有相同类型的邻居
-        neighbors = GetAllneighborsAndSelfAndSelf().Where(cell => cell.GetGridType() != GridType.BirdSquare).ToArray();
-        return neighbors.Any(neighbor => neighbor.GetGridType() == type);
     }
     #endregion
 
