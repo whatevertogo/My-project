@@ -53,11 +53,8 @@ public class GridManager : Singleton<GridManager>
                 // 设置格子的材质颜色
                 renderer.material.color = new Color(64 / 255f, 0, 64 / 255f);
 
-                //todo-保证两个临近的type不同
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
-                // 设置格子的随机type
-                cell.SetGridType(RandomGridType.GetRandomGridType());
                 // 调用Init方法初始化SquareCell组件，传入格子的坐标
                 cell.Init(new SquareCoordinates(x, y));
                 // 将初始化好的格子存储到二维数组中
@@ -80,16 +77,32 @@ public class GridManager : Singleton<GridManager>
 
                 // 对角线方向
                 if (x > 0 && y < height - 1) // 左上
-                    cell.SetNeighbor(SquareDirection.NW, cells[x - 1, y + 1]);
+                    SetNeighborIfValid(cell, x, y, SquareDirection.NW);
 
                 if (x < width - 1 && y < height - 1) // 右上
-                    cell.SetNeighbor(SquareDirection.NE, cells[x + 1, y + 1]);
+                    SetNeighborIfValid(cell, x, y, SquareDirection.NE);
 
                 if (x > 0 && y > 0) // 左下
-                    cell.SetNeighbor(SquareDirection.SW, cells[x - 1, y - 1]);
+                    SetNeighborIfValid(cell, x, y, SquareDirection.SW);
 
                 if (x < width - 1 && y > 0) // 右下
-                    cell.SetNeighbor(SquareDirection.SE, cells[x + 1, y - 1]);
+                    SetNeighborIfValid(cell, x, y, SquareDirection.SE);
+            }
+        }
+
+        // 设置格子的类型，确保相邻格子类型不同时为 BirdSquare
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                SquareCell cell = cells[x, y];
+                GridType cellType;
+                do
+                {
+                    cellType = RandomGridType.GetRandomGridType();
+                    // 检查已设置类型的邻居
+                } while (HasNeighborWithTypeAfterInit(cell, GridType.BirdSquare) && cellType == GridType.BirdSquare);
+                cell.SetGridType(cellType);
             }
         }
     }
@@ -103,9 +116,35 @@ public class GridManager : Singleton<GridManager>
 
         if (nx >= 0 && nx < width && ny >= 0 && ny < height)
         {
-            cell.SetNeighbor(direction, cells[nx, ny]);
+            // 确保邻居格子已创建
+            if (cells[nx, ny] != null)
+            {
+                cell.SetNeighbor(direction, cells[nx, ny]);
+            }
         }
     }
+
+    /// <summary>
+    /// 在邻居关系设置后，检查指定格子是否有指定类型的邻居
+    /// </summary>
+    private bool HasNeighborWithTypeAfterInit(SquareCell cell, GridType type)
+    {
+        // 检查基本方向的邻居
+        var directions = new[] { SquareDirection.N, SquareDirection.S, SquareDirection.E, SquareDirection.W };
+        foreach (var direction in directions)
+        {
+            if (cell.TryGetNeighbor(direction, out SquareCell neighbor))
+            {
+                // 检查邻居的类型是否已设置且匹配
+                if (neighbor.GetGridType() == type)
+                {
+                    return true; // 找到匹配类型的邻居
+                }
+            }
+        }
+        return false; // 未找到匹配类型的邻居
+    }
+
 
     // 通过坐标获取格子
     public SquareCell GetCell(int x, int y)
