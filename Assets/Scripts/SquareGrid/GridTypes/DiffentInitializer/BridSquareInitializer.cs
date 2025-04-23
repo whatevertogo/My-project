@@ -16,7 +16,8 @@ public class BridSquareInitializer : GridInitializer
         if (cell != null && !cell.IsExplored)
         {
             // 设置默认颜色（例如黑色）
-            renderer.material.color = Color.black;
+            //todo-颜色修改
+            renderer.material.color = Color.white;
             return;
         }
 

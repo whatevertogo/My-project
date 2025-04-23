@@ -31,7 +31,20 @@ public class SquareCell : MonoBehaviour, ISquareCell
         InitializerFactory.GetGridInitializer(cellType).Init(GetGridType(), CellRenderer);
         isExplored = false;
     }
+    // 存储邻居的列表
+    public Vector3 GetWorldPosition()
+    {
+        return Coordinates.ToWorldPosition();
+    }
 
+    public void Init(SquareCoordinates coordinates)
+    {
+        this.Coordinates = coordinates;
+    }
+    public SquareCoordinates GetCoordinates()
+    {
+        return Coordinates;
+    }
 
     #region 颜色管理
     public void SetColor(Color targetcolor, bool smooth)
@@ -83,21 +96,6 @@ public class SquareCell : MonoBehaviour, ISquareCell
 
 
     #endregion
-    // 存储邻居的列表
-
-    public Vector3 GetWorldPosition()
-    {
-        return Coordinates.ToWorldPosition();
-    }
-
-    public void Init(SquareCoordinates coordinates)
-    {
-        this.Coordinates = coordinates;
-    }
-    public SquareCoordinates GetCoordinates()
-    {
-        return Coordinates;
-    }
 
     #region 邻居方法
     /// <summary>
