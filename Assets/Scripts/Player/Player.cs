@@ -107,7 +107,6 @@ public class Player : Singleton<Player>
             yield return StartCoroutine(SmoothMove(targetPos));
 
             // 移动完成后更新当前格子并重置冷却
-            // playerGridComponent.currentCell = nextCell; // 旧方法：直接设置字段
             playerGridComponent.SetCurrentCell(nextCell); // 新方法：调用方法以触发事件
             CooldownTimer = moveCooldown; // 重置冷却计时器
         }
