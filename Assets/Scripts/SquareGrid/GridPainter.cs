@@ -67,6 +67,14 @@ public class GridPainter : Singleton<GridPainter>
         if (e.cell != null)
         {
             e.cell.IsExplored = true;
+
+            // 重新初始化地块以加载图片
+            var renderer = e.cell.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                var initializer = InitializerFactory.GetGridInitializer(e.cell.GetGridType());
+                initializer?.Init(e.cell.GetGridType(), renderer);
+            }
         }
 
         PaintArea(e.cell);

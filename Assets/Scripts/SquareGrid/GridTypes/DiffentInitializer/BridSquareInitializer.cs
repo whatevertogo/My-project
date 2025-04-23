@@ -27,7 +27,7 @@ public class BridSquareInitializer : GridInitializer
 
         // 加载图片资源
         Texture2D birdTexture = Resources.Load<Texture2D>(texturePath);
-        if (birdTexture == null)
+        if (birdTexture is null)
         {
             Debug.LogError($"未找到 BirdSquare 的图片资源! 路径: {texturePath}");
             return;
