@@ -206,7 +206,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     #endregion
 
-    #region 网格方法
+    #region 网格Type方法
     public void SetGridType(GridType type)
     {
         cellType = type;
