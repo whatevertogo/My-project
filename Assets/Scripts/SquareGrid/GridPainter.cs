@@ -28,6 +28,33 @@ public class GridPainter : Singleton<GridPainter>
         PaintArea(playerGridComponent.currentCell);
     }
 
+    private void PaintArea(SquareCell centerCell)
+    {
+        if (centerCell == null) return;
+
+        // 获取九宫格范围内所有有效的格子
+        var validCells = centerCell.GetNineGridCells();
+
+        // 处理每个有效的格子
+        foreach (SquareCell cell in validCells)
+        {
+            if (!activatedCells.Contains(cell))
+            {
+                activatedCells.Add(cell);
+
+                // 检查地块是否已探索
+                if (!cell.IsExplored)
+                {
+                    //todo-颜色修改 
+                    cell.SetColor(Color.black, true); // 未探索地块显示为黑色
+                    continue;
+                }
+                //todo-颜色修改
+                cell.SetColor(Color.white, true); // 已探索地块显示为白色
+            }
+        }
+    }
+
     private void OnPlayerCellChanged(object sender, PlayerGridComponent.OnCellChangedEventArgs e)
     {
         if (e.cell is not null && e.cell.CellRenderer is not null && e.cell.CellRenderer != currentCellRenderer)
@@ -35,26 +62,15 @@ public class GridPainter : Singleton<GridPainter>
             currentCellRenderer = e.cell.CellRenderer;
             Debug.Log($"Current cell renderer updated: {currentCellRenderer.name}");
         }
+
+        // 标记当前地块为已探索
+        if (e.cell != null)
+        {
+            e.cell.IsExplored = true;
+        }
+
         PaintArea(e.cell);
         
-    }
-
-    private void PaintArea(SquareCell centerCell)
-    {
-        if (centerCell == null) return;
-        
-        // 获取九宫格范围内所有有效的格子，无需手动处理空值
-        var validCells = centerCell.GetNineGridCells();
-        
-        // 处理每个有效的格子
-        foreach (var cell in validCells)
-        {
-            if (!activatedCells.Contains(cell))
-            {
-                activatedCells.Add(cell);
-                cell.SetColor(Color.white, true);
-            }
-        }
     }
 
     private void OnDestroy()

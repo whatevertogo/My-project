@@ -419,6 +419,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 25
   height: 25
+  gridTypeConfig: {fileID: 11400000, guid: 6467ab8470781914e80e94de5ef94a7d, type: 2}
+  requiredCount: 2
 --- !u!4 &1010826480
 Transform:
   m_ObjectHideFlags: 0

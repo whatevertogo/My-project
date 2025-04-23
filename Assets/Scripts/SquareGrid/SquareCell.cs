@@ -11,16 +11,19 @@ public class SquareCell : MonoBehaviour, ISquareCell
 
     [ReadOnly]
     public GridType cellType = GridType.None; // 默认值为None
-
     public Renderer CellRenderer;
-
     // 存储邻居的列表，包括自身和8个方向的邻居
     [ReadOnly]
     [SerializeField] private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
 
     [ReadOnly]
     [SerializeField] private SquareCell[] neighbors = new SquareCell[8];
-
+    private bool isExplored = false; // 是否已探索
+    public bool IsExplored
+    {
+        get => isExplored;
+        set => isExplored = value;
+    }
 
     private void Awake()
     {
@@ -29,8 +32,10 @@ public class SquareCell : MonoBehaviour, ISquareCell
 
     private void Start()
     {
-        InitializerFactory.GetGridInitializer(cellType).Init(GetGridType());
+        InitializerFactory.GetGridInitializer(cellType).Init(GetGridType(), CellRenderer);
+        isExplored = false;
     }
+
 
     #region 颜色管理
     public void SetColor(Color targetcolor, bool smooth)
@@ -227,5 +232,5 @@ public class SquareCell : MonoBehaviour, ISquareCell
         return neighbors.Any(neighbor => neighbor.GetGridType() == type);
     }
     #endregion
-    
+
 }

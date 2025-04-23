@@ -1,14 +1,19 @@
 using System.Collections.Generic;
+using System.Linq;
 using CDTU.Utils;
 using UnityEngine;
 
 public class GridManager : Singleton<GridManager>
 {
+    [Header("网格大小配置")]
     public int width = 10;
     public int height = 10;
 
     public Vector3 GetGridCenter() => new Vector3(width / 2, height / 2, 0);
 
+    [Header("网格类型配置和需要的BridSquare数量")]
+    public GridTypeConfig gridTypeConfig; // 网格类型配置文件
+    public int requiredCount = 2; // 至少需要的 BirdSquare 数量
     private SquareCell[,] cells;
     public IEnumerable<SquareCell> AllCells
     {
@@ -18,9 +23,15 @@ public class GridManager : Singleton<GridManager>
                 yield return cell;
         }
     }
+    public HashSet<SquareCell> AllBridCells = new();
 
     protected override void Awake()
     {
+        // 调用基类的 Awake 方法
+        base.Awake();
+        // 初始化 RandomGridType
+        RandomGridType.Initialize(gridTypeConfig);
+        //生成网格
         GenerateGrid();
     }
 
@@ -62,6 +73,9 @@ public class GridManager : Singleton<GridManager>
                 cell.Init(new SquareCoordinates(x, y));
                 // 将初始化好的格子存储到二维数组中
                 cells[x, y] = cell;
+
+                // 初始化地块的探索状态
+                cell.IsExplored = false;
             }
         }
 
@@ -109,38 +123,10 @@ public class GridManager : Singleton<GridManager>
             }
         }
 
-        // 确保至少有两个 BirdSquare
-        bool hasBirdSquare = false;
-        List<SquareCell> nonBirdCells = new List<SquareCell>();
+        // 确保至少有指定数量的 BirdSquare
+        EnsureBirdSquares(AllCells.ToList(), requiredCount);
 
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                SquareCell cell = cells[x, y];
-                if (cell.GetGridType() == GridType.BirdSquare)
-                {
-                    hasBirdSquare = true;
-                }
-                else
-                {
-                    nonBirdCells.Add(cell); // 仅添加非 BirdSquare 的格子
-                }
-            }
-        }
-
-        if (!hasBirdSquare && nonBirdCells.Count >= 2)
-        {
-            int randomIndex1 = Random.Range(0, nonBirdCells.Count);
-            int randomIndex2;
-            do
-            {
-                randomIndex2 = Random.Range(0, nonBirdCells.Count);
-            } while (randomIndex1 == randomIndex2); // 确保两个索引不同
-
-            nonBirdCells[randomIndex1].SetGridType(GridType.BirdSquare);
-            nonBirdCells[randomIndex2].SetGridType(GridType.BirdSquare);
-        }
+        Debug.Log($"Total Cells Generated: {width * height}");
     }
 
     // 辅助方法：检查并设置指定方向的邻居
@@ -205,5 +191,40 @@ public class GridManager : Singleton<GridManager>
     public Vector3 GridToWorldCoordinates(Vector2 gridPosition)
     {
         return new Vector3(gridPosition.x * SquareMetrics.cellSize, gridPosition.y * SquareMetrics.cellSize, 0);
+    }
+
+    /// <summary>
+    /// 确保至少有指定数量的 BirdSquare
+    /// </summary>
+    public void EnsureBirdSquares(List<SquareCell> allCells, int requiredCount)
+    {
+        // 统计当前已有的 BirdSquare 数量
+        int currentCount = 0;
+        List<SquareCell> nonBirdCells = new List<SquareCell>();
+
+        foreach (var cell in allCells)
+        {
+            if (cell.GetGridType() == GridType.BirdSquare)
+            {
+                currentCount++;
+                AllBridCells.Add(cell); // 添加 BirdSquare 格子到集合中
+            }
+            else
+            {
+                nonBirdCells.Add(cell); // 仅添加非 BirdSquare 的格子
+            }
+        }
+
+        // 如果当前数量不足，则随机补充
+        int neededCount = requiredCount - currentCount;
+        if (neededCount > 0 && nonBirdCells.Count >= neededCount)
+        {
+            for (int i = 0; i < neededCount; i++)
+            {
+                int randomIndex = Random.Range(0, nonBirdCells.Count);
+                nonBirdCells[randomIndex].SetGridType(GridType.BirdSquare);
+                nonBirdCells.RemoveAt(randomIndex); // 确保不会重复选择同一个格子
+            }
+        }
     }
 }
