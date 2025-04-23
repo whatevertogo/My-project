@@ -37,6 +37,11 @@ public struct SquareCoordinates : IEquatable<SquareCoordinates>
             Mathf.RoundToInt(worldPosition.y * SquareMetrics.InverseSideLength)
         );
 
+    public override string ToString()
+    {
+        return $"({x}, {y})";
+    }
+
     #region 运算符重载
     public bool Equals(SquareCoordinates other)
         => x == other.x && y == other.y;

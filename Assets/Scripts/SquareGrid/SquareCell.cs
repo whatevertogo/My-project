@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 
-public class SquareCell : MonoBehaviour, ISquareCell, IInteract
+public class SquareCell : MonoBehaviour, ISquareCell, IInteract,IHover
 {
     public SquareCoordinates Coordinates { get; set; }
     public Color currentColor;
@@ -224,9 +224,22 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     #region 交互方法
     public void Interact()
     {
-        Debug.Log($"与格子 {Coordinates} 交互！");
+        Debug.Log($"与格子 {this.Coordinates} 交互！");
     }
     #endregion
 
+    #region 悬停方法
+    public void OnHoverEnter()
+    {
+        Debug.Log($"悬停进入格子 {this.Coordinates}！");
+        if (cellType == GridType.BirdSquare)
+        {
+            //todo-聊天
+        }
+    }
+    public void OnHoverExit()
+    {
+    }
+    #endregion
 
 }
