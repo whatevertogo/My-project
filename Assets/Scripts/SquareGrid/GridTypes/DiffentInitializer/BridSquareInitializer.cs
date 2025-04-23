@@ -17,7 +17,7 @@ public class BridSquareInitializer : GridInitializer
         {
             // 设置默认颜色（例如黑色）
             //todo-颜色修改
-            renderer.material.color = Color.white;
+            renderer.material.color = Color.black;
             return;
         }
 

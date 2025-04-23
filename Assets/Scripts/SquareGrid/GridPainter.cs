@@ -46,11 +46,11 @@ public class GridPainter : Singleton<GridPainter>
                 if (!cell.IsExplored)
                 {
                     //todo-颜色修改 
-                    cell.SetColor(Color.black, true); // 未探索地块显示为黑色
+                    cell.SetColor(Color.white, true); // 未探索地块显示为黑色
                     continue;
                 }
                 //todo-颜色修改
-                cell.SetColor(Color.white, true); // 已探索地块显示为白色
+                cell.SetColor(Color.black, true); // 已探索地块显示为白色
             }
         }
     }
@@ -70,7 +70,7 @@ public class GridPainter : Singleton<GridPainter>
         }
 
         PaintArea(e.cell);
-        
+
     }
 
     private void OnDestroy()
