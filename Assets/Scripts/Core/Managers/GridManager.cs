@@ -55,6 +55,9 @@ public class GridManager : Singleton<GridManager>
 
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
+                // 设置格子的type
+                GridType cellType = RandomGridType.GetRandomGridType();
+                cell.SetGridType(cellType);
                 // 调用Init方法初始化SquareCell组件，传入格子的坐标
                 cell.Init(new SquareCoordinates(x, y));
                 // 将初始化好的格子存储到二维数组中
@@ -104,6 +107,39 @@ public class GridManager : Singleton<GridManager>
                 } while (HasNeighborWithTypeAfterInit(cell, GridType.BirdSquare) && cellType == GridType.BirdSquare);
                 cell.SetGridType(cellType);
             }
+        }
+
+        // 确保至少有两个 BirdSquare
+        bool hasBirdSquare = false;
+        List<SquareCell> nonBirdCells = new List<SquareCell>();
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                SquareCell cell = cells[x, y];
+                if (cell.GetGridType() == GridType.BirdSquare)
+                {
+                    hasBirdSquare = true;
+                }
+                else
+                {
+                    nonBirdCells.Add(cell); // 仅添加非 BirdSquare 的格子
+                }
+            }
+        }
+
+        if (!hasBirdSquare && nonBirdCells.Count >= 2)
+        {
+            int randomIndex1 = Random.Range(0, nonBirdCells.Count);
+            int randomIndex2;
+            do
+            {
+                randomIndex2 = Random.Range(0, nonBirdCells.Count);
+            } while (randomIndex1 == randomIndex2); // 确保两个索引不同
+
+            nonBirdCells[randomIndex1].SetGridType(GridType.BirdSquare);
+            nonBirdCells[randomIndex2].SetGridType(GridType.BirdSquare);
         }
     }
 
