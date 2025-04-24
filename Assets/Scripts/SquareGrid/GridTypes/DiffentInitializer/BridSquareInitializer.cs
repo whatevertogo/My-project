@@ -26,6 +26,5 @@ public class BridSquareInitializer : GridInitializer
             return;
         }
 
-        Debug.Log($"成功为 BirdSquare {cell.Coordinates} 设置图片资源。");
     }
 }

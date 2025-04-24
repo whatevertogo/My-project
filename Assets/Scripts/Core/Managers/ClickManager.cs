@@ -1,30 +1,32 @@
-using System.Net.NetworkInformation;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ClickManager : MonoBehaviour
 {
     void Update()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
+
+        if (Input.GetMouseButtonDown(0))
         {
-            SquareCell cell = hit.collider.GetComponent<SquareCell>();
-            if (cell != null)
+            Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(point, Vector2.zero);
+            if (hit.collider != null)
             {
-                // 检测鼠标悬停在格子上
-                if (cell.IsExplored)
+                Debug.Log("点击到了：" + hit.collider.name);
+
+                SquareCell cell = hit.collider.GetComponent<SquareCell>();
+                if (cell != null)
                 {
-                    cell.OnHoverEnter(); // 调用悬停逻辑
+                    cell.Interact();
                 }
-            }
-            else
-            {
-                cell.OnHoverExit();
-            }
-            if (Input.GetMouseButtonDown(0)) // 检测鼠标左键点击
-            {
-                cell.Interact(); // 调用交互逻辑
+                else
+                {
+                    Debug.LogWarning("未挂载 SquareCell 脚本！");
+                }
             }
         }
     }
+
 }

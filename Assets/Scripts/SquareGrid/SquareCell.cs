@@ -218,7 +218,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
     #region 悬停方法
     public void OnHoverEnter()
     {
-        Debug.Log($"悬停进入格子 {this.Coordinates}！");
         if (cellType == GridType.BirdSquare)
         {
             //todo-聊天

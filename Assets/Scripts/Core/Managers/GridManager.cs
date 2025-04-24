@@ -69,6 +69,8 @@ public class GridManager : Singleton<GridManager>
                 cell.SetColor(Color.black, false);
                 // 设置格子的type
                 cell.SetGridType(RandomGridType.GetRandomGridType());
+                //设置格子的碰撞体
+                cellObj.AddComponent<BoxCollider2D>();
                 // 调用Init方法初始化SquareCell组件，传入格子的坐标
                 cell.Init(new SquareCoordinates(x, y));
                 // 将初始化好的格子存储到二维数组中

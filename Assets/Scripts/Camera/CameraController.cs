@@ -4,7 +4,6 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private Camera mainCamera;
 
-
     public void Start()
     {
         Vector3 middleGrid = GridManager.Instance.GetGridCenter();
