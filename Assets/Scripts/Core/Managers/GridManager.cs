@@ -49,7 +49,7 @@ public class GridManager : Singleton<GridManager>
             for (int y = 0; y < height; y++)
             {
                 // 创建一个四边形游戏对象作为格子
-                GameObject cellObj = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                GameObject cellObj = new GameObject();
                 // 为格子对象命名，包含其坐标信息
                 cellObj.name = $"Cell_{x}_{y}";
                 // 设置格子对象的位置，根据其坐标和格子大小计算
@@ -60,22 +60,19 @@ public class GridManager : Singleton<GridManager>
                 cellObj.transform.parent = this.transform;
 
                 // 获取格子对象的渲染器组件
-                var renderer = cellObj.GetComponent<Renderer>();
-                // 设置格子的材质颜色
-                renderer.material.color = new Color(64 / 255f, 0, 64 / 255f);
+                var renderer = cellObj.AddComponent<SpriteRenderer>();
 
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
+                //设置格子的颜色
+                cell.SetColor(Color.black, false);
                 // 设置格子的type
-                GridType cellType = RandomGridType.GetRandomGridType();
-                cell.SetGridType(cellType);
+                cell.SetGridType(RandomGridType.GetRandomGridType());
                 // 调用Init方法初始化SquareCell组件，传入格子的坐标
                 cell.Init(new SquareCoordinates(x, y));
                 // 将初始化好的格子存储到二维数组中
                 cells[x, y] = cell;
 
-                // 初始化地块的探索状态
-                cell.IsExplored = false;
             }
         }
 

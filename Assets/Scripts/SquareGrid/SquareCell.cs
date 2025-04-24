@@ -3,33 +3,26 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 
-public class SquareCell : MonoBehaviour, ISquareCell, IInteract,IHover
+public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
 {
     public SquareCoordinates Coordinates { get; set; }
-    public Color currentColor;
+    public Color currentColor = Color.black;
     public float duration = 1f;
 
     [ReadOnly]
     public GridType cellType = GridType.None; // 默认值为None
-    public Renderer CellRenderer;
+    public SpriteRenderer CellRenderer;
     // 存储邻居的列表，包括自身和8个方向的邻居
     [SerializeField] private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
-    private bool isExplored = false; // 是否已探索
-    public bool IsExplored
-    {
-        get => isExplored;
-        set => isExplored = value;
-    }
 
     private void Awake()
     {
-        CellRenderer = GetComponent<Renderer>();
+        CellRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Start()
     {
         InitializerFactory.GetGridInitializer(cellType).Init(GetGridType(), CellRenderer);
-        isExplored = false;
     }
     // 存储邻居的列表
     public Vector3 GetWorldPosition()
@@ -133,9 +126,9 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract,IHover
     /// <summary>
     /// 获取所有有效的邻居（不包括null值）
     /// </summary>
-    public IReadOnlyList<SquareCell> GetneighborsAndSelf()
+    public List<SquareCell> GetneighborsAndSelf()
     {
-        return neighborsAndSelf.Where(n => n != null).ToList().AsReadOnly();
+        return neighborsAndSelf.Where(n => n != null).ToList();
     }
 
     /// <summary>
@@ -151,14 +144,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract,IHover
         }
         neighbor = null;
         return false;
-    }
-
-    /// <summary>
-    /// 获取所有邻居格子（包括中心格子自身），过滤掉无效的邻居
-    /// </summary>
-    public List<SquareCell> GetAllneighborsAndSelfAndSelf()
-    {
-        return neighborsAndSelf.Where(cell => cell != null).ToList();
     }
 
     /// <summary>

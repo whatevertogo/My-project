@@ -13,13 +13,6 @@ public class BridSquareInitializer : GridInitializer
 
         // 检查地块是否已探索
         SquareCell cell = renderer.gameObject.GetComponent<SquareCell>();
-        if (cell != null && !cell.IsExplored)
-        {
-            // 设置默认颜色（例如黑色）
-            //todo-颜色修改
-            renderer.material.color = Color.black;
-            return;
-        }
 
         // 随机选择图片资源
         int randomIndex = Random.Range(1, 3); // 生成 1 或 2
@@ -33,8 +26,6 @@ public class BridSquareInitializer : GridInitializer
             return;
         }
 
-        // 将图片设置为材质的主纹理
-        renderer.material.mainTexture = birdTexture;
-        Debug.Log("成功为 BirdSquare 设置图片资源。");
+        Debug.Log($"成功为 BirdSquare {cell.Coordinates} 设置图片资源。");
     }
 }

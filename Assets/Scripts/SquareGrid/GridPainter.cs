@@ -6,7 +6,6 @@ using System.Collections.Generic;
 public class GridPainter : Singleton<GridPainter>
 {
     private PlayerGridComponent playerGridComponent;
-    private HashSet<SquareCell> activatedCells = new HashSet<SquareCell>();
     public Renderer currentCellRenderer;
 
     protected override void Awake()
@@ -28,33 +27,6 @@ public class GridPainter : Singleton<GridPainter>
         PaintArea(playerGridComponent.currentCell);
     }
 
-    private void PaintArea(SquareCell centerCell)
-    {
-        if (centerCell == null) return;
-
-        // 获取九宫格范围内所有有效的格子
-        var validCells = centerCell.GetNineGridCells();
-
-        // 处理每个有效的格子
-        foreach (SquareCell cell in validCells)
-        {
-            if (!activatedCells.Contains(cell))
-            {
-                activatedCells.Add(cell);
-
-                // 检查地块是否已探索
-                if (!cell.IsExplored)
-                {
-                    //todo-颜色修改 
-                    cell.SetColor(Color.white, true); // 未探索地块显示为黑色
-                    continue;
-                }
-                //todo-颜色修改
-                cell.SetColor(Color.black, true); // 已探索地块显示为白色
-            }
-        }
-    }
-
     private void OnPlayerCellChanged(object sender, PlayerGridComponent.OnCellChangedEventArgs e)
     {
         if (e.cell is not null && e.cell.CellRenderer is not null && e.cell.CellRenderer != currentCellRenderer)
@@ -63,21 +35,12 @@ public class GridPainter : Singleton<GridPainter>
             Debug.Log($"Current cell renderer updated: {currentCellRenderer.name}");
         }
 
-        // 标记当前地块为已探索
-        if (e.cell != null)
-        {
-            e.cell.IsExplored = true;
-
-            // 重新初始化地块以加载图片
-            var renderer = e.cell.GetComponent<Renderer>();
-            if (renderer != null)
-            {
-                var initializer = InitializerFactory.GetGridInitializer(e.cell.GetGridType());
-                initializer?.Init(e.cell.GetGridType(), renderer);
-            }
-        }
-
         PaintArea(e.cell);
+
+    }
+
+    public void PaintArea(SquareCell centerCell)
+    {
 
     }
 

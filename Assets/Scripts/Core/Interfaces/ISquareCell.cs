@@ -11,7 +11,7 @@ public interface ISquareCell
     Vector3 GetWorldPosition();
     void SetNeighbor(SquareDirection direction, SquareCell neighbor);
     SquareCell GetNeighbor(SquareDirection direction);
-    IReadOnlyList<SquareCell> GetneighborsAndSelf();
+    List<SquareCell> GetneighborsAndSelf();
     bool TryGetNeighbor(SquareDirection direction, out SquareCell neighbor);
 
 }

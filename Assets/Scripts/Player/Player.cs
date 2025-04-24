@@ -1,7 +1,7 @@
 using CDTU.Utils;
 using UnityEngine;
 using System.Collections;
-
+using System.Linq;
 public class Player : Singleton<Player>
 {
     private PlayerGridComponent playerGridComponent;
@@ -43,7 +43,7 @@ public class Player : Singleton<Player>
     private void Update()
     {
         // 移除在此处打印坐标的逻辑，可移至 PlayerGridComponent 的 OnCellChanged 事件处理
-        MousePosition = MouseTool.GetMouseWorldPosition(); 
+        MousePosition = MouseTool.GetMouseWorldPosition();
         if (CooldownTimer > 0)
         {
             CooldownTimer -= Time.deltaTime;
