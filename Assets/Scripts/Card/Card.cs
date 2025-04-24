@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System;
 
 public class Card : UIHoverClick
 {
@@ -16,17 +17,27 @@ public class Card : UIHoverClick
     private Vector2 originalPosition;
     private RectTransform rectTransform;
 
+    public static Card currentTopCard;
+
+    public event EventHandler OnCardPointing;
+    public event EventHandler OnCardNotPointing;
+
     private void OnEnable()
     {
         rectTransform = GetComponent<RectTransform>();
         originalPosition = rectTransform.anchoredPosition;
-        transform.localScale = Vector3.one;
+        rectTransform.localScale = Vector3.one;
     }
 
     public override void OnPointerEnter(PointerEventData eventData)
     {
         if (isHovered) return;
         isHovered = true;
+        if (currentTopCard is null)
+        {
+            currentTopCard = this;
+            OnCardPointing.Invoke(this, EventArgs.Empty);
+        }
         AnimateTo(originalPosition + moveOffset, 1.1f);
     }
 
@@ -34,7 +45,11 @@ public class Card : UIHoverClick
     {
         if (!isHovered) return;
         isHovered = false;
-        AnimateTo(originalPosition, 1f);
+        if (currentTopCard == this)
+        {
+            currentTopCard = null;
+            OnCardNotPointing?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public override void OnPointerClick(PointerEventData eventData)

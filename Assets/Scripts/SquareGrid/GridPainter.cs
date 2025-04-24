@@ -53,20 +53,52 @@ public class GridPainter : Singleton<GridPainter>
         // 遍历周围的格子并设置它们的颜色
         foreach (SquareCell cell in surroundingCells)
         {
-            if (cell.CellRenderer is not null)
+            if (cell.CellRenderer is null) continue;
+
+            // 首先标记为已探索
+            cell.IsExplored = true;
+            
+            // 设置颜色为白色（已探索）
+            cell.SetColor(Color.white, true);
+            
+            // 如果是小鸟格子，添加小鸟贴图
+            if (cell.GetGridType() == GridType.BirdSquare)
             {
-                cell.SetColor(Color.white, true); // 设置颜色为白
-                if (cell.GetGridType() == GridType.BirdSquare && cell.IsExplored == false)
+                // 检查是否已经有 BirdOverlay 子物体，避免重复创建
+                if (cell.transform.Find("BirdOverlay") != null)
                 {
-                    int randomValue = Random.Range(1, 3); // 生成 1 或 2
-                                                          // 加载图片资源
-                    cell.CellRenderer.sprite = Resources.Load<Sprite>("Images/Bird" + randomValue);
-                    Debug.Log("成功为 BirdSquare 设置图片资源。");
+                    Debug.Log("BirdOverlay 已存在，跳过创建。");
+                    continue;
                 }
-                cell.IsExplored = true; // 标记为已探索
+
+                int randomValue = Random.Range(1, 3); // 生成 1 或 2
+
+                // 创建子物体用于显示小鸟图
+                GameObject birdOverlay = new GameObject("BirdOverlay");
+                birdOverlay.transform.SetParent(cell.transform, false);
+                if (randomValue == 1)
+                {
+                    birdOverlay.transform.localPosition = new Vector3(-0.2f, -0.2f, 0); // 可微调位置
+                }
+                else if (randomValue == 2)
+                {
+                    birdOverlay.transform.localPosition = new Vector3(0.2f, -0.2f, 0); // 可微调位置
+                }
+                birdOverlay.transform.localScale = Vector3.one * 0.5f; // 缩小一点
+
+                // 添加 SpriteRenderer 并设置小鸟图
+                SpriteRenderer sr = birdOverlay.AddComponent<SpriteRenderer>();
+                sr.sprite = Resources.Load<Sprite>("Images/Bird" + randomValue);
+                if (sr.sprite == null)
+                {
+                    Debug.LogError("未能加载小鸟图片，跳过设置。");
+                    continue;
+                }
+                sr.sortingOrder = cell.CellRenderer.sortingOrder + 1; // 确保盖在上面
+
+                Debug.Log("在 BirdSquare 上添加了鸟的贴图。");
             }
         }
-
     }
 
     private void OnDestroy()

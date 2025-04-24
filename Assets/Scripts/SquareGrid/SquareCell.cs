@@ -23,10 +23,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
         CellRenderer.sprite = Resources.Load<Sprite>("Images/Default");
     }
 
-    private void Start()
-    {
-        InitializerFactory.GetGridInitializer(cellType).Init(GetGridType(), CellRenderer);
-    }
     // 存储邻居的列表
     public Vector3 GetWorldPosition()
     {
