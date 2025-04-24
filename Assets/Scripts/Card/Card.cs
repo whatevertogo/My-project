@@ -19,8 +19,6 @@ public class Card : UIHoverClick
 
     public static Card currentTopCard;
 
-    public event EventHandler OnCardPointing;
-    public event EventHandler OnCardNotPointing;
 
     private void OnEnable()
     {
@@ -36,7 +34,6 @@ public class Card : UIHoverClick
         if (currentTopCard is null)
         {
             currentTopCard = this;
-            OnCardPointing.Invoke(this, EventArgs.Empty);
         }
         AnimateTo(originalPosition + moveOffset, 1.1f);
     }
@@ -48,7 +45,6 @@ public class Card : UIHoverClick
         if (currentTopCard == this)
         {
             currentTopCard = null;
-            OnCardNotPointing?.Invoke(this, EventArgs.Empty);
         }
     }
 
