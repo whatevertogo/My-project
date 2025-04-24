@@ -41,6 +41,23 @@ public class GridPainter : Singleton<GridPainter>
 
     public void PaintArea(SquareCell centerCell)
     {
+        if (centerCell is null || centerCell.CellRenderer is null)
+        {
+            Debug.LogError("Center cell or its renderer is null. Cannot paint area.");
+            return;
+        }
+
+        // 获取当前格子周围的所有格子
+        List<SquareCell> surroundingCells = centerCell.GetSurroundingCells().ToList();
+
+        // 遍历周围的格子并设置它们的颜色
+        foreach (SquareCell cell in surroundingCells)
+        {
+            if (cell.CellRenderer is not null)
+            {
+                cell.SetColor(Color.red, true); // 设置颜色为红色
+            }
+        }
 
     }
 

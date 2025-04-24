@@ -15,9 +15,12 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
     // 存储邻居的列表，包括自身和8个方向的邻居
     [SerializeField] private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
 
+    public bool IsExplored { get; set; } = false; // 是否被探索过
+
     private void Awake()
     {
         CellRenderer = GetComponent<SpriteRenderer>();
+        CellRenderer.sprite = Resources.Load<Sprite>("Images/Default");
     }
 
     private void Start()
@@ -49,7 +52,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
         else
         {
             currentColor = targetcolor;
-            CellRenderer.material.color = targetcolor;
+            CellRenderer.color = targetcolor;
         }
     }
 
@@ -71,7 +74,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
 
             // 更新当前颜色和渲染器颜色
             currentColor = newColor;
-            GetComponent<Renderer>().material.color = newColor;
+            CellRenderer.color = newColor;
 
             // 等待下一帧
             yield return null;
@@ -79,7 +82,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
 
         // 确保最终颜色精确匹配目标颜色
         currentColor = targetColor;
-        GetComponent<Renderer>().material.color = targetColor;
+        CellRenderer.color = targetColor;
     }
 
     public Color GetColor()
@@ -149,8 +152,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
     /// <summary>
     /// 获取以当前格子为中心的九宫格范围内所有有效的格子
     /// </summary>
-    /// <returns>包含自身和所有有效邻居的列表</returns>
-    public List<SquareCell> GetNineGridCells()
+    public List<SquareCell> GetSurroundingCells()
     {
         var validCells = new List<SquareCell> { this }; // 添加中心格子（自身）
 

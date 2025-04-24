@@ -39,6 +39,11 @@ public class Player : Singleton<Player>
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    private void Start()
+    {
+        
+    }
+
 
     private void Update()
     {
