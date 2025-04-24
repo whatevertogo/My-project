@@ -39,12 +39,6 @@ public class Player : Singleton<Player>
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void Start()
-    {
-        
-    }
-
-
     private void Update()
     {
         // 移除在此处打印坐标的逻辑，可移至 PlayerGridComponent 的 OnCellChanged 事件处理

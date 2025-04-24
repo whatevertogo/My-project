@@ -13,5 +13,11 @@ public class CameraController : MonoBehaviour
         mainCamera.gameObject.transform.position = middleGrid + Vector3.forward * -10f;
     }
 
+    private void Update()
+    {
+        
+
+    }
+
 
 }

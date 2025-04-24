@@ -23,7 +23,8 @@ public class GridManager : Singleton<GridManager>
                 yield return cell;
         }
     }
-    public HashSet<SquareCell> AllBridCells = new();
+    public List<SquareCell> AllBridCells = new();
+
 
     protected override void Awake()
     {
@@ -117,6 +118,9 @@ public class GridManager : Singleton<GridManager>
                     // 检查已设置类型的邻居
                 } while (HasNeighborWithTypeAfterInit(cell, GridType.BirdSquare) && cellType == GridType.BirdSquare);
                 cell.SetGridType(cellType);
+                if (cell.GetGridType() == GridType.BirdSquare)
+                    AllBridCells.Add(cell); // 添加 BirdSquare 格子到集合中
+
             }
         }
 

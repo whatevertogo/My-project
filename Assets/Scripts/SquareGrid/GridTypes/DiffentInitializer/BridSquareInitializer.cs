@@ -16,7 +16,7 @@ public class BridSquareInitializer : GridInitializer
 
         // 随机选择图片资源
         int randomIndex = Random.Range(1, 3); // 生成 1 或 2
-        string texturePath = $"Images/Brid{randomIndex}";
+        string texturePath = $"Images/Bird{randomIndex}";
 
         // 加载图片资源
         Texture2D birdTexture = Resources.Load<Texture2D>(texturePath);

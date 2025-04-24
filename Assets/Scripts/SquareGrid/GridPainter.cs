@@ -55,7 +55,15 @@ public class GridPainter : Singleton<GridPainter>
         {
             if (cell.CellRenderer is not null)
             {
-                cell.SetColor(Color.red, true); // 设置颜色为红色
+                cell.SetColor(Color.white, true); // 设置颜色为白
+                if (cell.GetGridType() == GridType.BirdSquare && cell.IsExplored == false)
+                {
+                    int randomValue = Random.Range(1, 3); // 生成 1 或 2
+                                                          // 加载图片资源
+                    cell.CellRenderer.sprite = Resources.Load<Sprite>("Images/Bird" + randomValue);
+                    Debug.Log("成功为 BirdSquare 设置图片资源。");
+                }
+                cell.IsExplored = true; // 标记为已探索
             }
         }
 
