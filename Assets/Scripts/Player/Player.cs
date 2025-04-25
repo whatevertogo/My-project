@@ -68,11 +68,15 @@ public class Player : Singleton<Player>
 
         // 从游戏输入管理器获取玩家的移动输入
         input = GameInput.Instance.MoveInput;
-        try // 使用 try...finally 确保 isMoving 总能被重置
+        try
         {
             // 如果玩家没有输入移动指令，则直接返回，不执行后续移动逻辑
-            if (input == Vector2.zero) yield break; // 在协程中用 yield break 退出
+            if (input == Vector2.zero) yield break;
 
+            // 禁止斜向移动：如果 x 和 y 同时不为 0，则直接返回
+            if (input.x != 0 && input.y != 0) yield break;
+
+            // 根据输入方向设置精灵翻转
             if (input.x > 0)
             {
                 spriteRenderer.flipX = true; // 向右移动时不翻转
@@ -84,8 +88,8 @@ public class Player : Singleton<Player>
 
             // 将输入转为离散方向：左右或上下
             Vector2Int dir = new Vector2Int(
-            input.x > 0 ? 1 : input.x < 0 ? -1 : 0,
-            input.y > 0 ? 1 : input.y < 0 ? -1 : 0
+                input.x > 0 ? 1 : input.x < 0 ? -1 : 0,
+                input.y > 0 ? 1 : input.y < 0 ? -1 : 0
             );
 
             // 如果转换后的方向向量为零向量，说明没有有效的移动方向，直接返回
@@ -97,19 +101,17 @@ public class Player : Singleton<Player>
             // 计算目标格子世界坐标
             Vector3 originPos = playerGridComponent.currentCell.transform.position;
             Vector3 targetPos = originPos + new Vector3(dir.x * moveDistance, dir.y * moveDistance, 0f);
-            // 将目标坐标转换为格子坐标
 
             // 检查目标格子是否存在
             SquareCell nextCell = GridManager.Instance.GetCell(targetPos);
-            // 如果目标格子不存在，则无法移动，直接返回
-            if (nextCell == null) yield break; // 检查目标格子是否存在
+            if (nextCell == null) yield break;
 
             // 等待平滑移动完成
             yield return StartCoroutine(SmoothMove(targetPos));
 
             // 移动完成后更新当前格子并重置冷却
-            playerGridComponent.SetCurrentCell(nextCell); // 新方法：调用方法以触发事件
-            CooldownTimer = moveCooldown; // 重置冷却计时器
+            playerGridComponent.SetCurrentCell(nextCell);
+            CooldownTimer = moveCooldown;
         }
         finally
         {
