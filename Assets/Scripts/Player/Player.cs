@@ -5,13 +5,14 @@ public class Player : Singleton<Player>
 {
     private PlayerGridComponent playerGridComponent;
     private float moveDistance = 1f;
+    [Tooltip("移动冷却时间")]
+    [Range(0.1f, 5f)] // 限制冷却时间范围为 0.1 到 5 秒
     public float moveCooldown = 1f; // 可在 Inspector 设置冷却时间
-    public float CooldownTimer { get; set; } = 0f;
+    public float CooldownTimer { get; set; } = 1f;
     private bool isMoving = false; // 添加移动状态标志
     [Tooltip("移动持续时间")]
-    public float moveDuration;
-    [Tooltip("移动延迟")]
-    public float duration;
+    [Range(0.1f, 5f)]
+    public float moveDuration = 1.0f;
     [ReadOnly]
     public Vector2 input;
     private SpriteRenderer spriteRenderer; // 添加精灵渲染器引用
