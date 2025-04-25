@@ -1,7 +1,6 @@
 using CDTU.Utils;
 using UnityEngine;
 using System.Collections;
-using System.Linq;
 public class Player : Singleton<Player>
 {
     private PlayerGridComponent playerGridComponent;
