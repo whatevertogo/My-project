@@ -9,6 +9,9 @@ public class Player : Singleton<Player>
     public float moveCooldown = 1f; // 可在 Inspector 设置冷却时间
     public float CooldownTimer { get; set; } = 0f;
     private bool isMoving = false; // 添加移动状态标志
+    [Tooltip("移动持续时间")]
+    public float moveDuration;
+    [Tooltip("移动延迟")]
     public float duration;
     [ReadOnly]
     public Vector2 input;
@@ -83,7 +86,7 @@ public class Player : Singleton<Player>
             Vector2Int dir = new Vector2Int(
             input.x > 0 ? 1 : input.x < 0 ? -1 : 0,
             input.y > 0 ? 1 : input.y < 0 ? -1 : 0
-        );
+            );
 
             // 如果转换后的方向向量为零向量，说明没有有效的移动方向，直接返回
             if (dir == Vector2Int.zero) yield break;
@@ -118,21 +121,21 @@ public class Player : Singleton<Player>
     {
         Vector3 startPos = transform.position;
         float elapsedTime = 0f;
-        duration = moveCooldown; // 记录当前冷却时间
+
 
         // 如果持续时间过短，直接设置位置以避免除零错误或瞬移
-        if (duration <= 0f)
+        if (moveDuration <= 0f)
         {
             transform.position = targetPos;
             yield break; // 退出协程
         }
 
-        while (elapsedTime < duration)
+        while (elapsedTime < moveDuration)
         {
             // 使用 Time.deltaTime 保证平滑过渡与帧率无关
             elapsedTime += Time.deltaTime;
             // 计算插值比例，并使用 Clamp01 确保比例在 0 到 1 之间
-            float t = Mathf.Clamp01(elapsedTime / duration);
+            float t = Mathf.Clamp01(elapsedTime / moveDuration);
             // 使用 Lerp 进行线性插值
             transform.position = Vector3.Lerp(startPos, targetPos, t);
             // 等待下一帧
