@@ -6,8 +6,8 @@ using UnityEngine;
 public class GridManager : Singleton<GridManager>
 {
     [Header("网格大小配置")]
-    public int width = 10;
-    public int height = 10;
+    public int width = 25;
+    public int height = 25;
 
     public Vector3 GetGridCenter() => new Vector3(width / 2, height / 2, 0);
 
