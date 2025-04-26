@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
 using CDTU.Utils;
+using UnityEditor.EditorTools;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
 public class AudioManager : SingletonDD<AudioManager>
 {
     [Range(0, 1)]
+    [Tooltip("音效音量")]
     public float SVolume = 0.6f;
+
     [Range(0, 1)]
+    [Tooltip("背景音乐音量")]
     public float BVolume = 0.6f;
     public float SoundVolume { get => SVolume; set => SVolume = value; }
     public float BGMVolume { get => BVolume; set => BVolume = value; }
