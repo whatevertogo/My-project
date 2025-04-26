@@ -4,13 +4,14 @@ using System.Collections.Generic;
 
 public class CardManager : Singleton<CardManager>
 {
-    public GameObject cardUIPrefab; // 卡片UI预制体
+    public GameObject cardUIContainerPrefab; // 卡片UI预制体
     public Transform cardGrid;     // 卡片UI的父物体
     public List<CardData> cardDataList; // 从编辑器配置的卡牌数据列表
-    public Dictionary<Card, CardUI> cardToUIMap = new Dictionary<Card, CardUI>(); // 运行时卡牌与UI的映射
+    public Dictionary<Card, CardUI> cardToUIMap = new(); // 运行时卡牌与UI的映射
 
     private void Start()
     {
+
         GenerateCards();
     }
 
@@ -19,6 +20,7 @@ public class CardManager : Singleton<CardManager>
     {
         foreach (var cardData in cardDataList)
         {
+            Debug.Log($"Processing CardData: {cardData.cardName}");
             AddCard(cardData);
         }
     }
@@ -30,8 +32,13 @@ public class CardManager : Singleton<CardManager>
         var card = new Card(cardData);
 
         // 创建并绑定 UI
-        var cardUIObj = Instantiate(cardUIPrefab, cardGrid);
-        var cardUI = cardUIObj.GetComponent<CardUI>();
+        var cardUIContainerObj = Instantiate(cardUIContainerPrefab, cardGrid);
+        var cardUI = cardUIContainerObj.transform.Find("CardUI")?.GetComponent<CardUI>();
+        if (cardUI is null)
+        {
+            Debug.LogError("CardUI component not found in the instantiated prefab. Please check the prefab structure.");
+            return;
+        }
         cardUI.Bind(card);
 
         // 记录映射关系
