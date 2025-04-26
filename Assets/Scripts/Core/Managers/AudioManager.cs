@@ -7,11 +7,11 @@ using UnityEngine;
 public class AudioManager : SingletonDD<AudioManager>
 {
     [Range(0, 1)]
-    public float musicVolume = 0.6f;
+    public float SVolume = 0.6f;
     [Range(0, 1)]
-    public float allVolume = 0.6f;
-    public float MusicVolume { get => musicVolume; set => musicVolume = value; }
-    public float AllVolume { get => allVolume; set => allVolume = value; }
+    public float BVolume = 0.6f;
+    public float SoundVolume { get => SVolume; set => SVolume = value; }
+    public float BGMVolume { get => BVolume; set => BVolume = value; }
 
     [Serializable]
     public class Name_AudioClip
@@ -43,6 +43,13 @@ public class AudioManager : SingletonDD<AudioManager>
         PlayBGM("BGM", true);
     }
 
+    private void Update()
+    {
+        // 更新音量
+        UpdateVolumes();
+
+    }
+
     #region 背景音乐控制
     public void PlayBGM(string audioName, bool isLoop = true)
     {
@@ -50,7 +57,7 @@ public class AudioManager : SingletonDD<AudioManager>
 
         bgmAudioSource.clip = clip;
         bgmAudioSource.loop = isLoop;
-        bgmAudioSource.volume = musicVolume * allVolume;
+        bgmAudioSource.volume = BGMVolume;
         bgmAudioSource.Play();
     }
 
@@ -90,7 +97,7 @@ public class AudioManager : SingletonDD<AudioManager>
         AudioSource audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.clip = clip;
         audioSource.loop = isLoop;
-        audioSource.volume = allVolume;
+        audioSource.volume = SoundVolume;
         audioSource.Play();
 
         if (!isLoop)
@@ -117,12 +124,12 @@ public class AudioManager : SingletonDD<AudioManager>
     {
         if (bgmAudioSource != null)
         {
-            bgmAudioSource.volume = musicVolume * allVolume;
+            bgmAudioSource.volume = BGMVolume;
         }
 
         foreach (var audioSource in soundAudioSources.Values)
         {
-            audioSource.volume = allVolume;
+            audioSource.volume = SoundVolume;
         }
     }
     #endregion
