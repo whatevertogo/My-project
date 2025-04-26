@@ -44,6 +44,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1223599121182772043}
     m_Modifications:
+    - target: {fileID: 1026663843051709118, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 1026663843051709118, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 1026663843051709118, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 2615910389078782032, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_Name
       value: CardUI
@@ -64,6 +76,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 17.1
       objectReference: {fileID: 0}
+    - target: {fileID: 3141366329970995451, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: CardText
+      value: 
+      objectReference: {fileID: 2597698273151025837}
     - target: {fileID: 4208970480877609199, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_SizeDelta.x
       value: 150
@@ -81,6 +97,10 @@ PrefabInstance:
       value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4417308744014198392, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4417308744014198392, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
@@ -94,7 +114,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5351372795213039794, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 4.4
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 7234368744073429529, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_IsActive
@@ -181,10 +201,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -8908552666534683184, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+--- !u!114 &2597698273151025837 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8468123135230585594, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+  m_PrefabInstance: {fileID: 5875000624684181591}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4236235875671033457 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7728761786725101094, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}

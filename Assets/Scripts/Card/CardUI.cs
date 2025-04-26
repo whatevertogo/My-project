@@ -11,6 +11,7 @@ public class CardUI : UIHoverClick
     public TextMeshProUGUI CardText;
     [ReadOnly]
     public Image image;
+    public GameObject TextArea;
     public Vector2 moveOffset = new Vector2(0, 60); // 上移偏移量
     public float duration = 0.3f;                   // 动画时间
     #endregion
@@ -69,6 +70,8 @@ public class CardUI : UIHoverClick
 
         // 动画改变位置和缩放
         AnimateTo(originalPosition + moveOffset, 1.1f);
+        //todo-显示文本
+        
     }
 
     public override void OnPointerExit(PointerEventData eventData)
