@@ -232,7 +232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CardText: {fileID: 1026663843051709118}
-  image: {fileID: 0}
+  image: {fileID: 4417308744014198392}
   moveOffset: {x: 0, y: 80}
   duration: 0.3
   hoverSortingOrder: 10
@@ -370,7 +370,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.745283, g: 0.7417675, b: 0.7417675, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
