@@ -2,20 +2,16 @@ using UnityEngine;
 
 public abstract class CardEffect
 {
-    protected CardData card;
+    protected Card card; // 当前执行的卡牌
 
-    public CardEffect(CardData card)
+    public CardEffect(Card card)
     {
         this.card = card;
     }
 
     // 检查是否可以使用
-    public virtual bool CanUse(SquareCell targetCell)
-    {
-        // 基本检查，如目标格子是否存在等
-        return targetCell != null;
-    }
+    public abstract bool CanUse(SquareCell targetCell);
 
-    // 使用卡牌效果
+    // 执行卡牌效果
     public abstract void Execute(SquareCell targetCell);
 }

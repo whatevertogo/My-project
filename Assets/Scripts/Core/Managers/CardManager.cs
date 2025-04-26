@@ -4,46 +4,50 @@ using System.Collections.Generic;
 
 public class CardManager : Singleton<CardManager>
 {
-    public int cardCount = 10;     // 卡片数量
-    public GameObject cardUIPrefab;// 卡片UI预制体
-    public Transform CardGrid;//生成卡牌的父物体
-
-    public Dictionary<CardData, CardUI> cardData_UIDic = new();
+    public GameObject cardUIPrefab; // 卡片UI预制体
+    public Transform cardGrid;     // 卡片UI的父物体
+    public List<CardData> cardDataList; // 从编辑器配置的卡牌数据列表
+    public Dictionary<Card, CardUI> cardToUIMap = new Dictionary<Card, CardUI>(); // 运行时卡牌与UI的映射
 
     private void Start()
     {
         GenerateCards();
     }
 
+    // 生成卡牌
     void GenerateCards()
     {
-        for (int i = 0; i < cardCount; i++)
+        foreach (var cardData in cardDataList)
         {
-            var newCard = new CardData(i, $"卡牌 {i}", "这是一张描述", CardType.tree);
-
-            var cardUIObj = Instantiate(cardUIPrefab, CardGrid);
-            var cardUI = cardUIObj.GetComponent<CardUI>();
-            cardUI.Bind(newCard);//绑定sprite
-            cardData_UIDic[newCard] = cardUI;
+            AddCard(cardData);
         }
     }
 
-    public void RemoveCard(CardData card)
+    // 添加卡牌
+    public void AddCard(CardData cardData)
     {
-        if (cardData_UIDic.TryGetValue(card, out CardUI cardUI))
+        // 创建运行时卡牌
+        var card = new Card(cardData);
+
+        // 创建并绑定 UI
+        var cardUIObj = Instantiate(cardUIPrefab, cardGrid);
+        var cardUI = cardUIObj.GetComponent<CardUI>();
+        cardUI.Bind(card);
+
+        // 记录映射关系
+        cardToUIMap[card] = cardUI;
+    }
+
+    // 移除卡牌
+    public void RemoveCard(Card card)
+    {
+        if (cardToUIMap.TryGetValue(card, out CardUI cardUI))
         {
+            // 销毁 UI 对象
             Destroy(cardUI.gameObject);
-            cardData_UIDic.Remove(card);
+
+            // 从映射中移除
+            cardToUIMap.Remove(card);
         }
     }
-
-    public void AddCard(CardData card)
-    {
-        var cardUIObj = Instantiate(cardUIPrefab, CardGrid);
-
-    }
-
-
-
-
 }

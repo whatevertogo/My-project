@@ -6,14 +6,15 @@ using UnityEngine.UI;
 
 public class CardUI : UIHoverClick
 {
-    #region 卡牌ui和动效设置
+    #region 卡牌ui
     [Header("卡片配置")]
     public TextMeshProUGUI CardText;
     [ReadOnly]
     public Image image;
     public Vector2 moveOffset = new Vector2(0, 60); // 上移偏移量
     public float duration = 0.3f;                   // 动画时间
-
+    #endregion
+    #region 动效设置
     [Header("层级设置")]
     [SerializeField] private int hoverSortingOrder = 10;  // 悬停时的排序顺序
     [SerializeField] private int normalSortingOrder = 1;  // 正常时的排序顺序
@@ -24,7 +25,7 @@ public class CardUI : UIHoverClick
     private RectTransform rectTransform;
     private Canvas cardCanvas;
     #endregion
-    private CardData cardData;
+    private Card card;
     public static CardUI currentTopCard;
 
     private void OnEnable()
@@ -122,20 +123,26 @@ public class CardUI : UIHoverClick
     }
     #endregion
 
-    public void Bind(CardData card)
+    public void Bind(Card newCard)
     {
-        cardData = card;
-        CardText.text = card.cardName;
-        image.sprite = card.cardSprite;
+        card = newCard;
+
+        // 更新 UI 显示
+        UpdateUI();
     }
 
-
-    public void UpdateCardText(string newText)
+    // 更新 UI 显示
+    private void UpdateUI()
     {
-        CardText.text = newText;
+        if (card == null)
+        {
+            CardText.text = string.Empty;
+            image.sprite = null;
+        }
+        else
+        {
+            CardText.text = card.CardName;
+            image.sprite = card.CardSprite;
+        }
     }
-
-
-
-
 }

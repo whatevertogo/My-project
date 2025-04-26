@@ -2,20 +2,16 @@ using UnityEngine;
 
 public static class CardEffectFactory
 {
-    public static CardEffect CreateEffect(CardData card)
+    public static CardEffect CreateEffect(Card card)
     {
-        switch (card.cardType)
+        switch (card.CardType)
         {
             case CardType.tree:
                 return new PlantTreeEffect(card);
-            
             case CardType.Paddy:
                 return new PlantRiceEffect(card);
-                
-            // 可以轻松添加更多卡牌类型
-            
             default:
-                Debug.LogWarning($"未实现的卡牌类型: {card.cardType}");
+                Debug.LogWarning($"未实现的卡牌类型: {card.CardType}");
                 return null;
         }
     }
