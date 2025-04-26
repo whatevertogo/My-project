@@ -3,6 +3,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using CDTU.Utils.TweenUtils;
 
 public class CardUI : UIHoverClick
 {
@@ -11,7 +12,7 @@ public class CardUI : UIHoverClick
     public TextMeshProUGUI CardText;
     [ReadOnly]
     public Image image;
-    public GameObject TextArea;
+    public CanvasGroup TextArea;
     public Vector2 moveOffset = new Vector2(0, 60); // 上移偏移量
     public float duration = 0.3f;                   // 动画时间
     #endregion
@@ -71,7 +72,7 @@ public class CardUI : UIHoverClick
         // 动画改变位置和缩放
         AnimateTo(originalPosition + moveOffset, 1.1f);
         //todo-显示文本
-        
+        MyTweenUtils.FadeOut(TextArea, 0.2f);
     }
 
     public override void OnPointerExit(PointerEventData eventData)
