@@ -48,6 +48,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardUI
       objectReference: {fileID: 0}
+    - target: {fileID: 4417308744014198392, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4417308744014198392, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4417308744014198392, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7728761786725101094, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

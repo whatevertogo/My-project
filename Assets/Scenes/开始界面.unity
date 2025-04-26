@@ -166,6 +166,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c84c1e06d1167dd4090d76e215e23400, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  musicVolume: 0.6
+  allVolume: 0.6
+  name_AudioClipsList:
+  - AudioName: BGM
+    AudioClip: {fileID: 8300000, guid: c099e6259eabf1c43bbb50c5b17af42b, type: 3}
 --- !u!1 &74659944
 GameObject:
   m_ObjectHideFlags: 0
@@ -4612,7 +4617,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250803f4be639794ebe7e72f9b02b8d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NextSceneName: 
   index: 0
 --- !u!114 &1832913140
 MonoBehaviour:
@@ -4626,7 +4630,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250803f4be639794ebe7e72f9b02b8d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NextSceneName: FristLevel
   index: 1
 --- !u!1 &1898247176
 GameObject:

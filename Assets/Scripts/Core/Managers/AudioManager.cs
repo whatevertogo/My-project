@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CDTU.Utils;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class AudioManager : SingletonDD<AudioManager>
 {
     [Range(0, 1)]
@@ -34,8 +35,12 @@ public class AudioManager : SingletonDD<AudioManager>
         }
 
         // 初始化背景音乐AudioSource
-        bgmAudioSource = gameObject.AddComponent<AudioSource>();
         bgmAudioSource.loop = true;
+    }
+
+    private void Start()
+    {
+        PlayBGM("BGM", true);
     }
 
     #region 背景音乐控制
