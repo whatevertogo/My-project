@@ -9,5 +9,12 @@ public enum GridType
     /// 带有鸟的网格
     /// </summary>
     BirdSquare,
-    
+    /// <summary>
+    /// 树木网格
+    /// </summary>
+    PlantedTree,
+    /// <summary>
+    /// 稻田网格
+    /// </summary>
+    PlantedRice
 }

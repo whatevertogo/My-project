@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f9445d1b50307d4082679b530c74902, type: 3}
+  m_Name: PineTreeData
+  m_EditorClassIdentifier: 
+  id: 1
+  cardName: PineTreeData
+  cardType: 0
+  cardSprite: {fileID: 21300000, guid: eccca422bc74a6845ac93010d3d7a98c, type: 3}
+  description: "\u6548\u679C:"

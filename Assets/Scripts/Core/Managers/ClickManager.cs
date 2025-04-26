@@ -1,7 +1,8 @@
+using CDTU.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ClickManager : MonoBehaviour
+public class ClickManager : Singleton<ClickManager>
 {
     void Update()
     {

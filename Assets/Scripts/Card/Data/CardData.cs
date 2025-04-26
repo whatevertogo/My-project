@@ -1,18 +1,20 @@
 using System;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "CardData", menuName = "ScriptableObjects/CardData", order = 1)]
 [Serializable]
-public class CardData
+public class CardData : ScriptableObject
 {
     public int id;
     public string cardName;
-    public string description;
     public CardType cardType;
     public Sprite cardSprite;
 
-    private CardEffect cardEffect;
+    private CardEffect effect;
 
-    public CardData(int id, string name, string desc, CardType type, Sprite sprite)
+    [TextArea(3, 10)]
+    public string description;
+    public CardData(int id, string name, string desc, CardType type, Sprite sprite = default)
     {
         this.id = id;
         this.cardName = name;
@@ -27,7 +29,7 @@ public class CardData
         if (effect == null) return false;
         return effect.CanUse(targetCell);
     }
-    
+
     // 在目标格子上使用卡牌
     public void UseOn(SquareCell targetCell)
     {

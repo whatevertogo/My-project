@@ -19,9 +19,7 @@ public class PlantRiceEffect : CardEffect
         // 将格子转为稻田格子
         targetCell.SetGridType(GridType.PlantedRice);
         
-        // 添加稻谷生长组件
-        PlantGrowth growth = targetCell.gameObject.AddComponent<PlantGrowth>();
-        growth.Initialize(card, HarvestType.Rice, 30f, 30f);
+        // todo-添加稻谷生长组件或者效果
         
         Debug.Log($"在 {targetCell.Coordinates} 种植了稻谷");
         

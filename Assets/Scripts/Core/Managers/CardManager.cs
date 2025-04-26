@@ -8,8 +8,7 @@ public class CardManager : Singleton<CardManager>
     public GameObject cardUIPrefab;// 卡片UI预制体
     public Transform CardGrid;//生成卡牌的父物体
 
-    private List<CardData> cards = new List<CardData>();
-    private List<CardUI> cardUIs = new List<CardUI>();
+    public Dictionary<CardData, CardUI> cardData_UIDic = new();
 
     private void Start()
     {
@@ -20,31 +19,28 @@ public class CardManager : Singleton<CardManager>
     {
         for (int i = 0; i < cardCount; i++)
         {
-            var newCard = new CardData(i, $"卡牌 {i}", "这是一张描述", CardType.tree, GetRandomSprite());
-            cards.Add(newCard);
+            var newCard = new CardData(i, $"卡牌 {i}", "这是一张描述", CardType.tree);
 
             var cardUIObj = Instantiate(cardUIPrefab, CardGrid);
             var cardUI = cardUIObj.GetComponent<CardUI>();
-            cardUI.Bind(newCard);
-            cardUIs.Add(cardUI);
+            cardUI.Bind(newCard);//绑定sprite
+            cardData_UIDic[newCard] = cardUI;
         }
-    }
-
-    Sprite GetRandomSprite()
-    {
-        // 这里可以自己做随机贴图加载
-        return null;
     }
 
     public void RemoveCard(CardData card)
     {
-        int index = cards.IndexOf(card);
-        if (index >= 0)
+        if (cardData_UIDic.TryGetValue(card, out CardUI cardUI))
         {
-            Destroy(cardUIs[index].gameObject);
-            cards.RemoveAt(index);
-            cardUIs.RemoveAt(index);
+            Destroy(cardUI.gameObject);
+            cardData_UIDic.Remove(card);
         }
+    }
+
+    public void AddCard(CardData card)
+    {
+        var cardUIObj = Instantiate(cardUIPrefab, CardGrid);
+
     }
 
 

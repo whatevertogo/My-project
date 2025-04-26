@@ -9,6 +9,7 @@ public class CardUI : UIHoverClick
     #region 卡牌ui和动效设置
     [Header("卡片配置")]
     public TextMeshProUGUI CardText;
+    [ReadOnly]
     public Image image;
     public Vector2 moveOffset = new Vector2(0, 60); // 上移偏移量
     public float duration = 0.3f;                   // 动画时间
@@ -23,11 +24,7 @@ public class CardUI : UIHoverClick
     private RectTransform rectTransform;
     private Canvas cardCanvas;
     #endregion
-
-    #region 数据层
     private CardData cardData;
-    #endregion
-    // 跟踪当前置顶的卡片
     public static CardUI currentTopCard;
 
     private void OnEnable()
@@ -54,7 +51,7 @@ public class CardUI : UIHoverClick
         cardCanvas.sortingOrder = normalSortingOrder;
     }
 
-    #region 视觉动画效果
+    #region 鼠标动画交互效果
     public override void OnPointerEnter(PointerEventData eventData)
     {
         if (isHovered) return;
@@ -93,6 +90,8 @@ public class CardUI : UIHoverClick
     {
         Debug.Log($"Card '{CardText.text}' clicked!");
         DoClickBounce();
+        //todo- 这里可以添加点击卡牌的逻辑，比如使用卡牌效果
+        // ClickManager.Instance.SetSelectedCard(cardData);
     }
 
     private void AnimateTo(Vector2 targetPosition, float targetScale)
@@ -122,7 +121,6 @@ public class CardUI : UIHoverClick
         bounce.Append(transform.DOScale(1.0f, 0.15f).SetEase(Ease.OutBounce));
     }
     #endregion
-
 
     public void Bind(CardData card)
     {
