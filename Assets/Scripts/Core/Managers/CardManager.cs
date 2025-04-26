@@ -1,6 +1,7 @@
 using UnityEngine;
 using CDTU.Utils;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class CardManager : Singleton<CardManager>
 {
@@ -8,7 +9,6 @@ public class CardManager : Singleton<CardManager>
     public Transform cardGrid;     // 卡片UI的父物体
     public List<CardData> cardDataList; // 从编辑器配置的卡牌数据列表
     public Dictionary<Card, CardUI> cardToUIDic = new(); // 运行时卡牌与UI的映射
-
     private void Start()
     {
         GenerateCards();
@@ -39,7 +39,6 @@ public class CardManager : Singleton<CardManager>
             return;
         }
         cardUI.Bind(card);
-
         // 记录映射关系
         cardToUIDic[card] = cardUI;
     }

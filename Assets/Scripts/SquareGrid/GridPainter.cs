@@ -60,7 +60,7 @@ public class GridPainter : Singleton<GridPainter>
             
             // 设置颜色为白色（已探索）
             cell.SetColor(Color.white, true);
-            
+
             // 如果是小鸟格子，添加小鸟贴图
             if (cell.GetGridType() == GridType.BirdSquare)
             {

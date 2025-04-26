@@ -17,13 +17,13 @@ public class CardUI : UIHoverClick
     #region 动效设置
     [Header("层级设置")]
     [SerializeField] private int hoverSortingOrder = 10;  // 悬停时的排序顺序
-    [SerializeField] private int normalSortingOrder = 1;  // 正常时的排序顺序
+    public static int normalSortingOrder = 1;  // 正常时的排序顺序
 
     private Sequence currentSequence;
     private bool isHovered = false;
     private Vector2 originalPosition;
     private RectTransform rectTransform;
-    private Canvas cardCanvas;
+    public Canvas cardCanvas;
     #endregion
     private Card card;
     public static CardUI currentTopCard;
@@ -50,6 +50,7 @@ public class CardUI : UIHoverClick
 
         // 设置初始排序顺序
         cardCanvas.sortingOrder = normalSortingOrder;
+        normalSortingOrder++;
     }
 
     #region 鼠标动画交互效果
