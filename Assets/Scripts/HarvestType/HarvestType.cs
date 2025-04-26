@@ -1,12 +1,12 @@
-public enum CardType
+public enum HarvestType
 {
     None = 0,
     /// <summary>
-    /// 树
+    /// 树枝
     /// </summary>
-    tree = 1,
+    Branch = 1,
     /// <summary>
-    /// 稻田
+    /// 米
     /// </summary>
-    Paddy = 2
+    Rice = 2
 }
