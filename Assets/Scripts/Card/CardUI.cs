@@ -50,9 +50,19 @@ public class CardUI : UIHoverClick
             }
         }
 
+
         // 设置初始排序顺序
         cardCanvas.sortingOrder = normalSortingOrder;
         normalSortingOrder++;
+    }
+    private void Start()
+    {
+        if (TextArea is null)
+        {
+            Debug.LogError("TextArea is null, please assign it in the inspector.");
+            return;
+        }
+        TextArea.GetComponent<CanvasGroup>().alpha = 0f;
     }
 
     #region 鼠标动画交互效果
@@ -71,8 +81,8 @@ public class CardUI : UIHoverClick
 
         // 动画改变位置和缩放
         AnimateTo(originalPosition + moveOffset, 1.1f);
-        //todo-显示文本
-        MyTweenUtils.FadeOut(TextArea, 0.2f);
+        //显示文本
+        MyTweenUtils.FadeIn(TextArea, 0.2f);
     }
 
     public override void OnPointerExit(PointerEventData eventData)
@@ -90,6 +100,8 @@ public class CardUI : UIHoverClick
 
         // 添加回下降动画，让卡片回到原位
         AnimateTo(originalPosition, 1.0f);
+        //隐藏文本
+        MyTweenUtils.FadeOut(TextArea, 0.2f);
     }
 
     public override void OnPointerClick(PointerEventData eventData)

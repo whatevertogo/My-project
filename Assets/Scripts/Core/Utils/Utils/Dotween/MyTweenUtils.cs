@@ -1,7 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;
 
-#if DOTWEEN_EXISTS
+#if DOTWEEN
 using DG.Tweening;
 #endif
 
@@ -20,7 +19,7 @@ namespace CDTU.Utils.TweenUtils
         {
             if (canvasGroup == null) return null;
 
-#if DOTWEEN_EXISTS
+#if DOTWEEN
             return canvasGroup.DOFade(targetAlpha, duration);
 #else
             Debug.LogWarning("[TweenUtils] DOTween is not available. FadeIn skipped.");
@@ -37,9 +36,13 @@ namespace CDTU.Utils.TweenUtils
         /// <returns>返回 Tweener 可用于链式调用或控制</returns>
         public static object FadeOut(CanvasGroup canvasGroup, float duration, float targetAlpha = 0f)
         {
-            if (canvasGroup == null) return null;
+            if (canvasGroup == null)
+            {
+                Debug.Log("错误没有canvasgroup");
+                return null;
+            }
 
-#if DOTWEEN_EXISTS
+#if DOTWEEN
             return canvasGroup.DOFade(targetAlpha, duration);
 #else
             Debug.LogWarning("[TweenUtils] DOTween is not available. FadeOut skipped.");
