@@ -7,7 +7,7 @@ public class CardManager : Singleton<CardManager>
     public GameObject cardUIContainerPrefab; // 卡片UI预制体
     public Transform cardGrid;     // 卡片UI的父物体
     public List<CardData> cardDataList; // 从编辑器配置的卡牌数据列表
-    public Dictionary<Card, CardUI> cardToUIMap = new(); // 运行时卡牌与UI的映射
+    public Dictionary<Card, CardUI> cardToUIDic = new(); // 运行时卡牌与UI的映射
 
     private void Start()
     {
@@ -42,19 +42,19 @@ public class CardManager : Singleton<CardManager>
         cardUI.Bind(card);
 
         // 记录映射关系
-        cardToUIMap[card] = cardUI;
+        cardToUIDic[card] = cardUI;
     }
 
     // 移除卡牌
     public void RemoveCard(Card card)
     {
-        if (cardToUIMap.TryGetValue(card, out CardUI cardUI))
+        if (cardToUIDic.TryGetValue(card, out CardUI cardUI))
         {
             // 销毁 UI 对象
             Destroy(cardUI.gameObject);
 
             // 从映射中移除
-            cardToUIMap.Remove(card);
+            cardToUIDic.Remove(card);
         }
     }
 }
