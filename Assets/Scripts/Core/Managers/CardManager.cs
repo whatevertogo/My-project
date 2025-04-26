@@ -11,7 +11,6 @@ public class CardManager : Singleton<CardManager>
 
     private void Start()
     {
-
         GenerateCards();
     }
 
@@ -33,7 +32,7 @@ public class CardManager : Singleton<CardManager>
 
         // 创建并绑定 UI
         var cardUIContainerObj = Instantiate(cardUIContainerPrefab, cardGrid);
-        var cardUI = cardUIContainerObj.transform.Find("CardUI")?.GetComponent<CardUI>();
+        CardUI cardUI = cardUIContainerObj.transform.Find("CardUI")?.GetComponent<CardUI>();
         if (cardUI is null)
         {
             Debug.LogError("CardUI component not found in the instantiated prefab. Please check the prefab structure.");

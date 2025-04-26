@@ -48,6 +48,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardUI
       objectReference: {fileID: 0}
+    - target: {fileID: 4208970480877609199, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 4208970480877609199, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 178.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4208970480877609199, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4208970480877609199, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 136.25002
+      objectReference: {fileID: 0}
     - target: {fileID: 4417308744014198392, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_Color.b
       value: 1

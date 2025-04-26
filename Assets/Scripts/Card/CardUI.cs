@@ -132,7 +132,7 @@ public class CardUI : UIHoverClick
     }
 
     // 更新 UI 显示
-    private void UpdateUI()
+    public void UpdateUI()
     {
         if (card == null)
         {

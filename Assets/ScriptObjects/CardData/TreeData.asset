@@ -15,5 +15,5 @@ MonoBehaviour:
   id: 0
   cardName: Tree
   cardType: 1
-  cardSprite: {fileID: 21300000, guid: 8a011f0fce004a44c9b5e54302e50361, type: 3}
+  cardSprite: {fileID: 21300000, guid: 56861db352a6f8c4cbbc91c6ee42a42b, type: 3}
   description: "\u6548\u679C:"
