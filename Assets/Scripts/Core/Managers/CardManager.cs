@@ -1,7 +1,6 @@
 using UnityEngine;
 using CDTU.Utils;
 using System.Collections.Generic;
-using UnityEngine.UI;
 
 public class CardManager : Singleton<CardManager>
 {
