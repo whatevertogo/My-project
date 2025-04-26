@@ -10,12 +10,11 @@ public class BGMSlider : MonoBehaviour
     private void Awake()
     {
         bgmSlider = GetComponent<Slider>();
-        bgmSlider.value = AudioManager.Instance.MusicVolume;
+        bgmSlider.value = AudioManager.Instance.BGMVolume;
     }
 
     private void Update()
     {
-        AudioManager.Instance.MusicVolume = bgmSlider.value;
-
+        AudioManager.Instance.BGMVolume = bgmSlider.value;
     }
 }

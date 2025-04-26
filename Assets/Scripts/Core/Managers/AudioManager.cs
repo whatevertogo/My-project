@@ -37,7 +37,7 @@ public class AudioManager : SingletonDD<AudioManager>
         {
             Name_AudioClipDic.Add(name_AudioClip.AudioName, name_AudioClip.AudioClip);
         }
-
+        bgmAudioSource = GetComponent<AudioSource>();
         // 初始化背景音乐AudioSource
         bgmAudioSource.loop = true;
     }

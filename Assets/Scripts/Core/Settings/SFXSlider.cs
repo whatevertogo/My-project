@@ -9,12 +9,12 @@ public class SFXSlider : MonoBehaviour
     private void Awake()
     {
         sfxSlider = GetComponent<Slider>();
-        sfxSlider.value = AudioManager.Instance.AllVolume;
+        sfxSlider.value = AudioManager.Instance.SoundVolume;
     }
 
     private void Update()
     {
-        AudioManager.Instance.AllVolume = sfxSlider.value;
+        AudioManager.Instance.SoundVolume = sfxSlider.value;
     }
 
 }
