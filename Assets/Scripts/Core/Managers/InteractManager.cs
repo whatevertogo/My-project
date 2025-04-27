@@ -14,7 +14,7 @@ public class InteractManager : Singleton<InteractManager>
         // 检测鼠标悬停
         Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hoverHit = Physics2D.Raycast(point, Vector2.zero);
-        if (hoverHit.collider != null)
+        if (hoverHit.collider is null)
         {
             SquareCell cell = hoverHit.collider.GetComponent<SquareCell>();
             if (cell != null && cell != hoveredCell && cell.GetHoverHandler() is not DefaultHoverHandler)
@@ -55,5 +55,18 @@ public class InteractManager : Singleton<InteractManager>
                 }
             }
         }
+    }
+    public SquareCell GetCellUnderMouse()
+    {
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return null;
+
+        Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(point, Vector2.zero);
+        if (hit.collider != null)
+        {
+            return hit.collider.GetComponent<SquareCell>();
+        }
+        return null;
     }
 }

@@ -204,6 +204,9 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         //添加回下降动画，让卡片回到原位
         AnimateTo(originalPosition, 1.0f);
         //todo- 这里可以添加拖拽结束后的逻辑，比如放置卡牌到某个位置
+        SquareCell cell = InteractManager.Instance.GetCellUnderMouse();
+        if (cell is null) return;
+        //todo- 这里可以添加放置卡牌的逻辑
     }
 
     public void FollowMouse(GameObject obj)
