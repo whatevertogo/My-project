@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SquareMetrics
 {
-    public static float cellSize = 2f; //正方形的边长
+    public static float cellSize = 1f; //正方形的边长
 
     // SideLength 的倒数，自动推导，统一管理
     public static float InverseSideLength => 1f / cellSize;
