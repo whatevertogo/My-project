@@ -136,15 +136,15 @@ public class GridManager : Singleton<GridManager>
     private void SetNeighborIfValid(SquareCell cell, int x, int y, SquareDirection direction)
     {
         var (dx, dy) = direction.GetOffset();
-        int nx = x + dx;
-        int ny = y + dy;
+        float nx = x + dx;
+        float ny = y + dy;
 
         if (nx >= 0 && nx < width && ny >= 0 && ny < height)
         {
             // 确保邻居格子已创建
-            if (cells[nx, ny] != null)
+            if (cells[(int)nx, (int)ny] != null)
             {
-                cell.SetNeighbor(direction, cells[nx, ny]);
+                cell.SetNeighbor(direction, cells[(int)nx, (int)ny]);
             }
         }
     }

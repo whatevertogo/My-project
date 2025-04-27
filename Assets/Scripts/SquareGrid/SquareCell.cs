@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 
-public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
+public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 {
     public SquareCoordinates Coordinates { get; set; }
     public Color currentColor = Color.black;
-    public float duration = 1f;
+    public readonly float duration = 1f;
 
     [ReadOnly]
     public GridType cellType = GridType.None; // 默认值为None
@@ -15,12 +15,20 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
     // 存储邻居的列表，包括自身和8个方向的邻居
     [SerializeField] private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
 
+    private ICellHoverHandler hoverHandler;
+
     public bool IsExplored { get; set; } = false; // 是否被探索过
 
     private void Awake()
     {
         CellRenderer = GetComponent<SpriteRenderer>();
         CellRenderer.sprite = Resources.Load<Sprite>("Images/Default");
+    }
+
+    private void Start()
+    {
+        // 初始化Hover控制器
+        hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
     }
 
     // 存储邻居的列表
@@ -211,17 +219,26 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract, IHover
     }
     #endregion
 
-    #region 悬停方法
+    #region 鼠标悬停Handler
+    public void SetHoverHandler(ICellHoverHandler handler)
+    {
+        hoverHandler = handler;
+    }
+    public ICellHoverHandler GetHoverHandler()
+    {
+        return hoverHandler;
+    }
+
     public void OnHoverEnter()
     {
-        if (cellType == GridType.BirdSquare)
-        {
-            //todo-聊天
-        }
+        hoverHandler?.OnHoverEnter(this);
     }
+
     public void OnHoverExit()
     {
+        hoverHandler?.OnHoverExit(this);
     }
     #endregion
+
 
 }

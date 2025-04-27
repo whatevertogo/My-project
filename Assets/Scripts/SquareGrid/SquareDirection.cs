@@ -37,18 +37,18 @@ public static class SquareDirectionExtensions
     /// <summary>
     /// 获取方向对应的坐标偏移
     /// </summary>
-    public static (int dx, int dy) GetOffset(this SquareDirection direction)
+    public static (float dx, float dy) GetOffset(this SquareDirection direction)
     {
         switch (direction)
         {
-            case SquareDirection.N: return (0, 1);
-            case SquareDirection.S: return (0, -1);
-            case SquareDirection.E: return (1, 0);
-            case SquareDirection.W: return (-1, 0);
-            case SquareDirection.NW: return (-1, 1);
-            case SquareDirection.NE: return (1, 1);
-            case SquareDirection.SW: return (-1, -1);
-            case SquareDirection.SE: return (1, -1);
+            case SquareDirection.N: return (0, SquareMetrics.cellSize);
+            case SquareDirection.S: return (0, -SquareMetrics.cellSize);
+            case SquareDirection.E: return (SquareMetrics.cellSize, 0);
+            case SquareDirection.W: return (-SquareMetrics.cellSize, 0);
+            case SquareDirection.NW: return (-SquareMetrics.cellSize, SquareMetrics.cellSize);
+            case SquareDirection.NE: return (SquareMetrics.cellSize, SquareMetrics.cellSize);
+            case SquareDirection.SW: return (-SquareMetrics.cellSize, -SquareMetrics.cellSize);
+            case SquareDirection.SE: return (SquareMetrics.cellSize, -SquareMetrics.cellSize);
             case SquareDirection.Center: return (0, 0);
             default:
                 throw new System.ArgumentException("没有此方向", nameof(direction));
