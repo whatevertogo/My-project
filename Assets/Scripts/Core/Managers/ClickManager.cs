@@ -21,6 +21,8 @@ public class ClickManager : Singleton<ClickManager>
                 if (cell != null)
                 {
                     cell.Interact();
+                    
+
                 }
                 else
                 {
