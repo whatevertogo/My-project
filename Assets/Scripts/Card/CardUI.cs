@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using CDTU.Utils.TweenUtils;
 
-public class CardUI : UIHoverClick
+public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     #region 卡牌ui
     [Header("卡片配置")]
@@ -20,25 +20,38 @@ public class CardUI : UIHoverClick
     [Header("层级设置")]
     [SerializeField] private int hoverSortingOrder = 10;  // 悬停时的排序顺序
     public static int normalSortingOrder = 1;  // 正常时的排序顺序
-
+    [Header("动画设置")]
     private Sequence currentSequence;
     private bool isHovered = false;
     private Vector2 originalPosition;
     private RectTransform rectTransform;
+    [ReadOnly]
     public Canvas cardCanvas;
+
+
     #endregion
+
+
+
     private Card card;
     public static CardUI currentTopCard;
 
-    private void OnEnable()
+    private void Awake()
     {
+        //todo-改天简化这个逻辑
         rectTransform = GetComponent<RectTransform>();
-        originalPosition = rectTransform.anchoredPosition;
-        rectTransform.localScale = Vector3.one;
+        if (gameObject.TryGetComponent<Canvas>(out cardCanvas))
+        {
+            cardCanvas = GetComponent<Canvas>();
+            cardCanvas.overrideSorting = true;
 
-        // 获取或添加 Canvas 组件
-        cardCanvas = GetComponent<Canvas>();
-        if (cardCanvas == null)
+            // 添加 GraphicRaycaster 以确保仍能接收点击事件
+            if (GetComponent<GraphicRaycaster>() == null)
+            {
+                gameObject.AddComponent<GraphicRaycaster>();
+            }
+        }
+        else
         {
             cardCanvas = gameObject.AddComponent<Canvas>();
             cardCanvas.overrideSorting = true;
@@ -49,7 +62,12 @@ public class CardUI : UIHoverClick
                 gameObject.AddComponent<GraphicRaycaster>();
             }
         }
+    }
 
+    private void OnEnable()
+    {
+        originalPosition = rectTransform.anchoredPosition;
+        rectTransform.localScale = Vector3.one;
 
         // 设置初始排序顺序
         cardCanvas.sortingOrder = normalSortingOrder;
@@ -63,6 +81,11 @@ public class CardUI : UIHoverClick
             return;
         }
         TextArea.GetComponent<CanvasGroup>().alpha = 0f;
+    }
+
+    private void Update()
+    {
+
     }
 
     #region 鼠标动画交互效果
@@ -161,5 +184,31 @@ public class CardUI : UIHoverClick
             CardText.text = card.CardName;
             image.sprite = card.CardSprite;
         }
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        isHovered = true; // 确保在拖拽时仍然保持悬停状态
+        //todo- 这里可以添加拖拽开始时的逻辑，比如高亮显示卡牌
+
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        FollowMouse(gameObject);
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        isHovered = false; // 拖拽结束时取消悬停状态
+        //添加回下降动画，让卡片回到原位
+        AnimateTo(originalPosition, 1.0f);
+        //todo- 这里可以添加拖拽结束后的逻辑，比如放置卡牌到某个位置
+    }
+
+    public void FollowMouse(GameObject obj)
+    {
+        Vector2 mousePos = Input.mousePosition;
+        rectTransform.DOMove(mousePos, 0.05f).SetEase(Ease.OutQuad); // 0.1秒内移动过去
     }
 }
