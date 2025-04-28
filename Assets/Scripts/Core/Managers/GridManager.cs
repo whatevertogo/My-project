@@ -9,6 +9,8 @@ public class GridManager : Singleton<GridManager>
     public int width = 25;
     public int height = 25;
 
+    public GameObject[] prefabOptions;//预制体
+
     public Vector3 GetGridCenter() => new Vector3(width / 2, height / 2, 0);
 
     [Header("网格类型配置和需要的BridSquare数量")]
@@ -69,6 +71,12 @@ public class GridManager : Singleton<GridManager>
                 var cell = cellObj.AddComponent<SquareCell>();
                 //设置格子的颜色
                 cell.SetColor(Color.black, false);
+                Vector3 CellPosition = new Vector3(cellObj.transform.position.x,cellObj.transform.position.y,cellObj.transform.position.z-0.1f);//获取网格的位置
+                if (prefabOptions.Length > 0)
+                {
+                    int index = Random.Range(0, prefabOptions.Length);
+                    Instantiate(prefabOptions[index], CellPosition, Quaternion.identity);//生成迷雾
+                }
                 // 设置格子的type
                 cell.SetGridType(RandomGridType.GetRandomGridType());
                 //设置格子的碰撞体

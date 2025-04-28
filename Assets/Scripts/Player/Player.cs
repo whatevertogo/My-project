@@ -1,9 +1,11 @@
 using CDTU.Utils;
 using UnityEngine;
+using System;
 using System.Collections;
 public class Player : Singleton<Player>
 {
     private PlayerGridComponent playerGridComponent;
+    public event Action<Vector2> OnMove;
     private float moveDistance = 1f;
     [Tooltip("移动冷却时间")]
     [Range(0.1f, 5f)] // 限制冷却时间范围为 0.1 到 5 秒
@@ -68,6 +70,13 @@ public class Player : Singleton<Player>
 
         // 从游戏输入管理器获取玩家的移动输入
         input = GameInput.Instance.MoveInput;
+        Vector2 moveVector = input.normalized;
+        if(input.magnitude > 0f)// 有输入时，传递方向
+        {
+            OnMove?.Invoke(moveVector);
+            Debug.Log("当前输入方向: " + moveVector);
+        }
+
         try
         {
             // 如果玩家没有输入移动指令，则直接返回，不执行后续移动逻辑

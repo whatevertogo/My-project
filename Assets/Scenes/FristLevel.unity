@@ -340,8 +340,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 4.1511846
+  orthographic: 1
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -546,7 +546,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f4cbb0c259ca9e4ab9473263b341aee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   currentCellRenderer: {fileID: 0}
+  fadeDuration: 1
+  startSpeed: 0
+  acceleration: 1
 --- !u!1 &657749356
 GameObject:
   m_ObjectHideFlags: 0
@@ -1154,6 +1158,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 25
   height: 25
+  prefabOptions:
+  - {fileID: 5253463108866157231, guid: c7116f519bc1f99408470168c0e4f5f0, type: 3}
+  - {fileID: 5253463108866157231, guid: 759fc255b2a1aed4ea098c3f2bedbd78, type: 3}
+  - {fileID: 5253463108866157231, guid: 123c7f03563fb8e40a37155b9705d3c1, type: 3}
   gridTypeConfig: {fileID: 11400000, guid: 6467ab8470781914e80e94de5ef94a7d, type: 2}
   requiredCount: 2
   AllBridCells: []

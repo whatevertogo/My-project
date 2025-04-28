@@ -126,7 +126,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5064425754671766902, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_IgnoreReversedGraphics
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5351372795213039794, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_AnchoredPosition.y

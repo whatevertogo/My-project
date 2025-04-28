@@ -2,19 +2,28 @@ using System.Linq;
 using UnityEngine;
 using CDTU.Utils;
 using System.Collections.Generic;
+using System.Collections;
 
 public class GridPainter : Singleton<GridPainter>
 {
     private PlayerGridComponent playerGridComponent;
+    public Player player;
     public Renderer currentCellRenderer;
-
+    public float fadeDuration = 1.0f; //迷雾消失时间
+    public float startSpeed = 0f; // 初始速度
+    public float acceleration = 2f; // 每秒加多少速度
+    private float currentSpeed; // 实时速度
+    private Vector2 moveDirection;
     protected override void Awake()
     {
         base.Awake();
         playerGridComponent = GetComponent<PlayerGridComponent>();
+        player = GetComponent<Player>();
     }
     private void Start()
     {
+        player.OnMove += HandleMove; // 订阅玩家移动
+        currentSpeed = startSpeed; // 初始化当前速度
         if (playerGridComponent is not null)
         {
             playerGridComponent.OnCellChanged += OnPlayerCellChanged;
@@ -54,13 +63,16 @@ public class GridPainter : Singleton<GridPainter>
         foreach (SquareCell cell in surroundingCells)
         {
             if (cell.CellRenderer is null) continue;
-
-            // 首先标记为已探索
-            cell.IsExplored = true;
             
             // 设置颜色为白色（已探索）
             cell.SetColor(Color.white, true);
 
+            Collider2D hit = Physics2D.OverlapPoint(new Vector2(cell.transform.position.x, cell.transform.position.y)); // 检测预制体
+            if (hit != null && cell.IsExplored == false)//判断目标是否存在，且保证是未探索地块
+            {StartCoroutine(FadeOut(hit));}
+            else
+            {Debug.Log("这个位置没有物体");}
+        
             // 如果是小鸟格子，添加小鸟贴图
             if (cell.GetGridType() == GridType.BirdSquare)
             {
@@ -98,6 +110,8 @@ public class GridPainter : Singleton<GridPainter>
 
                 Debug.Log("在 BirdSquare 上添加了鸟的贴图。");
             }
+            // 最后标记为已探索
+            cell.IsExplored = true;
         }
     }
 
@@ -107,6 +121,31 @@ public class GridPainter : Singleton<GridPainter>
         {
             playerGridComponent.OnCellChanged -= OnPlayerCellChanged;
         }
+    }
+    IEnumerator FadeOut(Collider2D targetMist)//使迷雾逐渐消失而不是立即消失，并往远离玩家的方向移动
+    {
+        float elapsedTime = 0f;
+        Color originalColor = targetMist.GetComponent<SpriteRenderer>().color;
+
+        while (elapsedTime < fadeDuration)//逐渐透明
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
+            targetMist.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+            currentSpeed += acceleration * Time.deltaTime; // 每帧速度增加
+            targetMist.transform.position += (Vector3)(moveDirection.normalized * currentSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        // 最后确保完全透明
+        targetMist.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
+        Destroy(targetMist.gameObject); // 销毁
+    }
+    private void HandleMove(Vector2 moveDir)
+    {
+        // 检测是否接收到移动方向,并同步方向参数
+        Debug.Log("收到移动方向：" + moveDir);
+        moveDirection = moveDir.normalized;
     }
 }
 

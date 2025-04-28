@@ -6,57 +6,51 @@ public class InteractManager : Singleton<InteractManager>
 {
     private SquareCell hoveredCell; // 当前悬停的 SquareCell
 
+    private RaycastHit2D hoverHit;
+
     void Update()
     {
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-            return;
+        if (EventSystem.current?.IsPointerOverGameObject() == true) return;
 
-        // 检测鼠标悬停
         Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Debug.Log("鼠标位置：" + point);
-        RaycastHit2D hoverHit = Physics2D.Raycast(point, Vector2.zero);
-        if (hoverHit.collider is not null)
+        if (Camera.main.orthographic)
         {
-            SquareCell cell = hoverHit.collider.GetComponent<SquareCell>();
-            if (cell != null && cell != hoveredCell && cell.GetHoverHandler() is not DefaultHoverHandler)
-            {
-                // 如果悬停的格子发生变化
-                if (hoveredCell != null)
-                {
-                    hoveredCell.OnHoverExit(); // 触发之前悬停格子的 OnHoverExit
-                }
-
-                hoveredCell = cell;
-                hoveredCell.OnHoverEnter(); // 触发当前悬停格子的 OnHoverEnter
-            }
+            hoverHit = Physics2D.Raycast(point, Vector2.zero);
         }
-        else if (hoveredCell != null)
+        else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
         {
-            // 如果鼠标离开了所有格子
+            hoverHit = Physics2D.Raycast(point, Vector2.zero);
+        }
+
+        SquareCell cell = hoverHit.collider?.GetComponent<SquareCell>();
+        if (cell != null && cell != hoveredCell && cell.GetHoverHandler() is not DefaultHoverHandler)
+        {
+            hoveredCell?.OnHoverExit();
+            hoveredCell = cell;
+            hoveredCell.OnHoverEnter();
+        }
+        else if (hoveredCell != null && hoverHit.collider == null)
+        {
             hoveredCell.OnHoverExit();
             hoveredCell = null;
         }
 
-        // 检测鼠标点击
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit2D clickHit = Physics2D.Raycast(point, Vector2.zero);
-            if (clickHit.collider is not null)
+            SquareCell clickedCell = clickHit.collider?.GetComponent<SquareCell>();
+            if (clickedCell != null)
             {
                 Debug.Log("点击到了：" + clickHit.collider.name);
-
-                SquareCell cell = clickHit.collider.GetComponent<SquareCell>();
-                if (cell is not null)
-                {
-                    cell.Interact();
-                }
-                else
-                {
-                    Debug.LogWarning("未挂载 SquareCell 脚本！");
-                }
+                clickedCell.Interact();
+            }
+            else if (clickHit.collider != null)
+            {
+                Debug.LogWarning("未挂载 SquareCell 脚本！");
             }
         }
     }
+
     public SquareCell GetCellUnderMouse()
     {
         Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
