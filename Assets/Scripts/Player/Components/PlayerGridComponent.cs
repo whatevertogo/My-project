@@ -16,16 +16,6 @@ public class PlayerGridComponent : MonoBehaviour
         }
     }
 
-    // 移除 Update 方法，格子更新逻辑已移至 Player.cs
-    // private void Update()
-    // {
-    //     SquareCell newCell = GridManager.Instance.GetCell(transform.position);
-    //     if (newCell != null && newCell != currentCell)
-    //     {
-    //         currentCell = newCell;
-    //         OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
-    //     }
-    // }
     public void Start()
     {
         // 尝试获取当前格子
