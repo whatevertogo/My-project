@@ -212,8 +212,8 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         {
             IsPlaceable = false;
             //todo-调试用，后面可以删除
-            if (!GridManager.Instance.AllCantMoveCells.Contains(this))
-                GridManager.Instance.AllCantMoveCells.Add(this);
+            if (!GridManager.Instance.AllDontMoveCells.Contains(this))
+                GridManager.Instance.AllDontMoveCells.Add(this);
         }
         else
         {

@@ -113,7 +113,7 @@ public class Player : Singleton<Player>
 
             // 检查目标格子是否存在和可移动
             SquareCell nextCell = GridManager.Instance.GetCell(targetPos);
-            if (nextCell is null && !GridManager.Instance.AllCantMoveCells.Contains(nextCell)) yield break;
+            if (nextCell is null || GridManager.Instance.AllDontMoveCells.Contains(nextCell)) yield break;
 
             // 等待平滑移动完成
             yield return StartCoroutine(SmoothMove(targetPos));
