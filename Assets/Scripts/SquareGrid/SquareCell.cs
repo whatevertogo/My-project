@@ -19,6 +19,8 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public bool IsExplored { get; set; } = false; // 是否被探索过
 
+    public bool CanPutDown { get; set; } = true; // 是否可以放置物体
+
 
     private void Awake()
     {
@@ -202,6 +204,15 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     public void SetGridType(GridType type)
     {
         cellType = type;
+        // 如果type不是SimpleSquare，则设置不能放置
+        if (type != GridType.SimpleSquare)
+        {
+            CanPutDown = false;
+        }
+        else
+        {
+            CanPutDown = true;
+        }
     }
     public GridType GetGridType()
     {
@@ -232,22 +243,16 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public void OnHoverEnter()
     {
-        if(IsExplored == false) return;
+        if (IsExplored == false) return;
         hoverHandler?.OnHoverEnter(this);
     }
 
     public void OnHoverExit()
     {
-        if(IsExplored == false) return;
+        if (IsExplored == false) return;
         hoverHandler?.OnHoverExit(this);
     }
     #endregion
-
-
-
-
-
-
 
 
 

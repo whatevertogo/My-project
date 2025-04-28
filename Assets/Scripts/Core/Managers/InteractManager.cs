@@ -58,9 +58,6 @@ public class InteractManager : Singleton<InteractManager>
     }
     public SquareCell GetCellUnderMouse()
     {
-        if (EventSystem.current is not null && EventSystem.current.IsPointerOverGameObject())
-            return null;
-
         Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(point, Vector2.zero);
         if (hit.collider is not null)

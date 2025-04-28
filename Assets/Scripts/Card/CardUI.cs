@@ -185,9 +185,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     {
         if (!isDragging) return;
         // 直接设置位置而不是使用动画
-        Vector2 mousePos = Input.mousePosition;
-        rectTransform.position = mousePos;
-        Debug.Log("Dragging card to position: " + mousePos + InteractManager.Instance.GetCellUnderMouse());
+        rectTransform.position = Input.mousePosition;
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -196,10 +194,9 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         isHovered = false;
 
         SquareCell cell = InteractManager.Instance.GetCellUnderMouse();
-        if (cell is null)
+        if (cell is null && cell.IsExplored == true)
         {
-            // 只有在没有找到目标格子时和没有拖拽物体的时候才返回原位
-            if (eventData.pointerDrag is null) return;
+            // 没有找到目标格子时返回原位
             AnimateTo(originalPosition, 1.0f);
         }
         else
