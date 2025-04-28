@@ -199,7 +199,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         {
             // TODO: 实现卡牌放置逻辑
             Debug.Log($"Card placed on cell: {cell.name}");
-            Destroy(gameObject); // 销毁卡牌UI对象
+            ClearUsedCard();
         }
         else
         {
@@ -208,5 +208,15 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         }
         MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
 
+    }
+
+    /// <summary>
+    /// 清除已使用的卡牌
+    /// </summary>
+    public void ClearUsedCard()
+    {
+        CardManager.Instance?.RemoveCard(card); // 从卡牌管理器中移除卡牌
+        Destroy(gameObject); // 销毁卡牌UI对象
+        card = null;
     }
 }
