@@ -185,8 +185,9 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     {
         if (!isDragging) return;
         // 直接设置位置而不是使用动画
-        rectTransform.position = Input.mousePosition;
-        transform.DOScale(0.3f, 0.1f).SetEase(Ease.OutBounce);
+        AnimateTo(Input.mousePosition, 0.3f);
+        // rectTransform.position = Input.mousePosition;
+        // transform.DOScale(0.3f, 0.1f).SetEase(Ease.OutBounce);
     }
 
     public void OnEndDrag(PointerEventData eventData)
