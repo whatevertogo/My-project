@@ -10,61 +10,64 @@ public class InventoryManager : Singleton<InventoryManager>
         public HarvestType itemType;
         public int count;
     }
-    
+
     public List<InventoryItem> inventory = new List<InventoryItem>();
-    
-    // 添加物品到库存
-    public void AddItem(HarvestType itemType, int amount = 1)
+
+    public Dictionary<HarvestType, int> harvestAmounts = new();
+
+    public void AddHarvest(HarvestType harvestType, int amount)
     {
-        InventoryItem existingItem = inventory.Find(item => item.itemType == itemType);
-        
-        if (existingItem != null)
+        if (harvestAmounts.ContainsKey(harvestType))
         {
-            existingItem.count += amount;
+            harvestAmounts[harvestType] += amount;
         }
         else
         {
-            inventory.Add(new InventoryItem
-            {
-                itemType = itemType,
-                count = amount
-            });
+            Debug.Log("已经自动添加进字典");
+            harvestAmounts[harvestType] = amount;
         }
-        
-        // 更新UI显示
-        UpdateInventoryUI();
     }
-    
-    // 使用物品
-    public bool UseItem(HarvestType itemType, int amount = 1)
+
+    public void ReduceHarvest(HarvestType harvestType, int amount)
     {
-        InventoryItem existingItem = inventory.Find(item => item.itemType == itemType);
-        
-        if (existingItem != null && existingItem.count >= amount)
+        if (HasHarvest(harvestType) && harvestAmounts[harvestType] >= 0)
         {
-            existingItem.count -= amount;
-            
-            if (existingItem.count <= 0)
-                inventory.Remove(existingItem);
-                
-            // 更新UI显示
-            UpdateInventoryUI();
-            return true;
+            harvestAmounts[harvestType] -= amount;
+            if (harvestAmounts[harvestType] <= 0)
+            {
+                harvestAmounts.Remove(harvestType);
+            }
         }
-        
+
+    }
+
+    public bool HasHarvest(HarvestType harvestType)
+    {
+        if (harvestAmounts.ContainsKey(harvestType))
+        {
+            return harvestAmounts[harvestType] >= 0;
+        }
         return false;
     }
-    
+
     // 获取物品数量
     public int GetItemCount(HarvestType itemType)
     {
-        InventoryItem existingItem = inventory.Find(item => item.itemType == itemType);
-        return existingItem != null ? existingItem.count : 0;
+        if (harvestAmounts.TryGetValue(itemType, out int count))
+        {
+            return count;
+        }
+        else
+        {
+            Debug.LogWarning("物品类型不存在于库存中！");
+            return 0;
+        }
     }
-    
+
     // 更新库存UI
     private void UpdateInventoryUI()
     {
+        
         // 实现库存UI更新逻辑
     }
 }

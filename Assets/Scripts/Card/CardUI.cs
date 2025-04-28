@@ -36,6 +36,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     private Card card;
     public static CardUI currentTopCard;
 
+
     private void Awake()
     {
         //todo-改天简化这个逻辑
@@ -133,6 +134,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         DoClickBounce();
         //todo- 这里可以添加点击卡牌的逻辑，比如使用卡牌效果
         // ClickManager.Instance.SetSelectedCard(cardData);
+        transform.DOScale(1.0f, 0.1f);
     }
 
     private void AnimateTo(Vector2 targetPosition, float targetScale)
