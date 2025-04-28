@@ -1,16 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
+using CDTU.Utils;
 
-public class ChunkManager : MonoBehaviour
+public class ChunkManager : Singleton<ChunkManager>
 {
+    [Header("区块设置")]
     public int chunkSize = 5; // 每个区块的大小
-    public int mapWidth = 25; // 地图宽度（格子数）
-    public int mapHeight = 25; // 地图高度（格子数）
+    [ReadOnly]
+    private int mapWidth; // 地图宽度（格子数）
+    [ReadOnly]
+    private int mapHeight; // 地图高度（格子数）
 
-    private Dictionary<(int, int), List<SquareCell>> chunks = new(); // 存储每个区块的格子
+    private Dictionary<(int, int), Chunk> chunks = new();
 
+    protected override void Awake()
+    {
+        base.Awake();
+        mapWidth = GridManager.Instance?.width ?? 0;
+        mapHeight = GridManager.Instance?.height ?? 0;
+    }
+
+    // 初始化区块，将地图的所有格子划分为区块
     public void InitializeChunks(SquareCell[,] cells)
     {
+        chunks.Clear();
         for (int x = 0; x < mapWidth; x++)
         {
             for (int y = 0; y < mapHeight; y++)
@@ -21,27 +34,40 @@ public class ChunkManager : MonoBehaviour
 
                 if (!chunks.ContainsKey(chunkKey))
                 {
-                    chunks[chunkKey] = new List<SquareCell>();
+                    chunks[chunkKey] = new Chunk(chunkX, chunkY, chunkSize);
                 }
-
-                chunks[chunkKey].Add(cells[x, y]);
+                chunks[chunkKey].AddCell(cells[x, y]);
             }
+        }
+
+        // 初始化所有区块的渲染
+        foreach (var chunk in chunks.Values)
+        {
+            chunk.InitializeRenderTexture();
+            chunk.RefreshRenderTexture();
+            chunk.BindRenderToObject();
         }
 
         Debug.Log($"Total Chunks: {chunks.Count}");
     }
 
-    public List<SquareCell> GetChunk(int chunkX, int chunkY)
+    // 获取指定区块
+    public Chunk GetChunk(int chunkX, int chunkY)
     {
         var chunkKey = (chunkX, chunkY);
-        if (chunks.ContainsKey(chunkKey))
-        {
-            return chunks[chunkKey];
-        }
-        return null;
+        return chunks.TryGetValue(chunkKey, out var chunk) ? chunk : null;
     }
 
-    public void RenderChunkToTexture(int chunkX, int chunkY, RenderTexture renderTexture)
+    // 获取指定世界坐标所在的区块
+    public Chunk GetChunkByWorldPosition(Vector3 worldPosition)
+    {
+        int chunkX = Mathf.FloorToInt(worldPosition.x / chunkSize);
+        int chunkY = Mathf.FloorToInt(worldPosition.y / chunkSize);
+        return GetChunk(chunkX, chunkY);
+    }
+
+    // 更新指定区块的内容
+    public void UpdateChunkContent(int chunkX, int chunkY, GameObject content)
     {
         var chunk = GetChunk(chunkX, chunkY);
         if (chunk == null)
@@ -50,31 +76,77 @@ public class ChunkManager : MonoBehaviour
             return;
         }
 
-        // 创建一个临时摄像机用于渲染
-        GameObject tempCameraObj = new GameObject("TempCamera");
-        Camera tempCamera = tempCameraObj.AddComponent<Camera>();
-        tempCamera.orthographic = true;
-        tempCamera.orthographicSize = chunkSize / 2f;
-        tempCamera.targetTexture = renderTexture;
+        foreach (var cell in chunk.Cells)
+        {
+            if (cell.transform.childCount == 0)
+            {
+                GameObject.Instantiate(content, cell.transform.position, Quaternion.identity, cell.transform);
+            }
+            else
+            {
+                var existingContent = cell.transform.GetChild(0).gameObject;
+                existingContent.name = content.name;
+                if (existingContent.TryGetComponent<Renderer>(out var renderer) &&
+                    content.TryGetComponent<Renderer>(out var contentRenderer))
+                {
+                    renderer.material.color = contentRenderer.material.color;
+                }
+            }
+        }
 
-        // 计算区块中心点
-        Vector3 chunkCenter = CalculateChunkCenter(chunk);
-        tempCamera.transform.position = new Vector3(chunkCenter.x, chunkCenter.y, -10);
-
-        // 渲染到 RenderTexture
-        tempCamera.Render();
-
-        // 销毁临时摄像机
-        Destroy(tempCameraObj);
+        // 更新区块渲染
+        chunk.RefreshRenderTexture();
     }
 
-    private Vector3 CalculateChunkCenter(List<SquareCell> chunk)
+    // 刷新指定区块
+    public void RefreshChunk(int chunkX, int chunkY)
     {
-        Vector3 center = Vector3.zero;
-        foreach (var cell in chunk)
+        var chunk = GetChunk(chunkX, chunkY);
+        if (chunk != null)
         {
-            center += cell.transform.position;
+            chunk.RefreshRenderTexture();
+            chunk.BindRenderToObject();
         }
-        return center / chunk.Count;
+        else
+        {
+            Debug.LogWarning($"Chunk ({chunkX}, {chunkY}) not found!");
+        }
+    }
+
+    // 设置所有区块的可见性
+    public void SetAllChunksVisible(bool visible)
+    {
+        foreach (var chunk in chunks.Values)
+        {
+            chunk.SetVisible(visible);
+        }
+    }
+
+    // 刷新所有区块
+    public void RefreshAllChunks()
+    {
+        foreach (var chunk in chunks.Values)
+        {
+            chunk.RefreshRenderTexture();
+            chunk.BindRenderToObject();
+        }
+    }
+
+    // 清理所有区块
+    public void ClearAllChunks()
+    {
+        foreach (var chunk in chunks.Values)
+        {
+            if (chunk.RenderObject != null)
+            {
+                GameObject.Destroy(chunk.RenderObject);
+            }
+            if (chunk.RenderTexture != null)
+            {
+                chunk.RenderTexture.Release();
+                GameObject.Destroy(chunk.RenderTexture);
+            }
+        }
+        chunks.Clear();
     }
 }

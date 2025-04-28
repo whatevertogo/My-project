@@ -1,0 +1,155 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Chunk
+{
+    public int ChunkX { get; private set; }
+    public int ChunkY { get; private set; }
+    public List<SquareCell> Cells { get; private set; } = new List<SquareCell>();
+
+    public RenderTexture RenderTexture { get; private set; }
+    public GameObject RenderObject { get; private set; } // RenderTexture 的物体（可选）
+    public bool IsVisible { get; private set; } = true;
+
+    private int chunkSize; // 区块大小（格子数）
+
+    public Chunk(int chunkX, int chunkY, int chunkSize)
+    {
+        this.ChunkX = chunkX;
+        this.ChunkY = chunkY;
+        this.chunkSize = chunkSize;
+    }
+
+    public void AddCell(SquareCell cell)
+    {
+        Cells.Add(cell);
+        // 设置格子的层为 ChunkCell，这样摄像机才能渲染到
+        cell.gameObject.layer = LayerMask.NameToLayer("ChunkCell");
+    }
+
+    // 为格子设置精灵图片
+    public void SetCellSprite(SquareCell cell, Sprite sprite)
+    {
+        var spriteRenderer = cell.gameObject.GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            spriteRenderer = cell.gameObject.AddComponent<SpriteRenderer>();
+        }
+        spriteRenderer.sprite = sprite;
+        spriteRenderer.sortingLayerName = "ChunkCell"; // 确保在正确的排序层
+    }
+
+    public void InitializeRenderTexture()
+    {
+        if (RenderTexture == null)
+        {
+            // 创建一个新的渲染纹理，设置更高的分辨率以获得更好的质量
+            RenderTexture = new RenderTexture(1024, 1024, 0)
+            {
+                filterMode = FilterMode.Bilinear, // 使用双线性过滤提高质量
+                antiAliasing = 4 // 启用抗锯齿
+            };
+            RenderTexture.Create();
+        }
+    }
+
+    public void RefreshRenderTexture()
+    {
+        if (RenderTexture == null) InitializeRenderTexture();
+
+        // 使用临时摄像机来渲染
+        var tempCameraObj = new GameObject($"TempCamera_Chunk({ChunkX},{ChunkY})");
+        var camera = tempCameraObj.AddComponent<Camera>();
+        
+        // 设置摄像机参数
+        camera.clearFlags = CameraClearFlags.SolidColor;
+        camera.backgroundColor = Color.clear; // 使用透明背景
+        camera.orthographic = true;
+        camera.orthographicSize = chunkSize / 2f;
+        camera.targetTexture = RenderTexture;
+        camera.cullingMask = LayerMask.GetMask("ChunkCell"); // 只渲染ChunkCell层
+
+        // 设置摄像机位置和旋转
+        Vector3 center = CalculateCenter();
+        camera.transform.position = new Vector3(center.x, center.y, -10);
+        camera.transform.rotation = Quaternion.identity;
+
+        // 渲染
+        camera.Render();
+
+        // 销毁临时摄像机
+        GameObject.DestroyImmediate(tempCameraObj);
+    }
+
+    public void SetVisible(bool visible)
+    {
+        IsVisible = visible;
+        if (RenderObject != null)
+        {
+            RenderObject.SetActive(visible);
+        }
+    }
+
+    public Vector3 CalculateCenter()
+    {
+        Vector3 center = Vector3.zero;
+        foreach (var cell in Cells)
+        {
+            center += cell.transform.position;
+        }
+        return center / Cells.Count;
+    }
+
+    public void BindRenderToObject()
+    {
+        if (RenderObject == null)
+        {
+            // 创建用于显示渲染结果的四边形
+            RenderObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            RenderObject.name = $"ChunkRender_{ChunkX}_{ChunkY}";
+            
+            // 计算正确的位置和大小
+            Vector3 center = CalculateCenter();
+            RenderObject.transform.position = center;
+            
+            // 设置大小以匹配区块实际大小
+            float actualSize = chunkSize;
+            RenderObject.transform.localScale = new Vector3(actualSize, actualSize, 1);
+
+            // 创建并设置材质
+            var mat = new Material(Shader.Find("Sprites/Default")) // 使用支持精灵的shader
+            {
+                mainTexture = RenderTexture
+            };
+            RenderObject.GetComponent<MeshRenderer>().material = mat;
+            
+            // 确保渲染对象在正确的层
+            RenderObject.layer = LayerMask.NameToLayer("Default");
+        }
+    }
+
+    // 更新区块中所有格子的图片
+    public void UpdateAllCellSprites(Sprite sprite)
+    {
+        foreach (var cell in Cells)
+        {
+            SetCellSprite(cell, sprite);
+        }
+        RefreshRenderTexture();
+    }
+
+    // 清理资源
+    public void Cleanup()
+    {
+        if (RenderTexture != null)
+        {
+            RenderTexture.Release();
+            GameObject.Destroy(RenderTexture);
+        }
+        
+        if (RenderObject != null)
+        {
+            GameObject.Destroy(RenderObject);
+        }
+    }
+}
