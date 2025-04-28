@@ -19,6 +19,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public bool IsExplored { get; set; } = false; // 是否被探索过
 
+
     private void Awake()
     {
         CellRenderer = GetComponent<SpriteRenderer>();
@@ -29,10 +30,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     {
         // 初始化Hover控制器
         hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
-        if (cellType == GridType.BirdSquare)
-        {
-            gameObject.AddComponent<BoxCollider>();
-        }
     }
 
     // 存储邻居的列表
@@ -235,11 +232,13 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public void OnHoverEnter()
     {
+        if(IsExplored == false) return;
         hoverHandler?.OnHoverEnter(this);
     }
 
     public void OnHoverExit()
     {
+        if(IsExplored == false) return;
         hoverHandler?.OnHoverExit(this);
     }
     #endregion

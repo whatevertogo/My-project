@@ -25,6 +25,8 @@ public class GridManager : Singleton<GridManager>
     }
     public List<SquareCell> AllBridCells = new();
 
+    public List<SquareCell> AllCantMoveCells = new();
+
 
     protected override void Awake()
     {
@@ -69,6 +71,10 @@ public class GridManager : Singleton<GridManager>
                 cell.SetColor(Color.black, false);
                 // 设置格子的type
                 cell.SetGridType(RandomGridType.GetRandomGridType());
+                if (cell.GetGridType() == GridType.BirdSquare)
+                {
+                    AllCantMoveCells.Add(cell); // 添加 BirdSquare 格子到集合中
+                }
                 //设置格子的碰撞体
                 cellObj.AddComponent<BoxCollider2D>();
                 // 调用Init方法初始化SquareCell组件，传入格子的坐标
