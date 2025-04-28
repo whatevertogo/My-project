@@ -46,7 +46,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
             cardCanvas.overrideSorting = true;
 
             // 添加 GraphicRaycaster 以确保仍能接收点击事件
-            if (GetComponent<GraphicRaycaster>() == null)
+            if (GetComponent<GraphicRaycaster>() is null)
             {
                 gameObject.AddComponent<GraphicRaycaster>();
             }
@@ -57,7 +57,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
             cardCanvas.overrideSorting = true;
 
             // 添加 GraphicRaycaster 以确保仍能接收点击事件
-            if (GetComponent<GraphicRaycaster>() == null)
+            if (GetComponent<GraphicRaycaster>() is null)
             {
                 gameObject.AddComponent<GraphicRaycaster>();
             }
@@ -174,7 +174,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     // 更新 UI 显示
     public void UpdateUI()
     {
-        if (card == null)
+        if (card is null)
         {
             CardText.text = string.Empty;
             image.sprite = null;
