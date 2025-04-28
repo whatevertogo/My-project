@@ -49,7 +49,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
             cardCanvas = gameObject.AddComponent<Canvas>();
             cardCanvas.overrideSorting = true;
         }
-        
+
     }
 
     private void OnEnable()
@@ -106,7 +106,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         // 恢复正常层级
         SetSortingOrder(normalSortingOrder);
 
-
+        MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
         // 添加回下降动画，让卡片回到原位
         AnimateTo(originalPosition, 1.0f);
         //隐藏文本
@@ -187,7 +187,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         // 直接设置位置而不是使用动画
         Vector2 mousePos = Input.mousePosition;
         rectTransform.position = mousePos;
-        Debug.Log("Dragging card to position: " + mousePos+InteractManager.Instance.GetCellUnderMouse());
+        Debug.Log("Dragging card to position: " + mousePos + InteractManager.Instance.GetCellUnderMouse());
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -207,5 +207,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
             // TODO: 实现卡牌放置逻辑
             Debug.Log($"Card placed on cell: {cell.name}");
         }
+        MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
+
     }
 }
