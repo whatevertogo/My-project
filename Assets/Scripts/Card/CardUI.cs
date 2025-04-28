@@ -199,6 +199,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         {
             // TODO: 实现卡牌放置逻辑
             Debug.Log($"Card placed on cell: {cell.name}");
+            Destroy(gameObject); // 销毁卡牌UI对象
         }
         else
         {
