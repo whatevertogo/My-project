@@ -12,8 +12,10 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     [ReadOnly]
     public GridType cellType = GridType.None; // 默认值为None
     public SpriteRenderer CellRenderer;
-    // 存储邻居的列表，包括自身和8个方向的邻居
-    [SerializeField] private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
+    /// <summary>
+    /// 存储邻居的列表，包括自身和8个方向的邻居
+    /// </summary>
+    private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
 
     private ICellHoverHandler hoverHandler;
 
@@ -136,7 +138,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     /// <summary>
     /// 获取所有有效的邻居（不包括null值）
     /// </summary>
-    public List<SquareCell> GetneighborsAndSelf()
+    public List<SquareCell> GetNeighborsAndSelf()
     {
         return neighborsAndSelf.Where(n => n != null).ToList();
     }
@@ -205,6 +207,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     {
         cellType = type;
         // 如果type不是SimpleSquare，则设置不能放置
+        //todo-这里可以添加更多的类型判断逻辑，以后多了就用switch语句
         if (type != GridType.SimpleSquare)
         {
             CanPutDown = false;
