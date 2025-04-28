@@ -29,6 +29,10 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     {
         // 初始化Hover控制器
         hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
+        if (cellType == GridType.BirdSquare)
+        {
+            gameObject.AddComponent<BoxCollider>();
+        }
     }
 
     // 存储邻居的列表
@@ -239,6 +243,13 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         hoverHandler?.OnHoverExit(this);
     }
     #endregion
+
+
+
+
+
+
+
 
 
 }

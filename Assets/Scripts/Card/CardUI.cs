@@ -27,6 +27,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     private RectTransform rectTransform;
     [ReadOnly]
     public Canvas cardCanvas;
+    public CanvasGroup cardCanvasGroup;
 
 
     #endregion
@@ -63,6 +64,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
                 gameObject.AddComponent<GraphicRaycaster>();
             }
         }
+        cardCanvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
     private void OnEnable()
@@ -81,7 +83,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
             Debug.LogError("TextArea is null, please assign it in the inspector.");
             return;
         }
-        TextArea.GetComponent<CanvasGroup>().alpha = 0f;
+        TextArea.alpha = 0f;
     }
 
     private void Update()
@@ -103,6 +105,8 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         // 将卡片置于顶层
         SetSortingOrder(hoverSortingOrder);
 
+        MyTweenUtils.FadeIn(cardCanvasGroup, 0.1f, 0.6f);
+
         // 动画改变位置和缩放
         AnimateTo(originalPosition + moveOffset, 1.1f);
         //显示文本
@@ -121,6 +125,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
 
         // 恢复正常层级
         SetSortingOrder(normalSortingOrder);
+
 
         // 添加回下降动画，让卡片回到原位
         AnimateTo(originalPosition, 1.0f);
