@@ -20,6 +20,7 @@ public class Chunk
         this.chunkSize = chunkSize;
     }
 
+    // 添加格子到区块中
     public void AddCell(SquareCell cell)
     {
         Cells.Add(cell);
@@ -39,6 +40,7 @@ public class Chunk
         spriteRenderer.sortingLayerName = "ChunkCell"; // 确保在正确的排序层
     }
 
+    // 初始化渲染纹理
     public void InitializeRenderTexture()
     {
         if (RenderTexture == null)
@@ -53,6 +55,9 @@ public class Chunk
         }
     }
 
+    /// <summary>
+    /// 刷新渲染纹理
+    /// </summary>
     public void RefreshRenderTexture()
     {
         if (RenderTexture == null) InitializeRenderTexture();
@@ -60,7 +65,7 @@ public class Chunk
         // 使用临时摄像机来渲染
         var tempCameraObj = new GameObject($"TempCamera_Chunk({ChunkX},{ChunkY})");
         var camera = tempCameraObj.AddComponent<Camera>();
-        
+
         // 设置摄像机参数
         camera.clearFlags = CameraClearFlags.SolidColor;
         camera.backgroundColor = Color.clear; // 使用透明背景
@@ -81,6 +86,10 @@ public class Chunk
         GameObject.DestroyImmediate(tempCameraObj);
     }
 
+    /// <summary>
+    /// 设置区块的可见性
+    /// </summary>
+    /// <param name="visible"></param>
     public void SetVisible(bool visible)
     {
         IsVisible = visible;
@@ -90,6 +99,10 @@ public class Chunk
         }
     }
 
+    /// <summary>
+    /// 计算区块的中心位置
+    /// </summary>
+    /// <returns></returns>
     public Vector3 CalculateCenter()
     {
         Vector3 center = Vector3.zero;
@@ -100,6 +113,10 @@ public class Chunk
         return center / Cells.Count;
     }
 
+
+    /// <summary>
+    /// 绑定渲染纹理到一个物体上
+    /// </summary>
     public void BindRenderToObject()
     {
         if (RenderObject == null)
@@ -107,11 +124,11 @@ public class Chunk
             // 创建用于显示渲染结果的四边形
             RenderObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
             RenderObject.name = $"ChunkRender_{ChunkX}_{ChunkY}";
-            
+
             // 计算正确的位置和大小
             Vector3 center = CalculateCenter();
             RenderObject.transform.position = center;
-            
+
             // 设置大小以匹配区块实际大小
             float actualSize = chunkSize;
             RenderObject.transform.localScale = new Vector3(actualSize, actualSize, 1);
@@ -122,7 +139,7 @@ public class Chunk
                 mainTexture = RenderTexture
             };
             RenderObject.GetComponent<MeshRenderer>().material = mat;
-            
+
             // 确保渲染对象在正确的层
             RenderObject.layer = LayerMask.NameToLayer("Default");
         }

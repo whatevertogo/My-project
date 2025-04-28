@@ -51,14 +51,18 @@ public class ChunkManager : Singleton<ChunkManager>
         Debug.Log($"Total Chunks: {chunks.Count}");
     }
 
-    // 获取指定区块
+    /// <summary>
+    /// 获取指定区块
+    /// </summary>
     public Chunk GetChunk(int chunkX, int chunkY)
     {
         var chunkKey = (chunkX, chunkY);
         return chunks.TryGetValue(chunkKey, out var chunk) ? chunk : null;
     }
 
-    // 获取指定世界坐标所在的区块
+    /// <summary>
+    /// 获取指定世界坐标所在的区块
+    /// </summary>
     public Chunk GetChunkByWorldPosition(Vector3 worldPosition)
     {
         int chunkX = Mathf.FloorToInt(worldPosition.x / chunkSize);
@@ -66,7 +70,9 @@ public class ChunkManager : Singleton<ChunkManager>
         return GetChunk(chunkX, chunkY);
     }
 
-    // 更新指定区块的内容
+    /// <summary>
+    /// 更新指定区块的内容
+    /// </summary>
     public void UpdateChunkContent(int chunkX, int chunkY, GameObject content)
     {
         var chunk = GetChunk(chunkX, chunkY);
@@ -98,7 +104,9 @@ public class ChunkManager : Singleton<ChunkManager>
         chunk.RefreshRenderTexture();
     }
 
-    // 刷新指定区块
+    /// <summary>
+    /// 刷新指定区块
+    /// </summary>
     public void RefreshChunk(int chunkX, int chunkY)
     {
         var chunk = GetChunk(chunkX, chunkY);
@@ -113,7 +121,9 @@ public class ChunkManager : Singleton<ChunkManager>
         }
     }
 
-    // 设置所有区块的可见性
+    /// <summary>
+    /// 设置所有区块的可见性
+    /// </summary>
     public void SetAllChunksVisible(bool visible)
     {
         foreach (var chunk in chunks.Values)
