@@ -14,7 +14,7 @@ public class InteractManager : Singleton<InteractManager>
         // 检测鼠标悬停
         Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hoverHit = Physics2D.Raycast(point, Vector2.zero);
-        if (hoverHit.collider is null)
+        if (hoverHit.collider is not null)
         {
             SquareCell cell = hoverHit.collider.GetComponent<SquareCell>();
             if (cell != null && cell != hoveredCell && cell.GetHoverHandler() is not DefaultHoverHandler)
@@ -45,7 +45,7 @@ public class InteractManager : Singleton<InteractManager>
                 Debug.Log("点击到了：" + clickHit.collider.name);
 
                 SquareCell cell = clickHit.collider.GetComponent<SquareCell>();
-                if (cell != null)
+                if (cell is not null)
                 {
                     cell.Interact();
                 }

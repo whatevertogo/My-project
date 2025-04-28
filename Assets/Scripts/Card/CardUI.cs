@@ -23,6 +23,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     [Header("动画设置")]
     private Sequence currentSequence;
     private bool isHovered = false;
+    private bool isPointed = true;
     private Vector2 originalPosition;
     private RectTransform rectTransform;
     [ReadOnly]
@@ -31,8 +32,6 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
 
 
     #endregion
-
-
 
     private Card card;
     public static CardUI currentTopCard;
@@ -64,7 +63,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
                 gameObject.AddComponent<GraphicRaycaster>();
             }
         }
-        cardCanvasGroup = gameObject.AddComponent<CanvasGroup>();
+        cardCanvasGroup = gameObject.GetComponent<CanvasGroup>();
     }
 
     private void OnEnable()
@@ -86,18 +85,15 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         TextArea.alpha = 0f;
     }
 
-    private void Update()
-    {
-
-    }
-
     #region 鼠标动画交互效果
     public override void OnPointerEnter(PointerEventData eventData)
     {
         if (isHovered) return;
         isHovered = true;
+        if (isPointed) return;
+        isPointed = true;
 
-        if (currentTopCard == null)
+        if (currentTopCard is null)
         {
             currentTopCard = this;
         }
@@ -117,6 +113,8 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     {
         if (!isHovered) return;
         isHovered = false;
+        if (!isPointed) return;
+        isPointed = false;
 
         if (currentTopCard == this)
         {
@@ -155,7 +153,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
 
     private void SetSortingOrder(int order)
     {
-        if (cardCanvas != null)
+        if (cardCanvas is not null)
         {
             cardCanvas.sortingOrder = order;
         }
@@ -191,34 +189,38 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
             CardText.text = card.CardName;
             image.sprite = card.CardSprite;
         }
-    }
+    }    private bool isDragging = false;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        isHovered = true; // 确保在拖拽时仍然保持悬停状态
-        //todo- 这里可以添加拖拽开始时的逻辑，比如高亮显示卡牌
-
+        isDragging = true;
+        isHovered = true;
+        currentSequence?.Kill(); // 停止任何正在进行的动画
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        FollowMouse(gameObject);
+        if (!isDragging) return;
+        // 直接设置位置而不是使用动画
+        Vector2 mousePos = Input.mousePosition;
+        rectTransform.position = mousePos;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        isHovered = false; // 拖拽结束时取消悬停状态
-        //添加回下降动画，让卡片回到原位
-        AnimateTo(originalPosition, 1.0f);
-        //todo- 这里可以添加拖拽结束后的逻辑，比如放置卡牌到某个位置
-        SquareCell cell = InteractManager.Instance.GetCellUnderMouse();
-        if (cell is null) return;
-        //todo- 这里可以添加放置卡牌的逻辑
-    }
+        isDragging = false;
+        isHovered = false;
 
-    public void FollowMouse(GameObject obj)
-    {
-        Vector2 mousePos = Input.mousePosition;
-        rectTransform.DOMove(mousePos, 0.05f).SetEase(Ease.OutQuad); // 0.1秒内移动过去
+        SquareCell cell = InteractManager.Instance.GetCellUnderMouse();
+        if (cell is null)
+        {
+            // 只有在没有找到目标格子时才返回原位
+            AnimateTo(originalPosition, 1.0f);
+        }
+        else
+        {
+            // TODO: 实现卡牌放置逻辑
+            Debug.Log($"Card placed on cell: {cell.name}");
+        }
     }
 }
