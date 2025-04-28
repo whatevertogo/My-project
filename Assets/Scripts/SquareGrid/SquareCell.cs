@@ -21,7 +21,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public bool IsExplored { get; set; } = false; // 是否被探索过
 
-    public bool CanPutDown { get; set; } = true; // 是否可以放置物体
+    public bool IsPlaceable { get; set; } = true; // 是否可以放置物体
 
 
     private void Awake()
@@ -210,11 +210,11 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         //todo-这里可以添加更多的类型判断逻辑，以后多了就用switch语句
         if (type != GridType.SimpleSquare)
         {
-            CanPutDown = false;
+            IsPlaceable = false;
         }
         else
         {
-            CanPutDown = true;
+            IsPlaceable = true;
         }
     }
     public GridType GetGridType()

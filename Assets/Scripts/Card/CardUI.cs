@@ -185,9 +185,8 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     {
         if (!isDragging) return;
         // 直接设置位置而不是使用动画
-        AnimateTo(Input.mousePosition, 0.3f);
-        // rectTransform.position = Input.mousePosition;
-        // transform.DOScale(0.3f, 0.1f).SetEase(Ease.OutBounce);
+        rectTransform.position = Input.mousePosition;
+        transform.DOScale(0.3f, 0.1f).SetEase(Ease.OutBounce);
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -196,16 +195,15 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         isHovered = false;
 
         SquareCell cell = InteractManager.Instance.GetCellUnderMouse();
-        if (cell is null && cell.IsExplored == true)
-        {
-            // 没有找到目标格子时返回原位
-            AnimateTo(originalPosition, 1.0f);
-        }
-        else
+        if (cell is not null && cell.IsExplored == true && cell.IsPlaceable)
         {
             // TODO: 实现卡牌放置逻辑
             Debug.Log($"Card placed on cell: {cell.name}");
-            
+        }
+        else
+        {
+            // 没有找到目标格子时返回原位
+            AnimateTo(originalPosition, 1.0f);
         }
         MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
 
