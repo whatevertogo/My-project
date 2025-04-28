@@ -199,7 +199,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         {
             // TODO: 实现卡牌放置逻辑
             Debug.Log($"Card placed on cell: {cell.name}");
-            ClearUsedCard();
+            ClearUsedCard();//清除使用的卡牌
         }
         else
         {
