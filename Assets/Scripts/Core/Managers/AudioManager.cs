@@ -125,7 +125,7 @@ public class AudioManager : SingletonDD<AudioManager>
 
     public void UpdateVolumes()
     {
-        if (bgmAudioSource != null)
+        if (bgmAudioSource is not null)
         {
             bgmAudioSource.volume = BGMVolume;
         }
