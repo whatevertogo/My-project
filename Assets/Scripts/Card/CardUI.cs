@@ -216,7 +216,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     public void ClearUsedCard()
     {
         CardManager.Instance?.RemoveCard(card); // 从卡牌管理器中移除卡牌
-        Destroy(gameObject); // 销毁卡牌UI对象
+        Destroy(transform.parent.gameObject);// 销毁卡牌UI父对象
         card = null;
     }
 }
