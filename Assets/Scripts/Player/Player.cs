@@ -96,7 +96,7 @@ public class Player : Singleton<Player>
             if (dir == Vector2Int.zero) yield break;
 
             // 确保当前格子存在
-            if (playerGridComponent?.currentCell == null) yield break;
+            if (playerGridComponent?.currentCell is null) yield break;
 
             // 计算目标格子世界坐标
             Vector3 originPos = playerGridComponent.currentCell.transform.position;
@@ -104,7 +104,7 @@ public class Player : Singleton<Player>
 
             // 检查目标格子是否存在
             SquareCell nextCell = GridManager.Instance.GetCell(targetPos);
-            if (nextCell == null) yield break;
+            if (nextCell is null) yield break;
 
             // 等待平滑移动完成
             yield return StartCoroutine(SmoothMove(targetPos));
