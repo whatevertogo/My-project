@@ -85,6 +85,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1176854079553539409}
     - target: {fileID: 3141366329970995451, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: cardCanvas
+      value: 
+      objectReference: {fileID: 8336196884179845287}
+    - target: {fileID: 3141366329970995451, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: cardCanvasGroup
       value: 
       objectReference: {fileID: 4406523389716370134}
@@ -122,7 +126,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5064425754671766902, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_IgnoreReversedGraphics
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5351372795213039794, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: m_AnchoredPosition.y

@@ -23,7 +23,6 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     [Header("动画设置")]
     private Sequence currentSequence;
     private bool isHovered = false;
-    private bool isPointed = true;
     private Vector2 originalPosition;
     private RectTransform rectTransform;
     [ReadOnly]
@@ -39,31 +38,18 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
 
     private void Awake()
     {
-        //todo-改天简化这个逻辑
         rectTransform = GetComponent<RectTransform>();
+        //todo-改天简化这个逻辑
         if (gameObject.TryGetComponent<Canvas>(out cardCanvas))
         {
-            cardCanvas = GetComponent<Canvas>();
             cardCanvas.overrideSorting = true;
-
-            // 添加 GraphicRaycaster 以确保仍能接收点击事件
-            if (GetComponent<GraphicRaycaster>() is null)
-            {
-                gameObject.AddComponent<GraphicRaycaster>();
-            }
         }
         else
         {
             cardCanvas = gameObject.AddComponent<Canvas>();
             cardCanvas.overrideSorting = true;
-
-            // 添加 GraphicRaycaster 以确保仍能接收点击事件
-            if (GetComponent<GraphicRaycaster>() is null)
-            {
-                gameObject.AddComponent<GraphicRaycaster>();
-            }
         }
-        cardCanvasGroup = gameObject.GetComponent<CanvasGroup>();
+        
     }
 
     private void OnEnable()
@@ -90,8 +76,6 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     {
         if (isHovered) return;
         isHovered = true;
-        if (isPointed) return;
-        isPointed = true;
 
         if (currentTopCard is null)
         {
@@ -113,8 +97,6 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     {
         if (!isHovered) return;
         isHovered = false;
-        if (!isPointed) return;
-        isPointed = false;
 
         if (currentTopCard == this)
         {
@@ -189,7 +171,8 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
             CardText.text = card.CardName;
             image.sprite = card.CardSprite;
         }
-    }    private bool isDragging = false;
+    }
+    private bool isDragging = false;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
@@ -204,6 +187,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         // 直接设置位置而不是使用动画
         Vector2 mousePos = Input.mousePosition;
         rectTransform.position = mousePos;
+        Debug.Log("Dragging card to position: " + mousePos+InteractManager.Instance.GetCellUnderMouse());
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -214,7 +198,8 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         SquareCell cell = InteractManager.Instance.GetCellUnderMouse();
         if (cell is null)
         {
-            // 只有在没有找到目标格子时才返回原位
+            // 只有在没有找到目标格子时和没有拖拽物体的时候才返回原位
+            if (eventData.pointerDrag is null) return;
             AnimateTo(originalPosition, 1.0f);
         }
         else
