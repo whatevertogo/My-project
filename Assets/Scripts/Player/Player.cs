@@ -102,7 +102,7 @@ public class Player : Singleton<Player>
             Vector3 originPos = playerGridComponent.currentCell.transform.position;
             Vector3 targetPos = originPos + new Vector3(dir.x * moveDistance, dir.y * moveDistance, 0f);
 
-            // 检查目标格子是否存在
+            // 检查目标格子是否存在和可移动
             SquareCell nextCell = GridManager.Instance.GetCell(targetPos);
             if (nextCell is null && !GridManager.Instance.AllCantMoveCells.Contains(nextCell)) yield break;
 

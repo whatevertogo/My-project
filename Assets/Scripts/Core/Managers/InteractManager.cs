@@ -13,6 +13,7 @@ public class InteractManager : Singleton<InteractManager>
 
         // 检测鼠标悬停
         Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Debug.Log("鼠标位置：" + point);
         RaycastHit2D hoverHit = Physics2D.Raycast(point, Vector2.zero);
         if (hoverHit.collider is not null)
         {
@@ -40,7 +41,7 @@ public class InteractManager : Singleton<InteractManager>
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit2D clickHit = Physics2D.Raycast(point, Vector2.zero);
-            if (clickHit.collider != null)
+            if (clickHit.collider is not null)
             {
                 Debug.Log("点击到了：" + clickHit.collider.name);
 
@@ -62,8 +63,10 @@ public class InteractManager : Singleton<InteractManager>
         RaycastHit2D hit = Physics2D.Raycast(point, Vector2.zero);
         if (hit.collider is not null)
         {
+            Debug.Log("鼠标现在：" + hit.collider?.name);
             return hit.collider.GetComponent<SquareCell>();
         }
+        RaycastHit2D[] hits = Physics2D.RaycastAll(point, Vector2.zero);
         return null;
     }
 }

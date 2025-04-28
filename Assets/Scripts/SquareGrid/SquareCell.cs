@@ -211,11 +211,15 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         if (type != GridType.SimpleSquare)
         {
             IsPlaceable = false;
+            //todo-调试用，后面可以删除
+            if (!GridManager.Instance.AllCantMoveCells.Contains(this))
+                GridManager.Instance.AllCantMoveCells.Add(this);
         }
         else
         {
             IsPlaceable = true;
         }
+
     }
     public GridType GetGridType()
     {
