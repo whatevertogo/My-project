@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CDTU.Utils;
 using UnityEngine;
+using System;
 
 public class GridManager : Singleton<GridManager>
 {
@@ -91,52 +92,10 @@ public class GridManager : Singleton<GridManager>
         }
 
         // 设置所有方向的邻居关系（包括对角线）
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                SquareCell cell = cells[x, y];
-
-                // 基本方向
-                SetNeighborIfValid(cell, x, y, SquareDirection.N);
-                SetNeighborIfValid(cell, x, y, SquareDirection.S);
-                SetNeighborIfValid(cell, x, y, SquareDirection.E);
-                SetNeighborIfValid(cell, x, y, SquareDirection.W);
-
-                // 对角线方向
-                if (x > 0 && y < height - 1) // 左上
-                    SetNeighborIfValid(cell, x, y, SquareDirection.NW);
-
-                if (x < width - 1 && y < height - 1) // 右上
-                    SetNeighborIfValid(cell, x, y, SquareDirection.NE);
-
-                if (x > 0 && y > 0) // 左下
-                    SetNeighborIfValid(cell, x, y, SquareDirection.SW);
-
-                if (x < width - 1 && y > 0) // 右下
-                    SetNeighborIfValid(cell, x, y, SquareDirection.SE);
-            }
-        }
+        SetAllNeighbors();
 
         // 设置格子的类型，确保相邻格子类型不同时为 BirdSquare
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                SquareCell cell = cells[x, y];
-                GridType cellType;
-                do
-                {
-                    cellType = RandomGridType.GetRandomGridType();
-                    // 检查已设置类型的邻居
-                } while (HasNeighborWithTypeAfterInit(cell, GridType.BirdSquare) && cellType == GridType.BirdSquare && GetCell(GetGridCenter()).GetGridType() != GridType.BirdSquare);
-                cell.SetGridType(cellType);
-                //邻居不能互相是鸟，出生点不能是鸟
-                if (cell.GetGridType() == GridType.BirdSquare)
-                    AllBridCells.Add(cell); // 添加 BirdSquare 格子到集合中
-
-            }
-        }
+        AssignGridTypes();
 
         // 确保至少有指定数量的 BirdSquare
         EnsureBirdSquares(AllCells.ToList(), requiredCount);
@@ -198,6 +157,7 @@ public class GridManager : Singleton<GridManager>
         return GetCell(coord.X, coord.Y);
     }
 
+
     public Vector3 WorldToGridCoordinates(Vector2 worldPosition)
     {
         var coord = SquareCoordinates.FromWorldPosition(worldPosition); // 推荐在SquareCoordinates实现此静态方法
@@ -209,7 +169,7 @@ public class GridManager : Singleton<GridManager>
     }
 
     /// <summary>
-    /// 确保至少有指定数量的 BirdSquare
+    /// todo-确保至少有指定数量的 BirdSquare
     /// </summary>
     public void EnsureBirdSquares(List<SquareCell> allCells, int requiredCount)
     {
@@ -236,12 +196,13 @@ public class GridManager : Singleton<GridManager>
         {
             for (int i = 0; i < neededCount; i++)
             {
-                int randomIndex = Random.Range(0, nonBirdCells.Count);
+                int randomIndex = UnityEngine.Random.Range(0, nonBirdCells.Count);
                 nonBirdCells[randomIndex].SetGridType(GridType.BirdSquare);
                 nonBirdCells.RemoveAt(randomIndex); // 确保不会重复选择同一个格子
             }
         }
     }
+    //生成雾
     private void GenerateMist(int x, int y)
     {
         List<Vector2> fogPoints = GeneratePoissonPoints(0.5f); // 参数为最小距离，可调
@@ -250,14 +211,14 @@ public class GridManager : Singleton<GridManager>
         {
             Vector3 pos = new Vector3(x + pt.x - 0.5f, y + pt.y - 0.5f, -1f);
             //检查 mistPrefeb 是否为空或长度为 0
-            if (mistPrefeb == null || mistPrefeb.Length == 0)
+            if (mistPrefeb is null || mistPrefeb.Length == 0)
             {
                 Debug.LogError("mistPrefeb array is null or empty! Please assign mist prefabs in the Inspector.");
                 return;
             }
-            GameObject prefab = mistPrefeb[Random.Range(0, mistPrefeb.Length)];
+            GameObject prefab = mistPrefeb[UnityEngine.Random.Range(0, mistPrefeb.Length)];
             GameObject fog = Instantiate(prefab, pos, Quaternion.identity, transform);
-            fog.transform.localScale *= Random.Range(0.8f, 1.2f);
+            fog.transform.localScale *= UnityEngine.Random.Range(0.8f, 1.2f);
             fogList.Add(fog);
         }
     }
@@ -276,14 +237,14 @@ public class GridManager : Singleton<GridManager>
 
         while (spawnPoints.Any())
         {
-            int spawnIndex = Random.Range(0, spawnPoints.Count);
+            int spawnIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
             Vector2 spawnCenter = spawnPoints[spawnIndex];
             bool accepted = false;
 
             for (int i = 0; i < numSamplesBeforeRejection; i++)
             {
-                float angle = Random.value * Mathf.PI * 2;
-                float dist = Random.Range(radius, 2 * radius);
+                float angle = UnityEngine.Random.value * Mathf.PI * 2;
+                float dist = UnityEngine.Random.Range(radius, 2 * radius);
                 Vector2 candidate = spawnCenter + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * dist;
 
                 if (candidate.x >= 0 && candidate.x < 1 && candidate.y >= 0 && candidate.y < 1 && IsFarEnough(candidate, points, radius))
@@ -311,5 +272,45 @@ public class GridManager : Singleton<GridManager>
                 return false;
         }
         return true;
+    }
+
+    // 优化后的格子类型分配逻辑
+    private void AssignGridTypes()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                SquareCell cell = cells[x, y];
+                GridType cellType = RandomGridType.GetRandomGridType();
+
+                // 确保出生点不是 BirdSquare
+                if (GetCell(GetGridCenter()).GetGridType() == GridType.BirdSquare)
+                    cellType = GridType.SimpleSquare;
+
+                cell.SetGridType(cellType);
+
+                if (cell.GetGridType() == GridType.BirdSquare)
+                {
+                    AllBridCells.Add(cell);
+                }
+            }
+        }
+    }
+
+    // 提取邻居关系设置为通用方法
+    private void SetAllNeighbors()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                SquareCell cell = cells[x, y];
+                foreach (SquareDirection direction in Enum.GetValues(typeof(SquareDirection)))
+                {
+                    SetNeighborIfValid(cell, x, y, direction);
+                }
+            }
+        }
     }
 }
