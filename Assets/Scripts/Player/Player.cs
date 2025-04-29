@@ -119,7 +119,7 @@ public class Player : Singleton<Player>
             yield return StartCoroutine(SmoothMove(targetPos));
 
             // 移动完成后更新当前格子并重置冷却
-            playerGridComponent.SetCurrentCell(nextCell);
+            playerGridComponent.SetCurrentCell(nextCell,moveVector);
             CooldownTimer = moveCooldown;
         }
         finally

@@ -10,9 +10,11 @@ public class PlayerGridComponent : MonoBehaviour
     public class OnCellChangedEventArgs : EventArgs
     {
         public SquareCell cell { get; }
-        public OnCellChangedEventArgs(SquareCell newCell)
+        public Vector2 inputDirection { get; }
+        public OnCellChangedEventArgs(SquareCell newCell, Vector2 newInputDirection)
         {
             cell = newCell;
+            inputDirection = newInputDirection;
         }
     }
 
@@ -25,16 +27,16 @@ public class PlayerGridComponent : MonoBehaviour
             Debug.LogError("Player is not on a valid cell. Please check the player's position.");
             return;
         }
-        OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
+        OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell, Vector2.zero));
     }
 
     // 添加一个公共方法来设置当前格子并触发事件，由 Player.cs 调用
-    public void SetCurrentCell(SquareCell cell)
+    public void SetCurrentCell(SquareCell cell,Vector2 moveDirection)
     {
         if (cell != currentCell)
         {
             currentCell = cell;
-            OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
+            OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell, moveDirection));
         }
     }
 }
