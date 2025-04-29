@@ -74,7 +74,7 @@ public class GridManager : Singleton<GridManager>
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
                 //设置格子的颜色
-                cell.SetColor(Color.black, false);
+                // cell.SetColor(Color.black, false);
                 GenerateMist(x, y);//放置迷雾
                 // 设置格子的type
                 cell.SetGridType(RandomGridType.GetRandomGridType());

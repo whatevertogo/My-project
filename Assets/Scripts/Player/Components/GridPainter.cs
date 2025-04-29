@@ -49,20 +49,6 @@ public class GridPainter : Singleton<GridPainter>
         }
     }
 
-    /* void Update()
-    {
-        for (int i = mistList.Count - 1; i >= 0; i--) 
-        {
-            GameObject mist = mistList[i];
-            float dist = Vector2.Distance(playerGridComponent.currentCell.transform.position, mist.transform.position);
-
-            if (dist <= radius) 
-            {
-                StartCoroutine(FadeOut(mist));
-                mistList.RemoveAt(i);
-            }
-        }
-    } */
 
     private void OnPlayerCellChanged(object sender, PlayerGridComponent.OnCellChangedEventArgs e)
     {
@@ -93,7 +79,7 @@ public class GridPainter : Singleton<GridPainter>
             if (cell.CellRenderer is null) continue;
             
             // 设置颜色为白色（已探索）
-            cell.SetColor(Color.white, true);
+            // cell.SetColor(Color.white, true);
             Collider2D hit = Physics2D.OverlapPoint(new Vector2(cell.transform.position.x, cell.transform.position.y)); // 检测预制体
 
             if (hit != null && cell.IsExplored == false)//判断目标是否存在，且保证是未探索地块
@@ -142,7 +128,7 @@ public class GridPainter : Singleton<GridPainter>
                 // 添加 SpriteRenderer 并设置小鸟图
                 SpriteRenderer sr = birdOverlay.AddComponent<SpriteRenderer>();
                 sr.sprite = Resources.Load<Sprite>("Images/Bird" + randomValue);
-                if (sr.sprite == null)
+                if (sr.sprite is null)
                 {
                     Debug.LogError("未能加载小鸟图片，跳过设置。");
                     continue;
@@ -193,14 +179,3 @@ public class GridPainter : Singleton<GridPainter>
             return moveDirection;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
