@@ -69,7 +69,7 @@ public class GridManager : Singleton<GridManager>
                 cellObj.transform.parent = this.transform;
 
                 // 获取格子对象的渲染器组件
-                var renderer = cellObj.AddComponent<SpriteRenderer>();
+                _ = cellObj.AddComponent<SpriteRenderer>();
 
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
