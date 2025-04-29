@@ -156,6 +156,7 @@ public class GridPainter : Singleton<GridPainter>
                     Debug.LogError("未能加载小鸟图片，跳过设置。");
                     continue;
                 }
+                sr.sortingLayerName = "Behavior";
                 sr.sortingOrder = cell.CellRenderer.sortingOrder + 1; // 确保盖在上面
 
                 Debug.Log("在 BirdSquare 上添加了鸟的贴图。");
