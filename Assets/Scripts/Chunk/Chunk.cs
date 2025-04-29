@@ -32,7 +32,7 @@ public class Chunk
     public void SetCellSprite(SquareCell cell, Sprite sprite)
     {
         var spriteRenderer = cell.gameObject.GetComponent<SpriteRenderer>();
-        if (spriteRenderer == null)
+        if (spriteRenderer is null)
         {
             spriteRenderer = cell.gameObject.AddComponent<SpriteRenderer>();
         }
@@ -43,7 +43,7 @@ public class Chunk
     // 初始化渲染纹理
     public void InitializeRenderTexture()
     {
-        if (RenderTexture == null)
+        if (RenderTexture is null)
         {
             // 创建一个新的渲染纹理，设置更高的分辨率以获得更好的质量
             RenderTexture = new RenderTexture(1024, 1024, 0)
@@ -93,7 +93,7 @@ public class Chunk
     public void SetVisible(bool visible)
     {
         IsVisible = visible;
-        if (RenderObject != null)
+        if (RenderObject is not null)
         {
             RenderObject.SetActive(visible);
         }
@@ -158,15 +158,62 @@ public class Chunk
     // 清理资源
     public void Cleanup()
     {
-        if (RenderTexture != null)
+        if (RenderTexture is not null)
         {
             RenderTexture.Release();
             GameObject.Destroy(RenderTexture);
         }
         
-        if (RenderObject != null)
+        if (RenderObject is not null)
         {
             GameObject.Destroy(RenderObject);
+        }
+    }
+
+    /// <summary>
+    /// 为整个区块设置一张大图片
+    /// </summary>
+    /// <param name="sprite">要设置的图片</param>
+    public void SetChunkSprite(Sprite sprite)
+    {
+        if (RenderObject is null)
+        {
+            Debug.LogWarning($"RenderObject for Chunk ({ChunkX}, {ChunkY}) is not initialized.");
+            return;
+        }
+
+        // 获取或创建材质
+        var renderer = RenderObject.GetComponent<MeshRenderer>();
+        if (renderer is null)
+        {
+            Debug.LogError("RenderObject does not have a MeshRenderer component.");
+            return;
+        }
+
+        if (renderer.material is null)
+        {
+            renderer.material = new Material(Shader.Find("Sprites/Default"));
+        }
+
+        // 设置材质的主纹理为 Sprite 的纹理
+        renderer.material.mainTexture = sprite.texture;
+    }
+
+    /// <summary>
+    /// 清除区块的图片
+    /// </summary>
+    public void ClearChunkSprite()
+    {
+        if (RenderObject == null)
+        {
+            Debug.LogWarning($"RenderObject for Chunk ({ChunkX}, {ChunkY}) is not initialized.");
+            return;
+        }
+
+        var renderer = RenderObject.GetComponent<MeshRenderer>();
+        if (renderer != null && renderer.material != null)
+        {
+            renderer.material.mainTexture = null;
         }
     }
 }

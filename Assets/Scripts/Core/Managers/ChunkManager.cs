@@ -11,6 +11,9 @@ public class ChunkManager : Singleton<ChunkManager>
     [ReadOnly]
     private int mapHeight; // 地图高度（格子数）
 
+    [Header("调试用宝宝")]
+    public GameObject chunkWrapperPrefab;
+
     private Dictionary<(int, int), Chunk> chunks = new();
 
     protected override void Awake()
@@ -18,6 +21,13 @@ public class ChunkManager : Singleton<ChunkManager>
         base.Awake();
         mapWidth = GridManager.Instance?.width ?? 0;
         mapHeight = GridManager.Instance?.height ?? 0;
+    }
+
+    void Start()
+    {
+        InitializeChunks(GridManager.Instance.cells);
+        // 可视化所有区块（调试用）
+        VisualizeAllChunks(chunkWrapperPrefab);
     }
 
     // 初始化区块，将地图的所有格子划分为区块
@@ -76,7 +86,7 @@ public class ChunkManager : Singleton<ChunkManager>
     public void UpdateChunkContent(int chunkX, int chunkY, GameObject content)
     {
         var chunk = GetChunk(chunkX, chunkY);
-        if (chunk == null)
+        if (chunk is null)
         {
             Debug.LogWarning($"Chunk ({chunkX}, {chunkY}) not found!");
             return;
@@ -110,7 +120,7 @@ public class ChunkManager : Singleton<ChunkManager>
     public void RefreshChunk(int chunkX, int chunkY)
     {
         var chunk = GetChunk(chunkX, chunkY);
-        if (chunk != null)
+        if (chunk is not null)
         {
             chunk.RefreshRenderTexture();
             chunk.BindRenderToObject();
@@ -147,16 +157,71 @@ public class ChunkManager : Singleton<ChunkManager>
     {
         foreach (var chunk in chunks.Values)
         {
-            if (chunk.RenderObject != null)
+            if (chunk.RenderObject is not null)
             {
                 GameObject.Destroy(chunk.RenderObject);
             }
-            if (chunk.RenderTexture != null)
+            if (chunk.RenderTexture is not null)
             {
                 chunk.RenderTexture.Release();
                 GameObject.Destroy(chunk.RenderTexture);
             }
         }
         chunks.Clear();
+    }
+
+    /// <summary>
+    /// 为指定区块设置一张大图片
+    /// </summary>
+    /// <param name="chunkX">区块的 X 坐标</param>
+    /// <param name="chunkY">区块的 Y 坐标</param>
+    /// <param name="sprite">要设置的图片</param>
+    public void SetChunkImage(int chunkX, int chunkY, Sprite sprite)
+    {
+        var chunk = GetChunk(chunkX, chunkY);
+        if (chunk is null)
+        {
+            Debug.LogWarning($"Chunk ({chunkX}, {chunkY}) not found!");
+            return;
+        }
+
+        chunk.SetChunkSprite(sprite);
+    }
+
+    /// <summary>
+    /// 清除指定区块的图片
+    /// </summary>
+    /// <param name="chunkX">区块的 X 坐标</param>
+    /// <param name="chunkY">区块的 Y 坐标</param>
+    public void ClearChunkImage(int chunkX, int chunkY)
+    {
+        var chunk = GetChunk(chunkX, chunkY);
+        if (chunk is null)
+        {
+            Debug.LogWarning($"Chunk ({chunkX}, {chunkY}) not found!");
+            return;
+        }
+
+        chunk.ClearChunkSprite();
+    }
+
+    /// <summary>
+    /// 在场景中可视化所有区块
+    /// </summary>
+    /// <param name="chunkWrapperPrefab">包含 ChunkWrapper 的预制体</param>
+    public void VisualizeAllChunks(GameObject chunkWrapperPrefab)
+    {
+        foreach (var chunk in chunks.Values)
+        {
+            // 创建一个 ChunkWrapper 实例
+            GameObject wrapperObject = Instantiate(chunkWrapperPrefab, Vector3.zero, Quaternion.identity, transform);
+            ChunkWrapper wrapper = wrapperObject.GetComponent<ChunkWrapper>();
+
+            // 初始化 ChunkWrapper
+            wrapper.Initialize(chunk);
+
+            // 设置位置为区块的中心
+            wrapper.transform.position = chunk.CalculateCenter();
+        }
     }
 }

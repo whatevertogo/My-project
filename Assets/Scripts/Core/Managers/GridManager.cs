@@ -16,7 +16,7 @@ public class GridManager : Singleton<GridManager>
     [Header("网格类型配置和需要的BridSquare数量")]
     public GridTypeConfig gridTypeConfig; // 网格类型配置文件
     public int requiredCount = 2; // 至少需要的 BirdSquare 数量
-    private SquareCell[,] cells;
+    public SquareCell[,] cells;
     public IEnumerable<SquareCell> AllCells
     {
         get
