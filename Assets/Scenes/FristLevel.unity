@@ -431,6 +431,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chunkSize: 5
   chunkWrapperPrefab: {fileID: 6879933175907427523, guid: bda7e6ad086d7634cb6351860484141d, type: 3}
+  DiBanSprite: {fileID: 21300000, guid: 7efb7ea68d2b2a24f8f27edeb63fd14a, type: 3}
 --- !u!1 &621430822
 GameObject:
   m_ObjectHideFlags: 0
