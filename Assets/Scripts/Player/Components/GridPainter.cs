@@ -14,23 +14,31 @@ public class GridPainter : Singleton<GridPainter>
     public float fadeDuration = 1.0f; // 迷雾消失时间
     public float startSpeed = 0f; // 初始速度
     public float acceleration = 1f; // 每秒加速度
+    public float misLocalScaleMin = 0.8f;
+    public float misLocalScaleMax = 1.2f;
 
+    [Header("泊松分布参数")]
+    public float poissonRadius = 0.5f; // 最小距离
+    public int poissonSamplesBeforeRejection = 20; // 采样次数
+
+    [Header("调试设置")]
+    public bool enableDebugLogs = true; // 控制日志输出
     // 使用字典存储每个格子位置的迷雾对象
-    private Dictionary<Vector2Int, List<GameObject>> fogDictionary = new Dictionary<Vector2Int, List<GameObject>>();
+    private Dictionary<Vector2Int, List<GameObject>> fogDictionary = new();
     private Transform fogParent; // 迷雾的父物体
 
     protected override void Awake()
     {
         base.Awake();
         playerGridComponent = GetComponent<PlayerGridComponent>();
-        InitializeFogParent();
+        InitializeFogParent(); //初始化迷雾父物体
     }
 
     private void InitializeFogParent()
     {
         // 检查是否已存在迷雾父物体
         GameObject existingFogParent = GameObject.Find("FogContainer");
-        if (existingFogParent != null)
+        if (existingFogParent is not null)
         {
             fogParent = existingFogParent.transform;
         }
@@ -46,12 +54,11 @@ public class GridPainter : Singleton<GridPainter>
 
     private void Start()
     {
-        if (playerGridComponent != null)
+        if (playerGridComponent is not null)
         {
             playerGridComponent.OnCellChanged += OnPlayerCellChanged;
         }
-
-        if (playerGridComponent?.currentCell?.CellRenderer != null)
+        if (playerGridComponent?.currentCell?.CellRenderer is not null)
         {
             currentCellRenderer = playerGridComponent.currentCell.CellRenderer;
             PaintArea(playerGridComponent.currentCell);
@@ -60,55 +67,20 @@ public class GridPainter : Singleton<GridPainter>
 
     private void OnPlayerCellChanged(object sender, PlayerGridComponent.OnCellChangedEventArgs e)
     {
-        if (e.cell != null && e.cell.CellRenderer != null && e.cell.CellRenderer != currentCellRenderer)
+        if (e.cell is not null && e.cell.CellRenderer is not null && e.cell.CellRenderer != currentCellRenderer)
         {
             currentCellRenderer = e.cell.CellRenderer;
-            Debug.Log($"Current cell renderer updated: {currentCellRenderer.name}");
+            if (enableDebugLogs) Debug.Log($"Current cell renderer updated: {currentCellRenderer.name}");
         }
 
         PaintArea(e.cell);
     }
-
-    // 清除指定格子位置的迷雾
-    private void ClearMistAtCell(Vector2Int cellPos)
-    {
-        if (!fogDictionary.ContainsKey(cellPos)) return;
-
-        var mistsToRemove = fogDictionary[cellPos].ToList();
-        foreach (var mist in mistsToRemove)
-        {
-            if (mist != null)
-            {
-                Vector2 currentDir = MistDir(mist);
-                StartCoroutine(FadeOut(mist, currentDir));
-            }
-        }
-
-        fogDictionary.Remove(cellPos);
-    }
-
-    // 清除当前格子及周围八个格子的迷雾
-    private void ClearMistAround(SquareCell centerCell)
-    {
-        if (centerCell == null) return;
-
-        var coords = centerCell.Coordinates;
-        var centerPos = new Vector2Int(coords.X, coords.Y);
-
-        // 清除3x3范围内的所有迷雾
-        for (int x = -1; x <= 1; x++)
-        {
-            for (int y = -1; y <= 1; y++)
-            {
-                Vector2Int cellPos = new Vector2Int(centerPos.x + x, centerPos.y + y);
-                ClearMistAtCell(cellPos);
-            }
-        }
-    }
-
+    /// <summary>
+    /// 画小鸟和雾
+    /// </summary>
     public void PaintArea(SquareCell centerCell)
     {
-        if (centerCell == null || centerCell.CellRenderer == null)
+        if (centerCell is null || centerCell.CellRenderer is null)
         {
             Debug.LogError("Center cell or its renderer is null. Cannot paint area.");
             return;
@@ -121,13 +93,11 @@ public class GridPainter : Singleton<GridPainter>
         List<SquareCell> surroundingCells = centerCell.GetSurroundingCells().ToList();
         foreach (SquareCell cell in surroundingCells)
         {
-            if (cell.CellRenderer == null) continue;
-
             // 如果是小鸟格子，添加小鸟贴图
             if (cell.GetGridType() == GridType.BirdSquare)
             {
                 // 检查是否已经有 BirdOverlay 子物体，避免重复创建
-                if (cell.transform.Find("BirdOverlay") != null)
+                if (cell.transform.Find("BirdOverlay") is not null)
                 {
                     Debug.Log("BirdOverlay 已存在，跳过创建。");
                     continue;
@@ -167,10 +137,45 @@ public class GridPainter : Singleton<GridPainter>
         }
     }
 
+    // 清除指定格子位置的迷雾
+    private void ClearMistAtCell(Vector2Int cellPos)
+    {
+        if (!HasFogInDictionary(cellPos)) return;
+
+        var mistsToRemove = fogDictionary[cellPos].ToList();
+        foreach (var mist in mistsToRemove)
+        {
+            if (mist is not null)
+            {
+                Vector2 currentDir = MistDir(mist);
+                StartCoroutine(FadeOut(mist, currentDir));
+                RemoveFogFromDictionary(cellPos, mist);
+            }
+        }
+    }
+
+    // 清除当前格子及周围八个格子的迷雾
+    private void ClearMistAround(SquareCell centerCell)
+    {
+        if (centerCell is null) return;
+
+        var centerPos = new Vector2Int(centerCell.Coordinates.X, centerCell.Coordinates.Y);
+
+        // 清除3x3范围内的所有迷雾
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                Vector2Int cellPos = new Vector2Int(centerPos.x + x, centerPos.y + y);
+                ClearMistAtCell(cellPos);
+            }
+        }
+    }
+
     // 获取迷雾移动方向
     private Vector2 MistDir(GameObject mist)
     {
-        if (mist == null || playerGridComponent?.currentCell == null)
+        if (mist is null || playerGridComponent?.currentCell is null)
             return Vector2.up;
 
         return ((Vector2)(mist.transform.position - playerGridComponent.currentCell.transform.position)).normalized;
@@ -179,16 +184,17 @@ public class GridPainter : Singleton<GridPainter>
     // 迷雾淡出效果
     private IEnumerator FadeOut(GameObject mist, Vector3 dir)
     {
-        if (mist == null) yield break;
+        if (mist is null) yield break;
 
         float elapsedTime = 0f;
         float speed = startSpeed;
         SpriteRenderer mistSr = mist.GetComponent<SpriteRenderer>();
-        if (mistSr == null) yield break;
+        if (mistSr is null) yield break;
 
         Color color = mistSr.color;
+        Vector2Int cellPos = new Vector2Int(Mathf.RoundToInt(mist.transform.position.x), Mathf.RoundToInt(mist.transform.position.y));
 
-        while (elapsedTime < fadeDuration && mist != null)
+        while (elapsedTime < fadeDuration && mist is not null)
         {
             elapsedTime += Time.deltaTime;
             float alpha = Mathf.Lerp(color.a, 0f, elapsedTime / fadeDuration);
@@ -199,15 +205,16 @@ public class GridPainter : Singleton<GridPainter>
             yield return null;
         }
 
-        if (mist != null)
+        if (mist is not null)
         {
+            RemoveFogFromDictionary(cellPos, mist);
             Destroy(mist);
         }
     }
 
     private void OnDestroy()
     {
-        if (playerGridComponent != null)
+        if (playerGridComponent is not null)
         {
             playerGridComponent.OnCellChanged -= OnPlayerCellChanged;
         }
@@ -226,32 +233,40 @@ public class GridPainter : Singleton<GridPainter>
     // 生成单个格子的迷雾
     public void GenerateMist(int x, int y)
     {
-        List<Vector2> fogPoints = GeneratePoissonPoints(0.5f); // 参数为最小距离，可调
+        List<Vector2> fogPoints = GeneratePoissonPoints(poissonRadius, poissonSamplesBeforeRejection);
         Vector2Int cellPos = new Vector2Int(x, y);
-
-        if (!fogDictionary.ContainsKey(cellPos))
-        {
-            fogDictionary[cellPos] = new List<GameObject>();
-        }
 
         foreach (var pt in fogPoints)
         {
+            //todo-也许你会微调他的值
             Vector3 pos = new Vector3(x + pt.x - 0.5f, y + pt.y - 0.5f, -1f);
-            //检查 mistPrefabs 是否为空或长度为 0
-            if (mistPrefabs is null || mistPrefabs.Length == 0)
+            GameObject fog = CreateFogObject(pos);
+            if (fog is not null)
             {
-                Debug.LogError("mistPrefabs array is null or empty! Please assign mist prefabs in the Inspector.");
-                return;
+                AddFogToDictionary(cellPos, fog);
             }
-            GameObject prefab = mistPrefabs[UnityEngine.Random.Range(0, mistPrefabs.Length)];
-            GameObject fog = Instantiate(prefab, pos, Quaternion.identity, fogParent);
-            fog.transform.localScale *= UnityEngine.Random.Range(0.8f, 1.2f);
-            fogDictionary[cellPos].Add(fog);
         }
     }
 
-    //网上找的泊松分布
-    //numSamplesBeforeRejection用于控制采样次数，次数减少可以减少雾气数量
+    // 创建迷雾对象
+    private GameObject CreateFogObject(Vector3 position)
+    {
+        GameObject prefab = mistPrefabs[Random.Range(0, mistPrefabs.Length)];
+        GameObject fog = Instantiate(prefab, position, Quaternion.identity, fogParent);
+        fog.transform.localScale *= Random.Range(misLocalScaleMin, misLocalScaleMax);
+        return fog;
+    }
+
+    // 网上找的泊松分布
+    // numSamplesBeforeRejection用于控制采样次数，次数减少可以减少雾气数量
+    // 返回生成的点列表
+
+    /// <summary>
+    /// 生成泊松分布的点
+    /// </summary>
+    /// <param name="radius">最小允许距离</param>
+    /// <param name="numSamplesBeforeRejection">控制采样次数</param>
+    /// <returns>生成的点列表</returns>
     public List<Vector2> GeneratePoissonPoints(float radius, int numSamplesBeforeRejection = 20)
     {
         List<Vector2> points = new List<Vector2>();// 最终结果
@@ -293,8 +308,14 @@ public class GridPainter : Singleton<GridPainter>
 
         return points;
     }
-
-    bool IsFarEnough(Vector2 candidate, List<Vector2> points, float radius)//泊松分布用于计算距离
+    /// <summary>
+    /// 判断候选点是否与已有所有点之间的距离都大于等于给定的半径。
+    /// </summary>
+    /// <param name="candidate">候选点</param>
+    /// <param name="points">已有点列表</param>
+    /// <param name="radius">最小允许距离</param>
+    /// <returns>如果候选点与所有已有点的距离都大于等于 radius，则返回 true；否则返回 false</returns>
+    private bool IsFarEnough(Vector2 candidate, List<Vector2> points, float radius)
     {
         foreach (var p in points)
         {
@@ -307,18 +328,6 @@ public class GridPainter : Singleton<GridPainter>
     // 为整个网格生成迷雾
     public void GenerateAllMist(int width, int height)
     {
-        if (mistPrefabs == null || mistPrefabs.Length == 0)
-        {
-            Debug.LogError("迷雾预制体数组为空！请在检查器中设置迷雾预制体。");
-            return;
-        }
-
-        // 确保有迷雾父物体
-        if (fogParent == null)
-        {
-            InitializeFogParent();
-        }
-
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -326,7 +335,34 @@ public class GridPainter : Singleton<GridPainter>
                 GenerateMist(x, y);
             }
         }
-
-        Debug.Log($"已生成 {fogDictionary.Count} 个格子的迷雾");
+        if (enableDebugLogs) Debug.Log($"已生成 {fogDictionary.Count} 个格子的迷雾");
     }
+
+    // 添加迷雾到字典
+    private void AddFogToDictionary(Vector2Int cellPos, GameObject fog)
+    {
+        if (!HasFogInDictionary(cellPos))
+        {
+            fogDictionary[cellPos] = new List<GameObject>();
+        }
+        fogDictionary[cellPos].Add(fog);
+    }
+
+    // 从字典中移除迷雾
+    private void RemoveFogFromDictionary(Vector2Int cellPos, GameObject fog)
+    {
+        if (HasFogInDictionary(cellPos))
+        {
+            fogDictionary[cellPos].Remove(fog);
+            if (!fogDictionary[cellPos].Any())
+            {
+                fogDictionary.Remove(cellPos);
+            }
+        }
+    }
+    private bool HasFogInDictionary(Vector2Int cellPos)
+    {
+        return fogDictionary.ContainsKey(cellPos) && fogDictionary[cellPos].Count > 0;
+    }
+
 }
