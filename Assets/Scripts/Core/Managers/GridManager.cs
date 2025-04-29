@@ -75,7 +75,7 @@ public class GridManager : Singleton<GridManager>
                 if (prefabOptions.Length > 0)
                 {
                     int index = Random.Range(0, prefabOptions.Length);
-                    Instantiate(prefabOptions[index], CellPosition, Quaternion.identity);//生成迷雾
+                    Instantiate(prefabOptions[index], CellPosition, Quaternion.identity,transform);//生成迷雾
                 }
                 // 设置格子的type
                 cell.SetGridType(RandomGridType.GetRandomGridType());

@@ -70,13 +70,6 @@ public class Player : Singleton<Player>
 
         // 从游戏输入管理器获取玩家的移动输入
         input = GameInput.Instance.MoveInput;
-        Vector2 moveVector = input.normalized;
-        if(input.magnitude > 0f)// 有输入时，传递方向
-        {
-            OnMove?.Invoke(moveVector);
-            Debug.Log("当前输入方向: " + moveVector);
-        }
-
         try
         {
             // 如果玩家没有输入移动指令，则直接返回，不执行后续移动逻辑
@@ -119,7 +112,8 @@ public class Player : Singleton<Player>
             yield return StartCoroutine(SmoothMove(targetPos));
 
             // 移动完成后更新当前格子并重置冷却
-            playerGridComponent.SetCurrentCell(nextCell,moveVector);
+            playerGridComponent.SetCurrentCell(nextCell);//原版
+            //playerGridComponent.SetCurrentCell(nextCell,moveVector);//修改版
             CooldownTimer = moveCooldown;
         }
         finally
