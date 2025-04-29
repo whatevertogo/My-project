@@ -15,18 +15,43 @@ public class ChunkManager : Singleton<ChunkManager>
     public GameObject chunkWrapperPrefab;
 
     private Dictionary<(int, int), Chunk> chunks = new();
+    private static Camera sharedCamera; // 共享的持久摄像机
+    [SerializeField] private Sprite DiBanSprite;
 
     protected override void Awake()
     {
         base.Awake();
         mapWidth = GridManager.Instance?.width ?? 0;
         mapHeight = GridManager.Instance?.height ?? 0;
+
+        // 初始化共享摄像机
+        if (sharedCamera is null)
+        {
+            var cameraObj = new GameObject("SharedChunkCamera");
+            sharedCamera = cameraObj.AddComponent<Camera>();
+
+            // 设置摄像机参数
+            sharedCamera.clearFlags = CameraClearFlags.SolidColor;
+            sharedCamera.backgroundColor = Color.clear; // 使用透明背景
+            sharedCamera.orthographic = true;
+            sharedCamera.cullingMask = LayerMask.GetMask("ChunkCell"); // 只渲染ChunkCell层
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // 清理共享摄像机
+        if (sharedCamera is not null)
+        {
+            Destroy(sharedCamera.gameObject);
+            sharedCamera = null;
+        }
     }
 
     void Start()
     {
         InitializeChunks(GridManager.Instance.cells);
-        // 可视化所有区块（调试用）
+        //todo- 可视化所有区块（调试用）
         VisualizeAllChunks(chunkWrapperPrefab);
     }
 
@@ -56,6 +81,7 @@ public class ChunkManager : Singleton<ChunkManager>
             chunk.InitializeRenderTexture();
             chunk.RefreshRenderTexture();
             chunk.BindRenderToObject();
+            chunk.SetChunkSprite(DiBanSprite);
         }
 
         Debug.Log($"Total Chunks: {chunks.Count}");

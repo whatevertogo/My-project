@@ -7,22 +7,22 @@ using System.Collections;
 public class GridPainter : Singleton<GridPainter>
 {
     private PlayerGridComponent playerGridComponent;
-    public Player player;
     public Renderer currentCellRenderer;
     public float fadeDuration = 1.0f; //迷雾消失时间
     public float startSpeed = 0f; // 初始速度
-    public float acceleration = 2f; // 每秒加多少速度
+    public float acceleration = 1f; // 每秒加多少速度
     private float currentSpeed; // 实时速度
-    private Vector2 moveDirection;
+    private Vector2 moveDirection;//放置移动方向
+    public float radius = 1f;//检测驱散的迷雾范围
+    List<GameObject> mistList = new List<GameObject>();
+
     protected override void Awake()
     {
         base.Awake();
         playerGridComponent = GetComponent<PlayerGridComponent>();
-        player = GetComponent<Player>();
     }
     private void Start()
     {
-        player.OnMove += HandleMove; // 订阅玩家移动
         currentSpeed = startSpeed; // 初始化当前速度
         if (playerGridComponent is not null)
         {
@@ -34,7 +34,35 @@ public class GridPainter : Singleton<GridPainter>
             currentCellRenderer = playerGridComponent.currentCell.CellRenderer;
         }
         PaintArea(playerGridComponent.currentCell);
+        mistList = GridManager.Instance.fogList;
+        //初始时清除一次迷雾
+        for (int i = mistList.Count - 1; i >= 0; i--)//获取要清除的迷雾
+        {
+            GameObject mist = mistList[i];
+            float dist = Vector2.Distance(playerGridComponent.currentCell.transform.position, mist.transform.position);
+            if (dist <= radius)
+            {
+                Vector2 misDir = MistDir(mist); // 获取移动方向
+                StartCoroutine(FadeOut(mist, misDir));//启用迷雾消散方法
+                mistList.RemoveAt(i);
+            }
+        }
     }
+
+    /* void Update()
+    {
+        for (int i = mistList.Count - 1; i >= 0; i--) 
+        {
+            GameObject mist = mistList[i];
+            float dist = Vector2.Distance(playerGridComponent.currentCell.transform.position, mist.transform.position);
+
+            if (dist <= radius) 
+            {
+                StartCoroutine(FadeOut(mist));
+                mistList.RemoveAt(i);
+            }
+        }
+    } */
 
     private void OnPlayerCellChanged(object sender, PlayerGridComponent.OnCellChangedEventArgs e)
     {
@@ -63,16 +91,29 @@ public class GridPainter : Singleton<GridPainter>
         foreach (SquareCell cell in surroundingCells)
         {
             if (cell.CellRenderer is null) continue;
-
+            
             // 设置颜色为白色（已探索）
             cell.SetColor(Color.white, true);
-
             Collider2D hit = Physics2D.OverlapPoint(new Vector2(cell.transform.position.x, cell.transform.position.y)); // 检测预制体
-            if (hit != null && cell.IsExplored == false)//判断目标是否存在，且保证是未探索地块
-            { StartCoroutine(FadeOut(hit)); }
-            else
-            { Debug.Log("这个位置没有物体"); }
 
+            if (hit != null && cell.IsExplored == false)//判断目标是否存在，且保证是未探索地块
+            {
+                
+                for (int i = mistList.Count - 1; i >= 0; i--)//遍历获取要清除的迷雾
+                {
+                    GameObject mist = mistList[i];
+                    float dist = Vector2.Distance(playerGridComponent.currentCell.transform.position, mist.transform.position);
+                    if (dist <= radius)
+                    {
+                        Vector2 currentDir = MistDir(mist);//调用获取移动方向的方法赋予要驱散的迷雾
+                        StartCoroutine(FadeOut(mist,currentDir)); // 启用迷雾消散方法
+                        mistList.RemoveAt(i);
+                    }
+                }
+            }
+            else
+            {Debug.Log("这个位置没有物体");}
+        
             // 如果是小鸟格子，添加小鸟贴图
             if (cell.GetGridType() == GridType.BirdSquare)
             {
@@ -122,30 +163,34 @@ public class GridPainter : Singleton<GridPainter>
             playerGridComponent.OnCellChanged -= OnPlayerCellChanged;
         }
     }
-    IEnumerator FadeOut(Collider2D targetMist)//使迷雾逐渐消失而不是立即消失，并往远离玩家的方向移动
+    IEnumerator FadeOut(GameObject mist,Vector3 dir)//使迷雾逐渐消失而不是立即消失，并逐渐远离玩家
     {
+        
         float elapsedTime = 0f;
-        Color originalColor = targetMist.GetComponent<SpriteRenderer>().color;
-
-        while (elapsedTime < fadeDuration)//逐渐透明
+        currentSpeed = startSpeed;
+        SpriteRenderer mistSr = mist.GetComponent<SpriteRenderer>();
+        Color color = mistSr.color;//当前的颜色
+        while (elapsedTime < fadeDuration)
         {
+            //逐渐透明
             elapsedTime += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
-            targetMist.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
-            currentSpeed += acceleration * Time.deltaTime; // 每帧速度增加
-            targetMist.transform.position += (Vector3)(moveDirection.normalized * currentSpeed * Time.deltaTime);
+            float alpha = Mathf.Lerp(color.a, 0f, elapsedTime / fadeDuration);
+            mistSr.color = new Color(color.r, color.g, color.b, alpha);
+            //逐渐远离
+            currentSpeed += acceleration * Time.deltaTime;
+            mist.transform.position += dir.normalized * currentSpeed * Time.deltaTime;
             yield return null;
         }
-
         // 最后确保完全透明
-        targetMist.GetComponent<SpriteRenderer>().color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
-        Destroy(targetMist.gameObject); // 销毁
+        mistSr.color = new Color(color.r, color.g, color.b, 0f);
+        Destroy(mistSr.gameObject); // 销毁
     }
-    private void HandleMove(Vector2 moveDir)
+    
+    private Vector2 MistDir(GameObject mist)
     {
-        // 检测是否接收到移动方向,并同步方向参数
-        Debug.Log("收到移动方向：" + moveDir);
-        moveDirection = moveDir.normalized;
+            moveDirection = (Vector2)(mist.transform.position - playerGridComponent.currentCell.transform.position).normalized;
+            Debug.Log("方向是"+moveDirection);
+            return moveDirection;
     }
 }
 

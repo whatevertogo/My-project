@@ -9,7 +9,7 @@ public class GridManager : Singleton<GridManager>
     public int width = 25;
     public int height = 25;
 
-    public GameObject[] prefabOptions;//预制体
+    public GameObject[] mistPrefeb;//预制体
 
     public Vector3 GetGridCenter() => new Vector3(width / 2, height / 2, 0);
 
@@ -17,6 +17,10 @@ public class GridManager : Singleton<GridManager>
     public GridTypeConfig gridTypeConfig; // 网格类型配置文件
     public int requiredCount = 2; // 至少需要的 BirdSquare 数量
     public SquareCell[,] cells;
+    [Header("迷雾相关的配置")]
+    public List<GameObject> fogList = new List<GameObject>();
+    public int minFogPerTile = 3;//最少生成的迷雾
+    public int maxFogPerTile = 5;//最多生成的迷雾
     public IEnumerable<SquareCell> AllCells
     {
         get
@@ -71,12 +75,7 @@ public class GridManager : Singleton<GridManager>
                 var cell = cellObj.AddComponent<SquareCell>();
                 //设置格子的颜色
                 cell.SetColor(Color.black, false);
-                Vector3 CellPosition = new Vector3(cellObj.transform.position.x,cellObj.transform.position.y,cellObj.transform.position.z-0.1f);//获取网格的位置
-                if (prefabOptions.Length > 0)
-                {
-                    int index = Random.Range(0, prefabOptions.Length);
-                    Instantiate(prefabOptions[index], CellPosition, Quaternion.identity);//生成迷雾
-                }
+                GenerateMist(x, y);//放置迷雾
                 // 设置格子的type
                 cell.SetGridType(RandomGridType.GetRandomGridType());
                 //设置格子的碰撞体
@@ -239,5 +238,75 @@ public class GridManager : Singleton<GridManager>
                 nonBirdCells.RemoveAt(randomIndex); // 确保不会重复选择同一个格子
             }
         }
+    }
+    private void GenerateMist(int x, int y)
+    {
+        List<Vector2> fogPoints = GeneratePoissonPoints(0.5f); // 参数为最小距离，可调
+
+        foreach (var pt in fogPoints)
+        {
+            Vector3 pos = new Vector3(x + pt.x - 0.5f, y + pt.y - 0.5f, -1f);
+            //检查 mistPrefeb 是否为空或长度为 0
+            if (mistPrefeb == null || mistPrefeb.Length == 0)
+            {
+                Debug.LogError("mistPrefeb array is null or empty! Please assign mist prefabs in the Inspector.");
+                return;
+            }
+            GameObject prefab = mistPrefeb[Random.Range(0, mistPrefeb.Length)];
+            GameObject fog = Instantiate(prefab, pos, Quaternion.identity, transform);
+            fog.transform.localScale *= Random.Range(0.8f, 1.2f);
+            fogList.Add(fog);
+        }
+    }
+    //网上找的泊松分布
+    public List<Vector2> GeneratePoissonPoints(float radius, int numSamplesBeforeRejection = 20)//numSamplesBeforeRejection用于控制采样次数，次数减少可以减少雾气数量
+    {
+        List<Vector2> points = new List<Vector2>();
+        List<Vector2> spawnPoints = new List<Vector2>();
+
+        float cellSize = radius / Mathf.Sqrt(2);
+        int gridSize = Mathf.CeilToInt(1f / cellSize); // 限制在 1x1 区域内
+        Vector2[,] grid = new Vector2[gridSize, gridSize];
+
+        // 初始点在中心附近
+        spawnPoints.Add(new Vector2(0.5f, 0.5f));
+
+        while (spawnPoints.Any())
+        {
+            int spawnIndex = Random.Range(0, spawnPoints.Count);
+            Vector2 spawnCenter = spawnPoints[spawnIndex];
+            bool accepted = false;
+
+            for (int i = 0; i < numSamplesBeforeRejection; i++)
+            {
+                float angle = Random.value * Mathf.PI * 2;
+                float dist = Random.Range(radius, 2 * radius);
+                Vector2 candidate = spawnCenter + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * dist;
+
+                if (candidate.x >= 0 && candidate.x < 1 && candidate.y >= 0 && candidate.y < 1 && IsFarEnough(candidate, points, radius))
+                {
+                    points.Add(candidate);
+                    spawnPoints.Add(candidate);
+                    accepted = true;
+                    break;
+                }
+            }
+
+            if (!accepted)
+            {
+                spawnPoints.RemoveAt(spawnIndex);
+            }
+        }
+
+        return points;
+    }
+    bool IsFarEnough(Vector2 candidate, List<Vector2> points, float radius)//泊松分布用于计算距离
+    {
+        foreach (var p in points)
+        {
+            if ((candidate - p).sqrMagnitude < radius * radius)
+                return false;
+        }
+        return true;
     }
 }
