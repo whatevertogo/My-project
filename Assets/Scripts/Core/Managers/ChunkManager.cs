@@ -23,19 +23,6 @@ public class ChunkManager : Singleton<ChunkManager>
         base.Awake();
         mapWidth = GridManager.Instance?.width ?? 0;
         mapHeight = GridManager.Instance?.height ?? 0;
-
-        // // 初始化共享摄像机
-        // if (sharedCamera is null)
-        // {
-        //     var cameraObj = new GameObject("SharedChunkCamera");
-        //     sharedCamera = cameraObj.AddComponent<Camera>();
-
-        //     // 设置摄像机参数
-        //     sharedCamera.clearFlags = CameraClearFlags.SolidColor;
-        //     sharedCamera.backgroundColor = Color.clear; // 使用透明背景
-        //     sharedCamera.orthographic = true;
-        //     sharedCamera.cullingMask = LayerMask.GetMask("ChunkCell"); // 只渲染ChunkCell层
-        // }
     }
 
     private void OnDestroy()

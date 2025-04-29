@@ -24,7 +24,7 @@ public class ChunkWrapper : MonoBehaviour
         // 将 RenderObject 设置为 ChunkWrapper 的子物体
         if (chunk.RenderObject is not null)
         {
-            chunk.RenderObject.transform.SetParent(this.transform);
+            chunk.RenderObject.transform.SetParent(this.transform,false);
             chunk.RenderObject.transform.localPosition = Vector3.zero;
         }
     }

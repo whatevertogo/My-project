@@ -11,11 +11,6 @@ public class PlayerGridComponent : MonoBehaviour
     {
         public SquareCell cell { get; }
         public Vector2 inputDirection { get; }
-        /* public OnCellChangedEventArgs(SquareCell newCell, Vector2 newInputDirection)//新版
-        {
-            cell = newCell;
-            inputDirection = newInputDirection;
-        } */
         public OnCellChangedEventArgs(SquareCell newCell)//旧版
         {
             cell = newCell;
@@ -43,12 +38,4 @@ public class PlayerGridComponent : MonoBehaviour
             OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell));
         }
     }
-    /* public void SetCurrentCell(SquareCell cell,Vector2 moveDirection)
-    {
-        if (cell != currentCell)
-        {
-            currentCell = cell;
-            OnCellChanged?.Invoke(this, new OnCellChangedEventArgs(currentCell, moveDirection));
-        }
-    } */
 }

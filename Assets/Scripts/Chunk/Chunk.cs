@@ -122,7 +122,9 @@ public class Chunk
         if (RenderObject is null)
         {
             // 创建用于显示渲染结果的四边形
-            RenderObject = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            RenderObject = new GameObject($"ChunkRender_{ChunkX}_{ChunkY}");
+            var spriteRenderer = RenderObject.AddComponent<SpriteRenderer>();
+            spriteRenderer.sortingOrder = 3;
             RenderObject.name = $"ChunkRender_{ChunkX}_{ChunkY}";
 
             // 计算正确的位置和大小
@@ -138,7 +140,7 @@ public class Chunk
             {
                 mainTexture = RenderTexture
             };
-            RenderObject.GetComponent<MeshRenderer>().material = mat;
+            spriteRenderer.material = mat;
 
             // 确保渲染对象在正确的层
             RenderObject.layer = LayerMask.NameToLayer("Default");
@@ -163,7 +165,7 @@ public class Chunk
             RenderTexture.Release();
             GameObject.Destroy(RenderTexture);
         }
-        
+
         if (RenderObject is not null)
         {
             GameObject.Destroy(RenderObject);
@@ -183,10 +185,10 @@ public class Chunk
         }
 
         // 获取或创建材质
-        var renderer = RenderObject.GetComponent<MeshRenderer>();
+        var renderer = RenderObject.GetComponent<SpriteRenderer>();
         if (renderer is null)
         {
-            Debug.LogError("RenderObject does not have a MeshRenderer component.");
+            Debug.LogError("RenderObject does not have a SpriteRenderer component.");
             return;
         }
 
@@ -195,8 +197,8 @@ public class Chunk
             renderer.material = new Material(Shader.Find("Sprites/Default"));
         }
 
-        // 设置材质的主纹理为 Sprite 的纹理
-        renderer.material.mainTexture = sprite.texture;
+        //设置照片
+        renderer.sprite = sprite;
     }
 
     /// <summary>
@@ -204,14 +206,14 @@ public class Chunk
     /// </summary>
     public void ClearChunkSprite()
     {
-        if (RenderObject == null)
+        if (RenderObject is null)
         {
             Debug.LogWarning($"RenderObject for Chunk ({ChunkX}, {ChunkY}) is not initialized.");
             return;
         }
 
         var renderer = RenderObject.GetComponent<MeshRenderer>();
-        if (renderer != null && renderer.material != null)
+        if (renderer is not null && renderer.material is not null)
         {
             renderer.material.mainTexture = null;
         }

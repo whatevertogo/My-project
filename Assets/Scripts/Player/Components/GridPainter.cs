@@ -11,8 +11,6 @@ public class GridPainter : Singleton<GridPainter>
     public float fadeDuration = 1.0f; //迷雾消失时间
     public float startSpeed = 0f; // 初始速度
     public float acceleration = 1f; // 每秒加多少速度
-    private float currentSpeed; // 实时速度
-    private Vector2 moveDirection;//放置移动方向
     public float radius = 1f;//检测驱散的迷雾范围
     List<GameObject> mistList = new List<GameObject>();
 
@@ -23,7 +21,6 @@ public class GridPainter : Singleton<GridPainter>
     }
     private void Start()
     {
-        currentSpeed = startSpeed; // 初始化当前速度
         if (playerGridComponent is not null)
         {
             playerGridComponent.OnCellChanged += OnPlayerCellChanged;
@@ -137,7 +134,7 @@ public class GridPainter : Singleton<GridPainter>
 
     private void OnDestroy()
     {
-        if (playerGridComponent != null)
+        if (playerGridComponent is not null)
         {
             playerGridComponent.OnCellChanged -= OnPlayerCellChanged;
         }

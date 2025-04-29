@@ -31,9 +31,7 @@ public class GridManager : Singleton<GridManager>
         }
     }
     public List<SquareCell> AllBridCells = new();
-
     public List<SquareCell> AllDontMoveCells = new();
-
 
     protected override void Awake()
     {
@@ -69,8 +67,8 @@ public class GridManager : Singleton<GridManager>
                 // 将格子对象设置为当前网格管理器的子对象
                 cellObj.transform.parent = this.transform;
 
-                // 获取格子对象的渲染器组件
-                _ = cellObj.AddComponent<SpriteRenderer>();
+                // 添加格子对象的渲染器组件
+                cellObj.AddComponent<SpriteRenderer>();
 
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
@@ -157,12 +155,13 @@ public class GridManager : Singleton<GridManager>
         return GetCell(coord.X, coord.Y);
     }
 
-
+    // 通过Coordinates获取格子
     public Vector3 WorldToGridCoordinates(Vector2 worldPosition)
     {
         var coord = SquareCoordinates.FromWorldPosition(worldPosition); // 推荐在SquareCoordinates实现此静态方法
         return new Vector3(coord.X, coord.Y, 0);
     }
+    //通过格子坐标系坐标获取世界坐标系坐标
     public Vector3 GridToWorldCoordinates(Vector2 gridPosition)
     {
         return new Vector3(gridPosition.x * SquareMetrics.cellSize, gridPosition.y * SquareMetrics.cellSize, 0);
@@ -223,17 +222,18 @@ public class GridManager : Singleton<GridManager>
         }
     }
     //网上找的泊松分布
-    public List<Vector2> GeneratePoissonPoints(float radius, int numSamplesBeforeRejection = 20)//numSamplesBeforeRejection用于控制采样次数，次数减少可以减少雾气数量
+    //numSamplesBeforeRejection用于控制采样次数，次数减少可以减少雾气数量
+    public List<Vector2> GeneratePoissonPoints(float radius, int numSamplesBeforeRejection = 20)
     {
-        List<Vector2> points = new List<Vector2>();
-        List<Vector2> spawnPoints = new List<Vector2>();
+        List<Vector2> points = new List<Vector2>();// 最终结果
+        List<Vector2> spawnPoints = new List<Vector2>();// 当前可以生成新点的“种子点”
 
         float cellSize = radius / Mathf.Sqrt(2);
         int gridSize = Mathf.CeilToInt(1f / cellSize); // 限制在 1x1 区域内
         Vector2[,] grid = new Vector2[gridSize, gridSize];
 
-        // 初始点在中心附近
-        spawnPoints.Add(new Vector2(0.5f, 0.5f));
+        // 初始点中心
+        spawnPoints.Add(new Vector2(0.5f, 0.5f)); 
 
         while (spawnPoints.Any())
         {
