@@ -8,10 +8,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - ChunkCell
   - Water
   - UI
-  - ChunkCell
+  - 
   - 
   - 
   - 
@@ -43,4 +43,7 @@ TagManager:
     locked: 0
   - name: ChunkCell
     uniqueID: 4077266467
+    locked: 0
+  - name: Behavior
+    uniqueID: 1955692289
     locked: 0

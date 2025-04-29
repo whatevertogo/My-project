@@ -1,3 +1,10 @@
+/*
+注意任务sortinglayer ==2
+
+*/
+
+
+
 using System.Collections.Generic;
 using System.Linq;
 using CDTU.Utils;
@@ -20,8 +27,6 @@ public class GridManager : Singleton<GridManager>
     public SquareCell[,] cells;
     [Header("迷雾相关的配置")]
     public List<GameObject> fogList = new List<GameObject>();
-    public int minFogPerTile = 3;//最少生成的迷雾
-    public int maxFogPerTile = 5;//最多生成的迷雾
     public IEnumerable<SquareCell> AllCells
     {
         get
@@ -67,7 +72,7 @@ public class GridManager : Singleton<GridManager>
                 // 将格子对象设置为当前网格管理器的子对象
                 cellObj.transform.parent = this.transform;
 
-                // 添加格子对象的渲染器组件
+                // 格子对象的渲染器组件
                 cellObj.AddComponent<SpriteRenderer>();
 
                 // 为格子对象添加SquareCell组件
@@ -94,9 +99,6 @@ public class GridManager : Singleton<GridManager>
 
         // 设置格子的类型，确保相邻格子类型不同时为 BirdSquare
         AssignGridTypes();
-
-        // 确保至少有指定数量的 BirdSquare
-        EnsureBirdSquares(AllCells.ToList(), requiredCount);
 
         Debug.Log($"Total Cells Generated: {width * height}");
     }
@@ -167,40 +169,6 @@ public class GridManager : Singleton<GridManager>
         return new Vector3(gridPosition.x * SquareMetrics.cellSize, gridPosition.y * SquareMetrics.cellSize, 0);
     }
 
-    /// <summary>
-    /// todo-确保至少有指定数量的 BirdSquare
-    /// </summary>
-    public void EnsureBirdSquares(List<SquareCell> allCells, int requiredCount)
-    {
-        // 统计当前已有的 BirdSquare 数量
-        int currentCount = 0;
-        List<SquareCell> nonBirdCells = new List<SquareCell>();
-
-        foreach (var cell in allCells)
-        {
-            if (cell.GetGridType() == GridType.BirdSquare)
-            {
-                currentCount++;
-                AllBridCells.Add(cell); // 添加 BirdSquare 格子到集合中
-            }
-            else
-            {
-                nonBirdCells.Add(cell); // 仅添加非 BirdSquare 的格子
-            }
-        }
-
-        // 如果当前数量不足，则随机补充
-        int neededCount = requiredCount - currentCount;
-        if (neededCount > 0 && nonBirdCells.Count >= neededCount)
-        {
-            for (int i = 0; i < neededCount; i++)
-            {
-                int randomIndex = UnityEngine.Random.Range(0, nonBirdCells.Count);
-                nonBirdCells[randomIndex].SetGridType(GridType.BirdSquare);
-                nonBirdCells.RemoveAt(randomIndex); // 确保不会重复选择同一个格子
-            }
-        }
-    }
     //生成雾
     private void GenerateMist(int x, int y)
     {
@@ -233,7 +201,7 @@ public class GridManager : Singleton<GridManager>
         Vector2[,] grid = new Vector2[gridSize, gridSize];
 
         // 初始点中心
-        spawnPoints.Add(new Vector2(0.5f, 0.5f)); 
+        spawnPoints.Add(new Vector2(0.5f, 0.5f));
 
         while (spawnPoints.Any())
         {

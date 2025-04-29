@@ -39,17 +39,4 @@ public static class RandomGridType
         }
     }
 
-    /// <summary>
-    /// 确保至少有一个 BirdSquare
-    /// </summary>
-    public static void EnsureAtLeastOneBirdSquare(List<SquareCell> allCells)
-    {
-        if (!hasBirdSquare && config.ensureAtLeastOneBirdSquare)
-        {
-            // 随机选择一个格子并设置为 BirdSquare
-            int randomIndex = Random.Range(0, allCells.Count);
-            allCells[randomIndex].SetGridType(GridType.BirdSquare);
-            hasBirdSquare = true;
-        }
-    }
 }

@@ -50,56 +50,56 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         return Coordinates;
     }
 
-//     #region 颜色管理
-//     public void SetColor(Color targetcolor, bool smooth)
-//     {
-//         if (smooth)
-//         {
-//             StartCoroutine(SmoothColorChange(targetColor: targetcolor));
-//         }
-//         else
-//         {
-//             currentColor = targetcolor;
-//             CellRenderer.color = targetcolor;
-//         }
-//     }
+    //     #region 颜色管理
+    //     public void SetColor(Color targetcolor, bool smooth)
+    //     {
+    //         if (smooth)
+    //         {
+    //             StartCoroutine(SmoothColorChange(targetColor: targetcolor));
+    //         }
+    //         else
+    //         {
+    //             currentColor = targetcolor;
+    //             CellRenderer.color = targetcolor;
+    //         }
+    //     }
 
-//     private IEnumerator SmoothColorChange(Color targetColor)
-//     {
-//         Color startColor = currentColor;
-//         float elapsedTime = 0f;
+    //     private IEnumerator SmoothColorChange(Color targetColor)
+    //     {
+    //         Color startColor = currentColor;
+    //         float elapsedTime = 0f;
 
-//         while (elapsedTime < duration)
-//         {
-//             elapsedTime += Time.deltaTime;
-//             float t = Mathf.Clamp01(elapsedTime / duration); // 归一化的时间值
+    //         while (elapsedTime < duration)
+    //         {
+    //             elapsedTime += Time.deltaTime;
+    //             float t = Mathf.Clamp01(elapsedTime / duration); // 归一化的时间值
 
-//             // 使用Mathf.SmoothStep使过渡更加平滑
-//             float smoothT = Mathf.SmoothStep(0f, 1f, t);
+    //             // 使用Mathf.SmoothStep使过渡更加平滑
+    //             float smoothT = Mathf.SmoothStep(0f, 1f, t);
 
-//             // 计算当前颜色
-//             Color newColor = Color.Lerp(startColor, targetColor, smoothT);
+    //             // 计算当前颜色
+    //             Color newColor = Color.Lerp(startColor, targetColor, smoothT);
 
-//             // 更新当前颜色和渲染器颜色
-//             currentColor = newColor;
-//             CellRenderer.color = newColor;
+    //             // 更新当前颜色和渲染器颜色
+    //             currentColor = newColor;
+    //             CellRenderer.color = newColor;
 
-//             // 等待下一帧
-//             yield return null;
-//         }
+    //             // 等待下一帧
+    //             yield return null;
+    //         }
 
-//         // 确保最终颜色精确匹配目标颜色
-//         currentColor = targetColor;
-//         CellRenderer.color = targetColor;
-//     }
+    //         // 确保最终颜色精确匹配目标颜色
+    //         currentColor = targetColor;
+    //         CellRenderer.color = targetColor;
+    //     }
 
-//     public Color GetColor()
-//     {
-//         return currentColor;
-//     }
+    //     public Color GetColor()
+    //     {
+    //         return currentColor;
+    //     }
 
 
-// #endregion
+    // #endregion
 
     #region 邻居方法
     /// <summary>
@@ -204,17 +204,12 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     #region 网格Type方法
     public void SetGridType(GridType type)
     {
-        cellType = type;
-        // 如果type不是SimpleSquare，则设置不能放置
-        //todo-这里可以添加更多的类型判断逻辑，以后多了就用switch语句
-        if (type != GridType.SimpleSquare)
+        this.cellType = type;
+        if (this.cellType == GridType.BirdSquare)
         {
-            IsPlaceable = false;
-            //todo-调试用，后面可以删除
-            if (!GridManager.Instance.AllDontMoveCells.Contains(this))
-                GridManager.Instance.AllDontMoveCells.Add(this);
+            GridManager.Instance.AllDontMoveCells.Add(this);
         }
-        else
+        else if (this.cellType == GridType.SimpleSquare)
         {
             IsPlaceable = true;
         }

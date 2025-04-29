@@ -199,6 +199,7 @@ public class Chunk
 
         //设置照片
         renderer.sprite = sprite;
+        renderer.sortingLayerName = "ChunkCell";
     }
 
     /// <summary>
