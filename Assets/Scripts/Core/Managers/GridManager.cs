@@ -73,8 +73,7 @@ public class GridManager : Singleton<GridManager>
 
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
-                //设置格子的颜色
-                // cell.SetColor(Color.black, false);
+                //设置格子的透明度
                 Color A = cell.CellRenderer.color;
                 A.a = 0f;
                 cell.CellRenderer.color = A;
@@ -130,8 +129,9 @@ public class GridManager : Singleton<GridManager>
                 {
                     cellType = RandomGridType.GetRandomGridType();
                     // 检查已设置类型的邻居
-                } while (HasNeighborWithTypeAfterInit(cell, GridType.BirdSquare) && cellType == GridType.BirdSquare);
+                } while (HasNeighborWithTypeAfterInit(cell, GridType.BirdSquare) && cellType == GridType.BirdSquare && GetCell(GetGridCenter()).GetGridType() != GridType.BirdSquare);
                 cell.SetGridType(cellType);
+                //邻居不能互相是鸟，出生点不能是鸟
                 if (cell.GetGridType() == GridType.BirdSquare)
                     AllBridCells.Add(cell); // 添加 BirdSquare 格子到集合中
 
