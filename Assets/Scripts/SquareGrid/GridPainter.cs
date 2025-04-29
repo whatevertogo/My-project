@@ -63,16 +63,16 @@ public class GridPainter : Singleton<GridPainter>
         foreach (SquareCell cell in surroundingCells)
         {
             if (cell.CellRenderer is null) continue;
-            
+
             // 设置颜色为白色（已探索）
             cell.SetColor(Color.white, true);
 
             Collider2D hit = Physics2D.OverlapPoint(new Vector2(cell.transform.position.x, cell.transform.position.y)); // 检测预制体
             if (hit != null && cell.IsExplored == false)//判断目标是否存在，且保证是未探索地块
-            {StartCoroutine(FadeOut(hit));}
+            { StartCoroutine(FadeOut(hit)); }
             else
-            {Debug.Log("这个位置没有物体");}
-        
+            { Debug.Log("这个位置没有物体"); }
+
             // 如果是小鸟格子，添加小鸟贴图
             if (cell.GetGridType() == GridType.BirdSquare)
             {

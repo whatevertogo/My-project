@@ -20,7 +20,7 @@ public class PlayerGridComponent : MonoBehaviour
     {
         // 尝试获取当前格子
         currentCell = GridManager.Instance.GetCell(transform.position);
-        if (currentCell == null)
+        if (currentCell is null)
         {
             Debug.LogError("Player is not on a valid cell. Please check the player's position.");
             return;
