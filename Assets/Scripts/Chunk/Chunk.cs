@@ -119,7 +119,7 @@ public class Chunk
     /// </summary>
     public void BindRenderToObject()
     {
-        if (RenderObject == null)
+        if (RenderObject is null)
         {
             // 创建用于显示渲染结果的四边形
             RenderObject = GameObject.CreatePrimitive(PrimitiveType.Quad);

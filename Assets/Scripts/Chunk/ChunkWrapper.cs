@@ -17,6 +17,16 @@ public class ChunkWrapper : MonoBehaviour
         ChunkY = chunk.ChunkY;
         ChunkSize = chunk.Cells.Count;
         CellCount = chunk.Cells.Count;
+
+        // 绑定渲染纹理到 RenderObject
+        chunk.BindRenderToObject();
+
+        // 将 RenderObject 设置为 ChunkWrapper 的子物体
+        if (chunk.RenderObject is not null)
+        {
+            chunk.RenderObject.transform.SetParent(this.transform);
+            chunk.RenderObject.transform.localPosition = Vector3.zero;
+        }
     }
 
     private void OnDrawGizmos()
