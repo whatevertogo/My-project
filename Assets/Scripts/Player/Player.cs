@@ -5,7 +5,6 @@ using System.Collections;
 public class Player : Singleton<Player>
 {
     private PlayerGridComponent playerGridComponent;
-    public event Action<Vector2> OnMove;
     private float moveDistance = 1f;
     [Tooltip("移动冷却时间")]
     [Range(0.1f, 5f)] // 限制冷却时间范围为 0.1 到 5 秒
@@ -126,7 +125,6 @@ public class Player : Singleton<Player>
     {
         Vector3 startPos = transform.position;
         float elapsedTime = 0f;
-
 
         // 如果持续时间过短，直接设置位置以避免除零错误或瞬移
         if (moveDuration <= 0f)
