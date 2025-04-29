@@ -485,10 +485,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentCellRenderer: {fileID: 0}
+  mistPrefabs:
+  - {fileID: 5253463108866157231, guid: c7116f519bc1f99408470168c0e4f5f0, type: 3}
+  - {fileID: 5253463108866157231, guid: 759fc255b2a1aed4ea098c3f2bedbd78, type: 3}
+  - {fileID: 5253463108866157231, guid: 123c7f03563fb8e40a37155b9705d3c1, type: 3}
   fadeDuration: 1
   startSpeed: 0
   acceleration: 1
   radius: 1
+  mistDensity: 0.5
+  samplesBeforeRejection: 20
 --- !u!1 &820159479
 GameObject:
   m_ObjectHideFlags: 0
@@ -962,15 +968,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 25
   height: 25
-  mistPrefeb:
-  - {fileID: 5253463108866157231, guid: c7116f519bc1f99408470168c0e4f5f0, type: 3}
-  - {fileID: 5253463108866157231, guid: 759fc255b2a1aed4ea098c3f2bedbd78, type: 3}
-  - {fileID: 5253463108866157231, guid: 123c7f03563fb8e40a37155b9705d3c1, type: 3}
   gridTypeConfig: {fileID: 11400000, guid: 6467ab8470781914e80e94de5ef94a7d, type: 2}
   requiredCount: 2
-  fogList: []
-  minFogPerTile: 4
-  maxFogPerTile: 5
   AllBridCells: []
   AllDontMoveCells: []
 --- !u!4 &1010826480

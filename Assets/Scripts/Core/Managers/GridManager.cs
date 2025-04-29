@@ -10,16 +10,13 @@ public class GridManager : Singleton<GridManager>
     public int width = 25;
     public int height = 25;
 
-    public GameObject[] mistPrefeb;//预制体
-
     public Vector3 GetGridCenter() => new Vector3(width / 2, height / 2, 0);
 
     [Header("网格类型配置和需要的BridSquare数量")]
     public GridTypeConfig gridTypeConfig; // 网格类型配置文件
     public int requiredCount = 2; // 至少需要的 BirdSquare 数量
     public SquareCell[,] cells;
-    [Header("迷雾相关的配置")]
-    public List<GameObject> fogList = new List<GameObject>();
+    
     public IEnumerable<SquareCell> AllCells
     {
         get
@@ -28,22 +25,18 @@ public class GridManager : Singleton<GridManager>
                 yield return cell;
         }
     }
+    
     public List<SquareCell> AllBridCells = new();
     public List<SquareCell> AllDontMoveCells = new();
 
     protected override void Awake()
     {
-        // 调用基类的 Awake 方法
         base.Awake();
-        // 初始化 RandomGridType
         RandomGridType.Initialize(gridTypeConfig);
         //生成网格
         GenerateGrid();
     }
 
-    /// <summary>
-    /// 生成网格并设置每个格子的邻居关系。
-    /// </summary>
     public void GenerateGrid()
     {
         // 初始化二维数组，用于存储网格中的所有格子
@@ -74,7 +67,6 @@ public class GridManager : Singleton<GridManager>
                 Color A = cell.CellRenderer.color;
                 A.a = 0f;
                 cell.CellRenderer.color = A;
-                GenerateMist(x, y);//放置迷雾
                 // 设置格子的type
                 cell.SetGridType(RandomGridType.GetRandomGridType());
                 //设置格子的碰撞体
@@ -83,17 +75,16 @@ public class GridManager : Singleton<GridManager>
                 cell.Init(new SquareCoordinates(x, y));
                 // 将初始化好的格子存储到二维数组中
                 cells[x, y] = cell;
-
             }
         }
 
         // 设置所有方向的邻居关系（包括对角线）
         SetAllNeighbors();
-
         // 设置格子的类型，确保相邻格子类型不同时为 BirdSquare
         AssignGridTypes();
-
-        Debug.Log($"Total Cells Generated: {width * height}");
+        
+        Debug.Log($"Total Cells Generated: {width * height}");        // 生成迷雾
+        GridPainter.Instance?.GenerateAllMist(width, height);
     }
 
     // 辅助方法：检查并设置指定方向的邻居
@@ -146,14 +137,14 @@ public class GridManager : Singleton<GridManager>
     // 通过世界坐标获取格子
     public SquareCell GetCell(Vector3 worldPosition)
     {
-        var coord = SquareCoordinates.FromWorldPosition(worldPosition); // 推荐在SquareCoordinates实现此静态方法
+        var coord = SquareCoordinates.FromWorldPosition(worldPosition);
         return GetCell(coord.X, coord.Y);
     }
 
     // 通过Coordinates获取格子
     public Vector3 WorldToGridCoordinates(Vector2 worldPosition)
     {
-        var coord = SquareCoordinates.FromWorldPosition(worldPosition); // 推荐在SquareCoordinates实现此静态方法
+        var coord = SquareCoordinates.FromWorldPosition(worldPosition);
         return new Vector3(coord.X, coord.Y, 0);
     }
     //通过格子坐标系坐标获取世界坐标系坐标
@@ -162,80 +153,6 @@ public class GridManager : Singleton<GridManager>
         return new Vector3(gridPosition.x * SquareMetrics.cellSize, gridPosition.y * SquareMetrics.cellSize, 0);
     }
 
-    //生成雾
-    private void GenerateMist(int x, int y)
-    {
-        List<Vector2> fogPoints = GeneratePoissonPoints(0.5f); // 参数为最小距离，可调
-
-        foreach (var pt in fogPoints)
-        {
-            Vector3 pos = new Vector3(x + pt.x - 0.5f, y + pt.y - 0.5f, -1f);
-            //检查 mistPrefeb 是否为空或长度为 0
-            if (mistPrefeb is null || mistPrefeb.Length == 0)
-            {
-                Debug.LogError("mistPrefeb array is null or empty! Please assign mist prefabs in the Inspector.");
-                return;
-            }
-            GameObject prefab = mistPrefeb[UnityEngine.Random.Range(0, mistPrefeb.Length)];
-            GameObject fog = Instantiate(prefab, pos, Quaternion.identity, transform);
-            fog.transform.localScale *= UnityEngine.Random.Range(0.8f, 1.2f);
-            fogList.Add(fog);
-        }
-    }
-    //网上找的泊松分布
-    //numSamplesBeforeRejection用于控制采样次数，次数减少可以减少雾气数量
-    public List<Vector2> GeneratePoissonPoints(float radius, int numSamplesBeforeRejection = 20)
-    {
-        List<Vector2> points = new List<Vector2>();// 最终结果
-        List<Vector2> spawnPoints = new List<Vector2>();// 当前可以生成新点的“种子点”
-
-        float cellSize = radius / Mathf.Sqrt(2);
-        int gridSize = Mathf.CeilToInt(1f / cellSize); // 限制在 1x1 区域内
-        Vector2[,] grid = new Vector2[gridSize, gridSize];
-
-        // 初始点中心
-        spawnPoints.Add(new Vector2(0.5f, 0.5f));
-
-        while (spawnPoints.Any())
-        {
-            int spawnIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
-            Vector2 spawnCenter = spawnPoints[spawnIndex];
-            bool accepted = false;
-
-            for (int i = 0; i < numSamplesBeforeRejection; i++)
-            {
-                float angle = UnityEngine.Random.value * Mathf.PI * 2;
-                float dist = UnityEngine.Random.Range(radius, 2 * radius);
-                Vector2 candidate = spawnCenter + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * dist;
-
-                if (candidate.x >= 0 && candidate.x < 1 && candidate.y >= 0 && candidate.y < 1 && IsFarEnough(candidate, points, radius))
-                {
-                    points.Add(candidate);
-                    spawnPoints.Add(candidate);
-                    accepted = true;
-                    break;
-                }
-            }
-
-            if (!accepted)
-            {
-                spawnPoints.RemoveAt(spawnIndex);
-            }
-        }
-
-        return points;
-    }
-    bool IsFarEnough(Vector2 candidate, List<Vector2> points, float radius)//泊松分布用于计算距离
-    {
-        foreach (var p in points)
-        {
-            if ((candidate - p).sqrMagnitude < radius * radius)
-                return false;
-        }
-        return true;
-    }
-
-    // 优化后的格子类型分配逻辑
     private void AssignGridTypes()
     {
         for (int x = 0; x < width; x++)
