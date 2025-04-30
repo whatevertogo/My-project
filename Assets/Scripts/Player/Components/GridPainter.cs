@@ -108,15 +108,15 @@ public class GridPainter : Singleton<GridPainter>
                 // 创建子物体用于显示小鸟图
                 GameObject birdOverlay = new GameObject("BirdOverlay");
                 birdOverlay.transform.SetParent(cell.transform, false);
-                if (randomValue == 1)
-                {
-                    birdOverlay.transform.localPosition = new Vector3(-0.2f, -0.2f, 0); // 可微调位置
-                }
-                else if (randomValue == 2)
-                {
-                    birdOverlay.transform.localPosition = new Vector3(0.2f, -0.2f, 0); // 可微调位置
-                }
-                birdOverlay.transform.localScale = Vector3.one * 0.5f; // 缩小一点
+                // if (randomValue == 1)
+                // {
+                //     birdOverlay.transform.localPosition = new Vector3(-0.2f, -0.2f, 0); // 可微调位置
+                // }
+                // else if (randomValue == 2)
+                // {
+                //     birdOverlay.transform.localPosition = new Vector3(0.2f, -0.2f, 0); // 可微调位置
+                // }
+                birdOverlay.transform.localScale = Vector3.one * 0.6f; // 缩小一点
 
                 // 添加 SpriteRenderer 并设置小鸟图
                 SpriteRenderer sr = birdOverlay.AddComponent<SpriteRenderer>();

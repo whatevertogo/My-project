@@ -105,6 +105,7 @@ public class Player : Singleton<Player>
 
             // 检查目标格子是否存在和可移动
             SquareCell nextCell = GridManager.Instance.GetCell(targetPos);
+            //todo-这里可以提示玩家格子不可移动
             Debug.Log($"{nextCell},{GridManager.Instance.AllDontMoveCells.Contains(nextCell)}");
             if (nextCell is null || GridManager.Instance.AllDontMoveCells.Contains(nextCell)) yield break;
 
