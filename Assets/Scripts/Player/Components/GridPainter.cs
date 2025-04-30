@@ -259,7 +259,6 @@ public class GridPainter : Singleton<GridPainter>
 
     // 网上找的泊松分布
     // numSamplesBeforeRejection用于控制采样次数，次数减少可以减少雾气数量
-    // 返回生成的点列表
 
     /// <summary>
     /// 生成泊松分布的点

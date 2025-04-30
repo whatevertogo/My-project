@@ -117,9 +117,6 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     {
         Debug.Log($"Card '{CardText.text}' clicked!");
         DoClickBounce();
-        //todo- 这里可以添加点击卡牌的逻辑，比如使用卡牌效果
-        // ClickManager.Instance.SetSelectedCard(cardData);
-        transform.DOScale(1.0f, 0.1f);
     }
 
     private void AnimateTo(Vector2 targetPosition, float targetScale)
@@ -199,7 +196,8 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         {
             // TODO: 实现卡牌放置逻辑
             Debug.Log($"Card placed on cell: {cell.name}");
-            ClearUsedCard();//清除使用的卡牌
+
+            //不应该在这里清除卡牌
         }
         else
         {
