@@ -5,7 +5,7 @@ using CDTU.Utils;
 public class ChunkManager : Singleton<ChunkManager>
 {
     [Header("区块设置")]
-    public int chunkSize = 5; // 每个区块的大小
+    public readonly int chunkSize = 5; // 每个区块的大小
     [ReadOnly]
     private int mapWidth; // 地图宽度（格子数）
     [ReadOnly]
@@ -172,12 +172,12 @@ public class ChunkManager : Singleton<ChunkManager>
         {
             if (chunk.RenderObject is not null)
             {
-                GameObject.Destroy(chunk.RenderObject);
+                Destroy(chunk.RenderObject);
             }
             if (chunk.RenderTexture is not null)
             {
                 chunk.RenderTexture.Release();
-                GameObject.Destroy(chunk.RenderTexture);
+                Destroy(chunk.RenderTexture);
             }
         }
         chunks.Clear();

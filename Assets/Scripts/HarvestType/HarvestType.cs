@@ -6,7 +6,11 @@ public enum HarvestType
     /// </summary>
     Branch = 1,
     /// <summary>
-    /// 米
+    /// 松果
     /// </summary>
-    Rice = 2
+    PineCone = 2,
+    /// <summary>
+    /// 羽毛
+    /// </summary>
+    Feather = 3
 }

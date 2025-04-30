@@ -23,8 +23,8 @@ public class AudioManager : SingletonDD<AudioManager>
         public AudioClip AudioClip;
     }
 
-    public List<Name_AudioClip> name_AudioClipsList = new();
-    public Dictionary<string, AudioClip> Name_AudioClipDic = new();
+    public readonly List<Name_AudioClip> name_AudioClipsList = new();
+    public readonly Dictionary<string, AudioClip> Name_AudioClipDic = new();
 
     private AudioSource bgmAudioSource;
     private Dictionary<string, AudioSource> soundAudioSources = new();

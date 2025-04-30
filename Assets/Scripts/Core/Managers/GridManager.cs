@@ -7,16 +7,15 @@ using System;
 public class GridManager : Singleton<GridManager>
 {
     [Header("网格大小配置")]
-    public int width = 25;
-    public int height = 25;
+    public readonly int width = 25;
+    public readonly int height = 25;
 
     public Vector3 GetGridCenter() => new Vector3(width / 2, height / 2, 0);
 
     [Header("网格类型配置和需要的BridSquare数量")]
     public GridTypeConfig gridTypeConfig; // 网格类型配置文件
-    public int requiredCount = 2; // 至少需要的 BirdSquare 数量
     public SquareCell[,] cells;
-    
+
     public IEnumerable<SquareCell> AllCells
     {
         get
@@ -25,7 +24,7 @@ public class GridManager : Singleton<GridManager>
                 yield return cell;
         }
     }
-    
+
     public List<SquareCell> AllBridCells = new();
     public List<SquareCell> AllDontMoveCells = new();
 
@@ -82,7 +81,7 @@ public class GridManager : Singleton<GridManager>
         SetAllNeighbors();
         // 设置格子的类型，确保相邻格子类型不同时为 BirdSquare
         AssignGridTypes();
-        
+
         Debug.Log($"Total Cells Generated: {width * height}");        // 生成迷雾
         GridPainter.Instance?.GenerateAllMist(width, height);
     }
