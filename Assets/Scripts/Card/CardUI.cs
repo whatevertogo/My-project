@@ -29,16 +29,16 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     private LayoutGroup layoutGroup;
     private Vector2 originalPosition;
     private Sequence currentSequence;
-    
+
     // 状态控制
     private bool isHovered = false;
     private bool isDragging = false;
     private bool isAnimating = false;
-    
+
     // 防抖控制
     private float lastHoverTime = 0f;
     private const float hoverDebounceTime = 0.1f;
-    
+
     // 数据
     private Card card;
     public static CardUI currentTopCard;
@@ -76,16 +76,14 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
             cardCanvas = gameObject.AddComponent<Canvas>();
         }
         cardCanvas.overrideSorting = true;
-        
+
         // 获取父对象的 LayoutGroup
         layoutGroup = transform.parent?.GetComponent<LayoutGroup>();
-    }
-
-    private void InitializePosition()
+    }    private void InitializePosition()
     {
         originalPosition = rectTransform.anchoredPosition;
         rectTransform.localScale = Vector3.one;
-        SetSortingOrder(normalSortingOrder++);
+        SetSortingOrder(normalSortingOrder + 1);
     }
 
     private void InitializeUI()
@@ -159,7 +157,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         isDragging = true;
         isHovered = true;
         StopCurrentAnimation();
-        
+
         // 禁用 LayoutGroup
         SetLayoutGroupEnabled(false);
     }
@@ -255,7 +253,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
                 currentTopCard = this;
             }
         }
-    else if (currentTopCard == this)
+        else if (currentTopCard == this)
         {
             currentTopCard = null;
         }
@@ -285,7 +283,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
             currentSequence = null;
         }
         DOTween.Kill(transform);
-        
+
         // 确保在停止动画时重新启用 LayoutGroup
         SetLayoutGroupEnabled(true);
     }
