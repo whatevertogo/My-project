@@ -1,5 +1,5 @@
-using Spine; // 引入 Spine 命名空间以使用 TrackEntry
-using Spine.Unity; // 添加对 Spine.Unity 的引用
+using Spine;
+using Spine.Unity; 
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
@@ -139,7 +139,7 @@ public class PlayerAnimationController : MonoBehaviour
                 // Debug.Log("切换回 Standby1");
                 PlayAnimation(PlayerAnimationState.Standby1, true);
             }
-            // else: Player is still moving, Jump might be re-triggered or another logic handles it.
+            
         }
     }
 
