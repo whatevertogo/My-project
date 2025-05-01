@@ -212,7 +212,18 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         {
             IsPlaceable = true;
         }
-
+        else if (this.cellType == GridType.PlantedFeather)
+        {
+            IsPlaceable = false;
+        }
+        else if (this.cellType == GridType.PlantedRice)
+        {
+            IsPlaceable = false;
+        }
+        else if (this.cellType == GridType.PlantedTree)
+        {
+            IsPlaceable = false;
+        }
     }
     public GridType GetGridType()
     {

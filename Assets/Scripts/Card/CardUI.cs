@@ -39,17 +39,10 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-        //todo-改天简化这个逻辑
         if (gameObject.TryGetComponent<Canvas>(out cardCanvas))
         {
             cardCanvas.overrideSorting = true;
         }
-        else
-        {
-            cardCanvas = gameObject.AddComponent<Canvas>();
-            cardCanvas.overrideSorting = true;
-        }
-
     }
 
     private void OnEnable()
