@@ -17,6 +17,8 @@ public class Player : Singleton<Player>
     [ReadOnly]
     public Vector2 input;
     private SpriteRenderer spriteRenderer; // 添加精灵渲染器引用
+    [ReadOnly]
+    public PlayerAnimationController PlayerAnimationController;
 
 
     protected override void Awake()
@@ -80,11 +82,11 @@ public class Player : Singleton<Player>
             // 根据输入方向设置精灵翻转
             if (input.x > 0)
             {
-                spriteRenderer.flipX = true; // 向右移动时不翻转
+                gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f); // 向右移动时不翻转
             }
             else if (input.x < 0)
             {
-                spriteRenderer.flipX = false;
+                gameObject.transform.localScale = new Vector3(-0.2f, 0.2f, 0.2f); // 向
             }
 
             // 将输入转为离散方向：左右或上下
@@ -127,6 +129,9 @@ public class Player : Singleton<Player>
     {
         Vector3 startPos = transform.position;
         float elapsedTime = 0f;
+
+        //人物跳跃
+        PlayerAnimationController.PlayJumpAnimation();
 
         // 如果持续时间过短，直接设置位置以避免除零错误或瞬移
         if (moveDuration <= 0f)

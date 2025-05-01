@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 玩家动画控制器
 /// </summary>
-public class PlayerAnimationController : MonoBehaviour
+public class PlayerAnimationControl : MonoBehaviour
 {
     [SerializeField] private SkeletonAnimation skeletonAnimation; // 角色动画组件
     public AnimationReferenceAsset PlayerStandby1; // 动画资源
@@ -49,16 +49,8 @@ public class PlayerAnimationController : MonoBehaviour
     /// <param name="trackIndex">轨道索引</param>
     /// <param name="animationType">要播放的动画类型</param>
     /// <param name="loop">是否循环播放</param>
-/**************************** CodeGeeX Inline Diff ****************************/
-    /// <summary>
-    /// 设置玩家动画。
-    /// </summary>
-    /// <param name="trackIndex">动画轨道索引。</param>
-    /// <param name="animationType">玩家动画状态类型。</param>
-    /// <param name="loop">动画是否循环播放，默认为 false。</param>
     public void SetPlayerAnimation(int trackIndex, PlayerAnimationState animationType, bool loop = false)
     {
-        // 检查 skeletonAnimation 是否为 null
         if (skeletonAnimation is null)
         {
             Debug.LogError("SkeletonAnimation 未初始化！");
@@ -74,5 +66,4 @@ public class PlayerAnimationController : MonoBehaviour
             Debug.LogWarning($"动画类型 {animationType} 没有对应的动画资源！");
         }
     }
-/******************** 0064a59d-a67f-4a72-9c49-e8a57147e09e ********************/
 }
