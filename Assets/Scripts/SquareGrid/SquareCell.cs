@@ -5,7 +5,6 @@ using System.Linq;
 public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 {
     public SquareCoordinates Coordinates { get; set; }
-    // public Color currentColor;
     public readonly float duration = 1f;
 
     [ReadOnly]
