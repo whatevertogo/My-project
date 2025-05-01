@@ -66,8 +66,6 @@ public class GridManager : Singleton<GridManager>
                 Color A = cell.CellRenderer.color;
                 A.a = 0f;
                 cell.CellRenderer.color = A;
-                // 设置格子的type
-                cell.SetGridType(RandomGridType.GetRandomGridType());
                 //设置格子的碰撞体
                 cellObj.AddComponent<BoxCollider2D>();
                 // 调用Init方法初始化SquareCell组件，传入格子的坐标
