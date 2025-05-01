@@ -79,14 +79,14 @@ public class Player : Singleton<Player>
             // 禁止斜向移动：如果 x 和 y 同时不为 0，则直接返回
             if (input.x != 0 && input.y != 0) yield break;
 
-            // 根据输入方向设置精灵翻转
+            // 根据输入方向设置翻转
             if (input.x > 0)
             {
                 gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f); // 向右移动时不翻转
             }
             else if (input.x < 0)
             {
-                gameObject.transform.localScale = new Vector3(-0.2f, 0.2f, 0.2f); // 向
+                gameObject.transform.localScale = new Vector3(-0.2f, 0.2f, 0.2f); // 向左移动时翻转
             }
 
             // 将输入转为离散方向：左右或上下
@@ -130,9 +130,8 @@ public class Player : Singleton<Player>
         Vector3 startPos = transform.position;
         float elapsedTime = 0f;
 
-        //人物跳跃
-        PlayerAnimationController.PlayJumpAnimation();
-
+        PlayerAnimationController?.PlayJumpAnimation(); // 播放跳跃动画
+        
         // 如果持续时间过短，直接设置位置以避免除零错误或瞬移
         if (moveDuration <= 0f)
         {

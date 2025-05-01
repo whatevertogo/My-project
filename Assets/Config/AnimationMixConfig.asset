@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: AnimationMixConfig
   m_EditorClassIdentifier: 
   MixSettings:
-  - From: PlayerStandby1
-    To: PlayerStandby2
+  - From: {fileID: 11400000, guid: 2d09f48504d65b845ae0cfd1c6c24aae, type: 2}
+    To: {fileID: 11400000, guid: 21c6587fd3a8e494ba32db97c500e5ed, type: 2}
     Duration: 0
-  - From: PlayerStandby1
-    To: PlayerJump
+  - From: {fileID: 11400000, guid: 2d09f48504d65b845ae0cfd1c6c24aae, type: 2}
+    To: {fileID: 11400000, guid: ecc7e19c7ef054c4b924114bc73700a1, type: 2}
     Duration: 0
-  - From: PlayerJump
-    To: PlayerStandby1
+  - From: {fileID: 11400000, guid: ecc7e19c7ef054c4b924114bc73700a1, type: 2}
+    To: {fileID: 11400000, guid: 21c6587fd3a8e494ba32db97c500e5ed, type: 2}
+    Duration: 0
+  - From: {fileID: 11400000, guid: 21c6587fd3a8e494ba32db97c500e5ed, type: 2}
+    To: {fileID: 11400000, guid: 2d09f48504d65b845ae0cfd1c6c24aae, type: 2}
     Duration: 0
