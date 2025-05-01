@@ -196,8 +196,8 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         {
             // TODO: 实现卡牌放置逻辑
             Debug.Log($"Card placed on cell: {cell.name}");
+            cell.UseCard(card);
 
-            //不应该在这里清除卡牌
         }
         else
         {

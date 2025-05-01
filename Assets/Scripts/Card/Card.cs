@@ -28,7 +28,7 @@ public class Card
     // 在目标格子上使用卡牌
     public void UseOn(SquareCell targetCell)
     {
-        if (effect == null || !CanUseOn(targetCell)) return;
+        if (effect is null || !CanUseOn(targetCell)) return;
         effect.Execute(targetCell);
     }
 }

@@ -13,7 +13,7 @@ public class CardManager : Singleton<CardManager>
         GenerateCards();
     }
 
-    // 生成卡牌
+    // todo-测试生成卡牌
     void GenerateCards()
     {
         foreach (var cardData in cardDataList)

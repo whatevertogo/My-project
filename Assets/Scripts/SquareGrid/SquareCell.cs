@@ -254,6 +254,11 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     }
     #endregion
 
-
+    #region 卡牌使用方法
+    public void UseCard(Card card)
+    {
+        card.UseOn(this);
+    }
+    #endregion
 
 }

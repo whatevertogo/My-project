@@ -17,7 +17,9 @@ public class PlantRiceEffect : CardEffect
         // 将格子转为稻田格子
         targetCell.SetGridType(GridType.PlantedRice);
 
-        
+        GridManager.Instance.AllDontMoveCells.Add(targetCell); // 将格子添加到不可移动列表中
+
+
 
         // TODO: 添加稻谷生长组件或者效果
 

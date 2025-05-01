@@ -18,6 +18,9 @@ public class PlantTreeEffect : CardEffect
         // 将格子转为树格子
         targetCell.SetGridType(GridType.PlantedTree);
 
+        GridManager.Instance.AllDontMoveCells.Add(targetCell); // 将格子添加到不可移动列表中
+
+
         // TODO: 添加树生长组件或者效果
 
         Debug.Log($"在 {targetCell.Coordinates} 种植了一棵树");
