@@ -2,6 +2,14 @@ using System.Collections.Generic;
 using Spine.Unity;
 using UnityEngine;
 
+
+public enum PlayerAnimationState
+{
+    Standby1,
+    Standby2,
+    Jump
+}
+
 /// <summary>
 /// 玩家动画控制器
 /// </summary>
@@ -45,6 +53,21 @@ public class PlayerAnimationControl : MonoBehaviour
         {
             skeletonAnimation.state.Data.SetMix(mix.From, mix.To, mix.Duration);
         }
+    }
+
+    /// <summary>
+    /// 获取指定状态的动画资源
+    /// </summary>
+    /// <param name="state">动画状态</param>
+    /// <returns>对应的 AnimationReferenceAsset，如果未找到则返回 null</returns>
+    public AnimationReferenceAsset GetAnimationAsset(PlayerAnimationState state)
+    {
+        playerAnimationDict.TryGetValue(state, out var animationAsset);
+        if (animationAsset == null)
+        {
+            Debug.LogWarning($"未在字典中找到动画资源: {state}");
+        }
+        return animationAsset;
     }
 
     /// <summary>

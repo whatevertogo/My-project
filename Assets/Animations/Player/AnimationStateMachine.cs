@@ -1,10 +1,10 @@
 
-public enum PlayerAnimationState
-{
-    Standby1,
-    Standby2,
-    Jump
-}
+// public enum PlayerAnimationState
+// {
+//     Standby1,
+//     Standby2,
+//     Jump
+// }
 
 // public class AnimationStateMachine
 // {

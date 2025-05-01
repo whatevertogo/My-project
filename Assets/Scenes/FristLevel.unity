@@ -873,7 +873,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a6ab3fcbd0b52c4baa4f6f31ae47269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WaitToPlayTime: 1
+  WaitDurationForStandby2: 5
+  currentIdleTime: 0
 --- !u!1 &720381480
 GameObject:
   m_ObjectHideFlags: 0
