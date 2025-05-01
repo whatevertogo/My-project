@@ -8,8 +8,6 @@ public static class CardEffectFactory
         {
             case CardType.tree:
                 return new PlantTreeEffect(card);
-            case CardType.Paddy:
-                return new PlantRiceEffect(card);
             case CardType.Feather:
                 return new PlantFeatherEffect(card);
             default:

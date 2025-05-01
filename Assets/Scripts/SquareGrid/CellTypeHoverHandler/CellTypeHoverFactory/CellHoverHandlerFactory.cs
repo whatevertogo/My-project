@@ -6,6 +6,9 @@ public static class CellHoverHandlerFactory
     private static readonly Dictionary<GridType, ICellHoverHandler> handlers = new()
     {
         { GridType.BirdSquare, new BirdSquareHoverHandler() },
+        { GridType.PlantedTree, new TreeHoverHandler() },
+        { GridType.PlantedFeather, new FeatherHoverHandler() },
+        { GridType.SimpleSquare, new DefaultHoverHandler() },
         //todo- 添加更多类型
     };
 

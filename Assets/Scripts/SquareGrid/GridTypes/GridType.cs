@@ -14,10 +14,6 @@ public enum GridType
     /// </summary>
     PlantedTree,
     /// <summary>
-    /// 稻田网格
-    /// </summary>
-    PlantedRice,
-    /// <summary>
     /// 羽毛网格
     /// </summary>
     PlantedFeather
