@@ -26,7 +26,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     private Vector2 originalPosition;
     private RectTransform rectTransform;
     [ReadOnly]
-    public Canvas cardCanvas;
+    private Canvas cardCanvas;
     public CanvasGroup cardCanvasGroup;
 
 

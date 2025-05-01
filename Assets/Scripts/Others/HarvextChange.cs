@@ -14,9 +14,9 @@ public class HarvextChange : MonoBehaviour
 
     private void HandleHarvestChanged(object sender, HarvestManager.OnHarvestChangedEventArgs e)
     {
-        if (e.harvestType == harvestType)
+        if (e.HarvestType == harvestType)
         {
-            harvestAmountText.text = e.amount.ToString();
+            harvestAmountText.text = e.Amount.ToString();
         }
     }
 }
