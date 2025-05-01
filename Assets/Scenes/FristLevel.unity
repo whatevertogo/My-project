@@ -2521,6 +2521,7 @@ MonoBehaviour:
   cardDataList:
   - {fileID: 11400000, guid: feb28ccbd2f9d7d4ca6e5cf9c575c715, type: 2}
   - {fileID: 11400000, guid: 7b6fad077c9bbdd4da81f3054d7717ae, type: 2}
+  - {fileID: 11400000, guid: 9d1fac3462f4f2e49b28c2a8a12a07e3, type: 2}
 --- !u!1 &1644642056
 GameObject:
   m_ObjectHideFlags: 0
