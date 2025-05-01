@@ -87,3 +87,6 @@ crashlytics-build.properties
 */Spine
 
 .fake
+
+#github
+.github/

@@ -15,7 +15,6 @@ public class ShanQueAnimation : MonoBehaviour
 
     };
 
-
     /// <summary>
     /// 设置玩家动画
     /// </summary>

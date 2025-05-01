@@ -2975,6 +2975,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skeletonAnimation: {fileID: 2127825175}
+  PlayerStandby1: {fileID: 11400000, guid: 2d09f48504d65b845ae0cfd1c6c24aae, type: 2}
+  PlayerStandby2: {fileID: 11400000, guid: ecc7e19c7ef054c4b924114bc73700a1, type: 2}
+  PlayerJump: {fileID: 11400000, guid: 21c6587fd3a8e494ba32db97c500e5ed, type: 2}
 --- !u!95 &2127825179
 Animator:
   serializedVersion: 5
@@ -2985,7 +2988,7 @@ Animator:
   m_GameObject: {fileID: 2127825173}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8da21b2242749cb4a868a511ec3f3585, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
