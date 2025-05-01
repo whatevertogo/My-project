@@ -24,6 +24,7 @@ public class SquareMetrics
     {
         return corners[(int)direction];
     }
+    
 
     // 边的后一个顶点
     public static Vector3 GetSecondCorner(SquareDirection direction)
