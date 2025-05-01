@@ -558,7 +558,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b3e32b8baee625469726ebcb633b186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkSize: 5
   chunkWrapperPrefab: {fileID: 6879933175907427523, guid: bda7e6ad086d7634cb6351860484141d, type: 3}
   DiBanSprite: {fileID: 21300000, guid: 7efb7ea68d2b2a24f8f27edeb63fd14a, type: 3}
 --- !u!1 &612093509
@@ -1542,10 +1541,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7a5ee278f78c554d9f97a271a8fba95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 25
-  height: 25
   gridTypeConfig: {fileID: 11400000, guid: 6467ab8470781914e80e94de5ef94a7d, type: 2}
-  requiredCount: 2
   AllBridCells: []
   AllDontMoveCells: []
 --- !u!4 &1010826480
@@ -1991,9 +1987,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SVolume: 0.6
   BVolume: 0.6
-  name_AudioClipsList:
-  - AudioName: BGM
-    AudioClip: {fileID: 8300000, guid: c099e6259eabf1c43bbb50c5b17af42b, type: 3}
 --- !u!82 &1224856763
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2858,6 +2851,8 @@ GameObject:
   - component: {fileID: 2127825177}
   - component: {fileID: 2127825176}
   - component: {fileID: 2127825175}
+  - component: {fileID: 2127825178}
+  - component: {fileID: 2127825179}
   m_Layer: 0
   m_Name: PlayerBird
   m_TagString: Untagged
@@ -2914,7 +2909,7 @@ MonoBehaviour:
     materialsInsideMask: []
     materialsOutsideMask: []
   disableRenderingOnOverride: 1
-  _animationName: 
+  _animationName: shanQue/Standby_1
   loop: 0
   timeScale: 1
 --- !u!23 &2127825176
@@ -2955,9 +2950,9 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 1955692289
+  m_SortingLayer: 2
+  m_SortingOrder: 2
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &2127825177
 MeshFilter:
@@ -2967,6 +2962,40 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127825173}
   m_Mesh: {fileID: 0}
+--- !u!114 &2127825178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127825173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6290d355ab0c1d34ebb05a3aa9a9107a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonAnimation: {fileID: 2127825175}
+--- !u!95 &2127825179
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2127825173}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2135297068
 GameObject:
   m_ObjectHideFlags: 0
