@@ -17,7 +17,6 @@ public class Player : Singleton<Player>
     [ReadOnly]
     public Vector2 input;
     private SpriteRenderer spriteRenderer; // 添加精灵渲染器引用
-    [ReadOnly]
     public PlayerAnimationController PlayerAnimationController;
 
 
@@ -131,7 +130,7 @@ public class Player : Singleton<Player>
         float elapsedTime = 0f;
 
         PlayerAnimationController?.PlayJumpAnimation(); // 播放跳跃动画
-        
+
         // 如果持续时间过短，直接设置位置以避免除零错误或瞬移
         if (moveDuration <= 0f)
         {

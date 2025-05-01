@@ -731,7 +731,7 @@ MonoBehaviour:
   moveCooldown: 1
   moveDuration: 1
   input: {x: 0, y: 0}
-  PlayerAnimationController: {fileID: 0}
+  PlayerAnimationController: {fileID: 621430832}
 --- !u!114 &621430827
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerAnimationControl : MonoBehaviour
 {
-    [SerializeField] private SkeletonAnimation skeletonAnimation; // 角色动画组件
+    public SkeletonAnimation skeletonAnimation; // 角色动画组件
     public AnimationReferenceAsset PlayerStandby1; // 动画资源
     public AnimationReferenceAsset PlayerStandby2; // 动画资源
     public AnimationReferenceAsset PlayerJump; // 动画资源

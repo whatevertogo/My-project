@@ -15,8 +15,10 @@ public class PlayerAnimationController : MonoBehaviour
             Debug.LogError("PlayerAnimationControl 未初始化！");
             return;
         }
+    }
+    private void OnEnable()
+    {
         playerAnimationControl.SetPlayerAnimation(0, PlayerAnimationState.Standby1, true);
-
     }
 
     private void Update()
@@ -37,6 +39,7 @@ public class PlayerAnimationController : MonoBehaviour
     public void PlayJumpAnimation()
     {
         if (playerAnimationControl is null) return;
+        Debug.Log($"{playerAnimationControl.skeletonAnimation.state.GetCurrent(0).Animation.Name}");
         playerAnimationControl.SetPlayerAnimation(0, PlayerAnimationState.Jump, false);
     }
 }
