@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
@@ -33,6 +34,9 @@ public class PlayerAnimationController : MonoBehaviour
             if (WaitToPlayTime <= 0)
             {
                 playerAnimationControl.SetPlayerAnimation(0, PlayerAnimationState.Standby2, false);
+                StartCoroutine(PlayStandby1AfterDelay(1f));
+                // 延迟 1 秒播放 Standby1
+                // 注意这里的延迟时间就是播放时间默认是1s 
                 // 重置等待时间
                 WaitToPlayTime = Random.Range(7f, 10f);
                 playerAnimationControl.SetPlayerAnimation(0, PlayerAnimationState.Standby1, true);
@@ -40,6 +44,15 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
 
+    private IEnumerator PlayStandby1AfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        playerAnimationControl.SetPlayerAnimation(0, PlayerAnimationState.Standby1, true);
+    }
+
+    /// <summary>
+    /// 播放跳跃动画。
+    /// </summary>
     public void PlayJumpAnimation()
     {
         if (playerAnimationControl is null) return;
