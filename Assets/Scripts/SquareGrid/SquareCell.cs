@@ -21,6 +21,8 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public bool IsPlaceable { get; set; } = true; // 是否可以放置物体
 
+    public bool IsMoveable { get; set; } = true; // 是否可以移动
+
 
     private void Awake()
     {
@@ -211,14 +213,17 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         else if (this.cellType == GridType.SimpleSquare)
         {
             IsPlaceable = true;
+            IsMoveable = true;
         }
         else if (this.cellType == GridType.PlantedFeather)
         {
             IsPlaceable = false;
+            IsMoveable = false;
         }
         else if (this.cellType == GridType.PlantedTree)
         {
             IsPlaceable = false;
+            IsMoveable = false;
         }
     }
     public GridType GetGridType()

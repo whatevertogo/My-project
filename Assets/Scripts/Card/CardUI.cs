@@ -7,174 +7,166 @@ using CDTU.Utils.TweenUtils;
 
 public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    #region 卡牌ui
+    #region 组件引用
     [Header("卡片配置")]
     public TextMeshProUGUI CardText;
-    [ReadOnly]
-    public Image image;
+    [ReadOnly] public Image image;
     public CanvasGroup TextArea;
-    public Vector2 moveOffset = new Vector2(0, 60); // 上移偏移量
-    public float duration = 0.3f;                   // 动画时间
-    #endregion
-    #region 动效设置
-    [Header("层级设置")]
-    [SerializeField] private int hoverSortingOrder = 10;  // 悬停时的排序顺序
-    public static int normalSortingOrder = 1;  // 正常时的排序顺序
-    [Header("动画设置")]
-    private Sequence currentSequence;
-    private bool isHovered = false;
-    private Vector2 originalPosition;
-    private RectTransform rectTransform;
-    [ReadOnly]
-    private Canvas cardCanvas;
     public CanvasGroup cardCanvasGroup;
-
-
     #endregion
 
+    #region 动画配置
+    [Header("动画配置")]
+    public Vector2 moveOffset = new Vector2(0, 60);
+    public float duration = 0.3f;
+    [SerializeField] private int hoverSortingOrder = 10;
+    public static int normalSortingOrder = 1;
+    #endregion
+
+    #region 私有字段
+    private RectTransform rectTransform;
+    private Canvas cardCanvas;
+    private LayoutGroup layoutGroup;
+    private Vector2 originalPosition;
+    private Sequence currentSequence;
+    
+    // 状态控制
+    private bool isHovered = false;
+    private bool isDragging = false;
+    private bool isAnimating = false;
+    
+    // 防抖控制
+    private float lastHoverTime = 0f;
+    private const float hoverDebounceTime = 0.1f;
+    
+    // 数据
     private Card card;
     public static CardUI currentTopCard;
+    #endregion
 
-
+    #region 生命周期
     private void Awake()
     {
-        rectTransform = GetComponent<RectTransform>();
-        if (gameObject.TryGetComponent<Canvas>(out cardCanvas))
-        {
-            cardCanvas.overrideSorting = true;
-        }
+        InitializeComponents();
     }
 
     private void OnEnable()
     {
-        originalPosition = rectTransform.anchoredPosition;
-        rectTransform.localScale = Vector3.one;
-
-        // 设置初始排序顺序
-        cardCanvas.sortingOrder = normalSortingOrder;
-        normalSortingOrder++;
+        InitializePosition();
     }
+
     private void Start()
     {
-        if (TextArea is null)
-        {
-            Debug.LogError("TextArea is null, please assign it in the inspector.");
-            return;
-        }
-        TextArea.alpha = 0f;
+        InitializeUI();
     }
 
-    #region 鼠标动画交互效果
+    private void OnDestroy()
+    {
+        CleanupAnimations();
+    }
+    #endregion
+
+    #region 初始化方法
+    private void InitializeComponents()
+    {
+        rectTransform = GetComponent<RectTransform>();
+        cardCanvas = GetComponent<Canvas>();
+        if (cardCanvas == null)
+        {
+            cardCanvas = gameObject.AddComponent<Canvas>();
+        }
+        cardCanvas.overrideSorting = true;
+        
+        // 获取父对象的 LayoutGroup
+        layoutGroup = transform.parent?.GetComponent<LayoutGroup>();
+    }
+
+    private void InitializePosition()
+    {
+        originalPosition = rectTransform.anchoredPosition;
+        rectTransform.localScale = Vector3.one;
+        SetSortingOrder(normalSortingOrder++);
+    }
+
+    private void InitializeUI()
+    {
+        if (TextArea != null)
+        {
+            TextArea.alpha = 0f;
+        }
+    }
+    #endregion
+
+    #region 鼠标事件处理
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        if (isHovered) return;
-        isHovered = true;
+        // 如果正在拖拽，不处理悬停
+        if (isDragging) return;
 
-        if (currentTopCard is null)
+        // 更新状态
+        isHovered = true;
+        lastHoverTime = Time.time;
+
+        if (currentTopCard == null)
         {
             currentTopCard = this;
         }
 
-        // 将卡片置于顶层
-        SetSortingOrder(hoverSortingOrder);
+        // 如果当前正在执行动画，先停止
+        if (isAnimating)
+        {
+            StopCurrentAnimation();
+        }
 
-        MyTweenUtils.FadeIn(cardCanvasGroup, 0.1f, 0.6f);
-
-        // 动画改变位置和缩放
-        AnimateTo(originalPosition + moveOffset, 1.1f);
-        //显示文本
-        MyTweenUtils.FadeIn(TextArea, 0.2f);
+        // 执行悬停动画
+        AnimateToHovered();
     }
 
     public override void OnPointerExit(PointerEventData eventData)
     {
-        if (!isHovered) return;
+        // 如果正在拖拽，不处理退出
+        if (isDragging) return;
+
+        // 更新状态
         isHovered = false;
+        lastHoverTime = Time.time;
 
         if (currentTopCard == this)
         {
             currentTopCard = null;
         }
 
-        // 恢复正常层级
-        SetSortingOrder(normalSortingOrder);
+        // 如果当前正在执行动画，先停止
+        if (isAnimating)
+        {
+            StopCurrentAnimation();
+        }
 
-        MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
-        // 添加回下降动画，让卡片回到原位
-        AnimateTo(originalPosition, 1.0f);
-        //隐藏文本
-        MyTweenUtils.FadeOut(TextArea, 0.2f);
+        // 执行恢复动画
+        AnimateToNormal();
     }
 
     public override void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log($"Card '{CardText.text}' clicked!");
+        if (isDragging) return;
         DoClickBounce();
-    }
-
-    private void AnimateTo(Vector2 targetPosition, float targetScale)
-    {
-        // 停止当前动画序列
-        currentSequence?.Kill();
-
-        // 创建新的动画序列
-        currentSequence = DOTween.Sequence();
-        currentSequence.Append(rectTransform.DOAnchorPos(targetPosition, duration).SetEase(Ease.InOutQuad));
-        currentSequence.Join(transform.DOScale(targetScale, duration).SetEase(Ease.InOutQuad));
-    }
-
-    private void SetSortingOrder(int order)
-    {
-        if (cardCanvas is not null)
-        {
-            cardCanvas.sortingOrder = order;
-        }
-    }
-
-    public void DoClickBounce()
-    {
-        transform.DOKill();
-        Sequence bounce = DOTween.Sequence();
-        bounce.Append(transform.DOScale(1.15f, 0.1f));
-        bounce.Append(transform.DOScale(1.0f, 0.15f).SetEase(Ease.OutBounce));
     }
     #endregion
 
-    public void Bind(Card newCard)
-    {
-        card = newCard;
-
-        // 更新 UI 显示
-        UpdateUI();
-    }
-
-    // 更新 UI 显示
-    public void UpdateUI()
-    {
-        if (card is null)
-        {
-            CardText.text = string.Empty;
-            image.sprite = null;
-        }
-        else
-        {
-            CardText.text = card.CardName;
-            image.sprite = card.CardSprite;
-        }
-    }
-    private bool isDragging = false;
-
+    #region 拖拽事件处理
     public void OnBeginDrag(PointerEventData eventData)
     {
         isDragging = true;
         isHovered = true;
-        currentSequence?.Kill(); // 停止任何正在进行的动画
+        StopCurrentAnimation();
+        
+        // 禁用 LayoutGroup
+        SetLayoutGroupEnabled(false);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (!isDragging) return;
-        // 直接设置位置而不是使用动画
         rectTransform.position = Input.mousePosition;
         transform.DOScale(0.3f, 0.1f).SetEase(Ease.OutBounce);
     }
@@ -185,29 +177,168 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         isHovered = false;
 
         SquareCell cell = InteractManager.Instance.GetCellUnderMouse();
-        if (cell is not null && cell.IsExplored == true && cell.IsPlaceable)
+        if (cell != null && cell.IsExplored && cell.IsPlaceable)
         {
-            // TODO: 实现卡牌放置逻辑
-            Debug.Log($"Card placed on cell: {cell.name}");
-            cell.UseCard(card);
-
+            HandleCardPlacement(cell);
         }
         else
         {
-            // 没有找到目标格子时返回原位
-            AnimateTo(originalPosition, 1.0f);
+            ReturnToOriginalPosition();
         }
-        MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
+    }
+    #endregion
 
+    #region 动画方法
+    private void AnimateTo(Vector2 targetPosition, float targetScale)
+    {
+        if (rectTransform == null) return;
+
+        StopCurrentAnimation();
+        SetLayoutGroupEnabled(false);
+        isAnimating = true;
+
+        // 创建新的动画序列
+        currentSequence = DOTween.Sequence();
+
+        // 位置和缩放动画
+        currentSequence.Append(rectTransform.DOAnchorPos(targetPosition, duration).SetEase(Ease.InOutQuad));
+        currentSequence.Join(transform.DOScale(targetScale, duration).SetEase(Ease.InOutQuad));
+
+        // 动画完成回调
+        currentSequence.OnComplete(() =>
+        {
+            isAnimating = false;
+            SetLayoutGroupEnabled(true);
+        });
     }
 
-    /// <summary>
-    /// 清除已使用的卡牌
-    /// </summary>
+    private void AnimateToHovered()
+    {
+        SetSortingOrder(hoverSortingOrder);
+        AnimateTo(originalPosition + moveOffset, 1.1f);
+        MyTweenUtils.FadeIn(TextArea, 0.2f);
+        MyTweenUtils.FadeIn(cardCanvasGroup, 0.1f, 0.6f);
+    }
+
+    private void AnimateToNormal()
+    {
+        SetSortingOrder(normalSortingOrder);
+        AnimateTo(originalPosition, 1.0f);
+        MyTweenUtils.FadeOut(TextArea, 0.2f);
+        MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
+    }
+
+    private void DoClickBounce()
+    {
+        transform.DOKill();
+        Sequence bounce = DOTween.Sequence();
+        bounce.Append(transform.DOScale(1.15f, 0.1f));
+        bounce.Append(transform.DOScale(1.0f, 0.15f).SetEase(Ease.OutBounce));
+    }
+    #endregion
+
+    #region 辅助方法
+    private bool CanProcessHoverEvent()
+    {
+        return !(Time.time - lastHoverTime < hoverDebounceTime || isDragging || isAnimating);
+    }
+
+    private void SetHoveredState(bool hoveredState)
+    {
+        isHovered = hoveredState;
+        lastHoverTime = Time.time;
+
+        if (hoveredState)
+        {
+            if (currentTopCard == null)
+            {
+                currentTopCard = this;
+            }
+        }
+    else if (currentTopCard == this)
+        {
+            currentTopCard = null;
+        }
+    }
+
+    private void SetSortingOrder(int order)
+    {
+        if (cardCanvas != null)
+        {
+            cardCanvas.sortingOrder = order;
+        }
+    }
+
+    private void SetLayoutGroupEnabled(bool enabled)
+    {
+        if (layoutGroup != null)
+        {
+            layoutGroup.enabled = enabled;
+        }
+    }
+
+    private void StopCurrentAnimation()
+    {
+        if (currentSequence != null)
+        {
+            currentSequence.Kill();
+            currentSequence = null;
+        }
+        DOTween.Kill(transform);
+        
+        // 确保在停止动画时重新启用 LayoutGroup
+        SetLayoutGroupEnabled(true);
+    }
+
+    private void CleanupAnimations()
+    {
+        StopCurrentAnimation();
+        SetLayoutGroupEnabled(true);
+    }
+
+    private void HandleCardPlacement(SquareCell cell)
+    {
+        cell.UseCard(card);
+        MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
+    }
+
+    private void ReturnToOriginalPosition()
+    {
+        AnimateTo(originalPosition, 1.0f);
+        MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
+    }
+    #endregion
+
+    #region 公共接口
+    public void Bind(Card newCard)
+    {
+        card = newCard;
+        UpdateUI();
+    }
+
+    public void UpdateUI()
+    {
+        if (card == null)
+        {
+            CardText.text = string.Empty;
+            image.sprite = null;
+        }
+        else
+        {
+            CardText.text = card.CardName;
+            image.sprite = card.CardSprite;
+        }
+    }
+
     public void ClearUsedCard()
     {
-        CardManager.Instance?.RemoveCard(card); // 从卡牌管理器中移除卡牌
-        Destroy(transform.parent.gameObject);// 销毁卡牌UI父对象
+        StopCurrentAnimation();
+        CardManager.Instance?.RemoveCard(card);
+        if (transform.parent != null)
+        {
+            Destroy(transform.parent.gameObject);
+        }
         card = null;
     }
+    #endregion
 }

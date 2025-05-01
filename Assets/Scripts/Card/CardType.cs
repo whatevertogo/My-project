@@ -8,7 +8,7 @@ public enum CardType
     /// <summary>
     /// 稻田
     /// </summary>
-    Paddy = 2,
+    PineTree = 2,
 
     /// <summary>
     /// 羽毛

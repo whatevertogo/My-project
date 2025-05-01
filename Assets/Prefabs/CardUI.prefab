@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3141366329970995451}
   - component: {fileID: 1986000720912792922}
   - component: {fileID: 5064425754671766902}
+  - component: {fileID: 399415798549908900}
   m_Layer: 0
   m_Name: CardUI
   m_TagString: Untagged
@@ -101,10 +102,10 @@ MonoBehaviour:
   CardText: {fileID: 8468123135230585594}
   image: {fileID: 4417308744014198392}
   TextArea: {fileID: 4746010589061293318}
+  cardCanvasGroup: {fileID: 399415798549908900}
   moveOffset: {x: 0, y: 80}
   duration: 0.3
   hoverSortingOrder: 10
-  cardCanvas: {fileID: 0}
 --- !u!223 &1986000720912792922
 Canvas:
   m_ObjectHideFlags: 0
@@ -145,6 +146,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!225 &399415798549908900
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2615910389078782032}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &4286446502887271085
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,7 +291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.21960784}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.4}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -329,8 +342,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1.0999756, y: 270}
-  m_SizeDelta: {x: 100, y: -50}
+  m_AnchoredPosition: {x: -0.5499878, y: 270}
+  m_SizeDelta: {x: 98.900024, y: -50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4180391073939766525
 CanvasRenderer:
@@ -360,7 +373,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u4E0D\u5E94\u8BE5\u5728\u8FD9\u91CC\u770B\u5230"
+  m_text: "\u4F60\u4E0D\u5E94\u8BE5\u770B\u5230\u8FD9\u4E2A\u5BF9\u8BDD\u634F,\u8003\u8651\u5361\u724C\u6570\u636E\u662F\u5426\u5BFC\u5165"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a35b5ef9c0ddfcf418fbf41be7bb7d3d, type: 2}
   m_sharedMaterial: {fileID: 1776429567854914187, guid: a35b5ef9c0ddfcf418fbf41be7bb7d3d, type: 2}
@@ -387,8 +400,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
-  m_fontSizeBase: 10
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -423,7 +436,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0.44470215, y: 0, z: 0, w: -1.1956787}
+  m_margin: {x: -9.378052, y: 28.240723, z: -9.822876, w: 1.2600708}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -463,10 +476,10 @@ RectTransform:
   - {fileID: 3897724048090715740}
   m_Father: {fileID: 7728761786725101094}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -100, y: -100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &4746010589061293318
 CanvasGroup:
