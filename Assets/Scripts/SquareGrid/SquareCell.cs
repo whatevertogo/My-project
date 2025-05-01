@@ -266,6 +266,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     {
         card.UseOn(this);
     }
+
     #endregion
 
 }

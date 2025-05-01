@@ -21,7 +21,7 @@ public class Card
     // 检查卡牌是否可以在目标格子上使用
     public bool CanUseOn(SquareCell targetCell)
     {
-        if (effect == null) return false;
+        if (effect is null) return false;
         return effect.CanUse(targetCell);
     }
 
