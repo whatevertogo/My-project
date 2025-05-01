@@ -115,7 +115,7 @@ public class PlayerAnimationController : MonoBehaviour
 
         // 检查是哪个动画完成了
         Spine.Animation completedAnimation = trackEntry.Animation;
-        if (completedAnimation == null) return;
+        if (completedAnimation is null) return;
 
         // 获取当前动画状态对应的 AnimationReferenceAsset
         // 使用新的公共方法获取资源
@@ -125,7 +125,7 @@ public class PlayerAnimationController : MonoBehaviour
 
         // 如果是 Jump 或 Standby2 完成
         if ((jumpAsset != null && completedAnimation == jumpAsset.Animation) ||
-            (standby2Asset != null && completedAnimation == standby2Asset.Animation))
+            (standby2Asset is not null && completedAnimation == standby2Asset.Animation))
         {
             // Debug.Log($"{completedAnimation.Name} 动画播放完成");
 
@@ -160,7 +160,7 @@ public class PlayerAnimationController : MonoBehaviour
 
         // 检查是否需要播放（避免重复设置相同的动画）
         var currentTrack = playerAnimationControl.skeletonAnimation?.state?.GetCurrent(0);
-        if (currentTrack != null && currentTrack.Animation == animationAsset.Animation && currentTrack.Loop == loop)
+        if (currentTrack is not null && currentTrack.Animation == animationAsset.Animation && currentTrack.Loop == loop)
         {
             return; // 已经在播放此动画了
         }

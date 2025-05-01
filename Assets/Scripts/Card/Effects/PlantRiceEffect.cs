@@ -17,6 +17,8 @@ public class PlantRiceEffect : CardEffect
         // 将格子转为稻田格子
         targetCell.SetGridType(GridType.PlantedRice);
 
+        
+
         // TODO: 添加稻谷生长组件或者效果
 
         Debug.Log($"在 {targetCell.Coordinates} 种植了稻谷");

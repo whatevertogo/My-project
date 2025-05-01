@@ -16,6 +16,7 @@ public class ChunkManager : Singleton<ChunkManager>
 
     private Dictionary<(int, int), Chunk> chunks = new();
     private static Camera sharedCamera; // 共享的持久摄像机
+    [Tooltip("地面精灵")]
     [SerializeField] private Sprite DiBanSprite;
 
     protected override void Awake()
@@ -109,7 +110,7 @@ public class ChunkManager : Singleton<ChunkManager>
         {
             if (cell.transform.childCount == 0)
             {
-                GameObject.Instantiate(content, cell.transform.position, Quaternion.identity, cell.transform);
+                Instantiate(content, cell.transform.position, Quaternion.identity, cell.transform);
             }
             else
             {

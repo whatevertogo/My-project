@@ -84,7 +84,7 @@ public class PlayerAnimationControl : MonoBehaviour
             return;
         }
 
-        if (skeletonAnimation.state == null)
+        if (skeletonAnimation.state is null)
         {
             Debug.LogError("SkeletonAnimation 的 state 未初始化！");
             return;
