@@ -4,7 +4,6 @@ public class PlayerAnimationController : MonoBehaviour
 {
     private PlayerAnimationControl playerAnimationControl;
     private Player player;
-    [ReadOnly]
     public float WaitToPlayTime = 10f; // 等待播放时间
     private PlayerAnimationState lastState; // 记录上一次播放的动画
 
