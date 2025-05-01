@@ -15,6 +15,7 @@ public class GridManager : Singleton<GridManager>
     [Header("网格类型配置和需要的BridSquare数量")]
     public GridTypeConfig gridTypeConfig; // 网格类型配置文件
     public SquareCell[,] cells;
+    public Material cellMaterial;
 
     public IEnumerable<SquareCell> AllCells
     {
@@ -50,16 +51,23 @@ public class GridManager : Singleton<GridManager>
                 GameObject cellObj = new GameObject();
                 // 为格子对象命名，包含其坐标信息
                 cellObj.name = $"Cell_{x}_{y}";
-                // 设置格子对象的位置，根据其坐标和格子大小计算
-                cellObj.transform.position = new Vector3(x * SquareMetrics.cellSize, y * SquareMetrics.cellSize, 0);
-                // 设置格子对象的缩放比例
-                cellObj.transform.localScale = Vector3.one * 0.98f;
+                
+                // 设置格子对象的位置，使用 Round 确保像素对齐
+                float posX = Mathf.Round(x * SquareMetrics.cellSize * 100f) / 100f;
+                float posY = Mathf.Round(y * SquareMetrics.cellSize * 100f) / 100f;
+                cellObj.transform.position = new Vector3(posX, posY, 0);
+                
+                // 使用整体缩放而不是单独缩放
+                cellObj.transform.localScale = Vector3.one;
+                
                 // 将格子对象设置为当前网格管理器的子对象
                 cellObj.transform.parent = this.transform;
 
-                // 格子对象的渲染器组件
-                cellObj.AddComponent<SpriteRenderer>();
-
+                // 添加并配置 SpriteRenderer
+                var CellRenderer = cellObj.AddComponent<SpriteRenderer>();
+                CellRenderer.material = this.cellMaterial;
+                CellRenderer.maskInteraction = SpriteMaskInteraction.None; // 避免mask带来的精度问题
+                
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
                 //设置格子的透明度
