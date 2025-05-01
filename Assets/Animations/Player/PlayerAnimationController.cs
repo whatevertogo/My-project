@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerAnimationController : MonoBehaviour
 {
     private PlayerAnimationControl playerAnimationControl;
+    private Player player;
     [ReadOnly]
     public float WaitToPlayTime = 10f; // 等待播放时间
     private PlayerAnimationState lastState; // 记录上一次播放的动画
@@ -15,6 +16,7 @@ public class PlayerAnimationController : MonoBehaviour
             Debug.LogError("PlayerAnimationControl 未初始化！");
             return;
         }
+        player = GetComponent<Player>();
     }
     private void OnEnable()
     {
@@ -23,6 +25,9 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Update()
     {
+        if (player.IsMoving == true)
+            WaitToPlayTime = 0; // 如果正在移动，则不等待播放动画
+
         if (WaitToPlayTime > 0)
         {
             WaitToPlayTime -= Time.deltaTime;

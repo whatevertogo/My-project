@@ -19,6 +19,10 @@ public class PlayerAnimationControl : MonoBehaviour
 
     private void Awake()
     {
+        if (skeletonAnimation == null)
+        {
+            Debug.LogError("SkeletonAnimation 未绑定，请在 Inspector 中设置！");
+        }
         InitializeAnimationDictionary();
         InitializeMixSettings();
     }
@@ -57,13 +61,18 @@ public class PlayerAnimationControl : MonoBehaviour
             return;
         }
 
-        if (playerAnimationDict.TryGetValue(animationType, out var animation))
+        if (skeletonAnimation.state == null)
         {
-            skeletonAnimation.state.SetAnimation(trackIndex, animation, loop);
+            Debug.LogError("SkeletonAnimation 的 state 未初始化！");
+            return;
         }
-        else
+
+        if (!playerAnimationDict.TryGetValue(animationType, out var animation) || animation == null)
         {
-            Debug.LogWarning($"动画类型 {animationType} 没有对应的动画资源！");
+            Debug.LogError($"动画类型 {animationType} 未正确设置！");
+            return;
         }
+
+        skeletonAnimation.state.SetAnimation(trackIndex, animation, loop);
     }
 }

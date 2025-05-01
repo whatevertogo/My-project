@@ -11,6 +11,7 @@ public class Player : Singleton<Player>
     public float moveCooldown = 1f; // 可在 Inspector 设置冷却时间
     public float CooldownTimer { get; set; } = 1f;
     private bool isMoving = false; // 添加移动状态标志
+    public bool IsMoving => isMoving; // 公开只读属性，允许外部访问移动状态
     [Tooltip("移动持续时间")]
     [Range(0.1f, 5f)]
     public float moveDuration = 1.0f;
