@@ -10,6 +10,7 @@ public class InteractManager : Singleton<InteractManager>
     private SquareCell hoveredCell;        // 当前悬停的格子
     private RaycastHit2D currentHit;       // 当前射线检测结果
 
+
     void Update()
     {
         // 鼠标悬浮在 UI 上不处理
@@ -46,7 +47,9 @@ public class InteractManager : Singleton<InteractManager>
     private void HandleHover()
     {
         SquareCell newCell = currentHit.collider?.GetComponent<SquareCell>();
-        bool isHoverable = newCell is not null && newCell.GetHoverHandler() is not DefaultHoverHandler;
+
+        // 添加调试日志
+        Debug.Log($"Hovered Cell: {hoveredCell?.name}, New Cell: {newCell?.name}");
 
         // 悬停对象发生变化
         if (newCell != hoveredCell)
@@ -54,11 +57,11 @@ public class InteractManager : Singleton<InteractManager>
             // 离开原来的格子
             hoveredCell?.OnHoverExit();
 
-            // 进入新的格子（如果是合法的）
-            hoveredCell = isHoverable ? newCell : null;
+            // 更新悬停的格子
+            hoveredCell = newCell;
 
-            if (hoveredCell != null)
-                hoveredCell.OnHoverEnter();
+            // 进入新的格子
+            hoveredCell?.OnHoverEnter();
         }
     }
 
@@ -71,15 +74,9 @@ public class InteractManager : Singleton<InteractManager>
         {
             SquareCell clickedCell = currentHit.collider?.GetComponent<SquareCell>();
 
-            if (clickedCell != null)
-            {
-                Debug.Log($"点击到了格子：{clickedCell.name}");
-                clickedCell.Interact();
-            }
-            else if (currentHit.collider != null)
-            {
-                Debug.LogWarning($"点击到了 {currentHit.collider.name}，但没有 SquareCell 组件！");
-            }
+            if (clickedCell is null) return;
+            Debug.Log($"点击到了格子：{clickedCell.name}");
+            clickedCell.Interact();
         }
     }
 

@@ -7,9 +7,9 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     public SquareCoordinates Coordinates { get; set; }
     public readonly float duration = 1f;
 
-    [ReadOnly]
-    public GridType cellType = GridType.None; // 默认值为None
+    [ReadOnly] public GridType cellType = GridType.None; // 默认值为None
     public SpriteRenderer CellRenderer;
+
     /// <summary>
     /// 存储邻居的列表，包括自身和8个方向的邻居
     /// </summary>
@@ -28,12 +28,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         CellRenderer.sprite = Resources.Load<Sprite>("Images/Default");
     }
 
-    private void Start()
-    {
-        // 初始化Hover控制器
-        hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
-    }
-
     // 存储邻居的列表
     public Vector3 GetWorldPosition()
     {
@@ -44,6 +38,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     {
         this.Coordinates = coordinates;
     }
+
     public SquareCoordinates GetCoordinates()
     {
         return Coordinates;
@@ -101,6 +96,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     // #endregion
 
     #region 邻居方法
+
     /// <summary>
     /// 设置指定方向的邻居格子
     /// </summary>
@@ -130,6 +126,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         {
             return neighbor;
         }
+
         return null;
     }
 
@@ -152,6 +149,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
             neighbor = neighborsAndSelf[index];
             return true;
         }
+
         neighbor = null;
         return false;
     }
@@ -176,15 +174,18 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
         return validCells;
     }
+
     #endregion
 
     #region 运算符重载
+
     public override bool Equals(object obj)
     {
         if (obj is SquareCell other)
         {
             return Coordinates.Equals(other.Coordinates);
         }
+
         return false;
     }
 
@@ -201,10 +202,13 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     #endregion
 
     #region 网格Type方法
+
     public void SetGridType(GridType type)
     {
+        // 初始化Hover控制器
         //todo-激活不同type的逻辑
         this.cellType = type;
+        hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
         if (this.cellType == GridType.BirdSquare)
         {
             IsPlaceable = false;
@@ -226,31 +230,33 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
             GridManager.Instance.AllDontMoveCells.Add(this);
         }
     }
+
     public GridType GetGridType()
     {
         return cellType;
     }
+
     public void ResetGridType()
     {
         cellType = GridType.SimpleSquare;
     }
+
     #endregion
 
     #region 交互方法
+
     public void Interact()
     {
         Debug.Log($"与格子 {this.Coordinates} 交互！");
     }
+
     #endregion
 
     #region 鼠标悬停Handler
+
     public void SetHoverHandler(ICellHoverHandler handler)
     {
         hoverHandler = handler;
-    }
-    public ICellHoverHandler GetHoverHandler()
-    {
-        return hoverHandler;
     }
 
     public void OnHoverEnter()
@@ -264,14 +270,15 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         if (IsExplored == false) return;
         hoverHandler?.OnHoverExit(this);
     }
+
     #endregion
 
     #region 卡牌使用方法
+
     public void UseCard(Card card)
     {
         card.UseOn(this);
     }
 
     #endregion
-
 }
