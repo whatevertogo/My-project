@@ -16,6 +16,7 @@ public class GridManager : Singleton<GridManager>
     public GridTypeConfig gridTypeConfig; // 网格类型配置文件
     public SquareCell[,] cells;
     public Material cellMaterial;
+    public int GrassCount = 100;
 
     public IEnumerable<SquareCell> AllCells
     {
@@ -51,22 +52,22 @@ public class GridManager : Singleton<GridManager>
                 GameObject cellObj = new GameObject();
                 // 为格子对象命名，包含其坐标信息
                 cellObj.name = $"Cell_{x}_{y}";
-                
+
                 // 设置格子对象的位置，使用 Round 确保像素对齐
                 float posX = Mathf.Round(x * SquareMetrics.cellSize * 100f) / 100f;
                 float posY = Mathf.Round(y * SquareMetrics.cellSize * 100f) / 100f;
                 cellObj.transform.position = new Vector3(posX, posY, 0);
-                
+
                 // 使用整体缩放而不是单独缩放
                 cellObj.transform.localScale = Vector3.one;
-                
+
                 // 将格子对象设置为当前网格管理器的子对象
                 cellObj.transform.parent = this.transform;
 
                 // 添加并配置 SpriteRenderer
                 var CellRenderer = cellObj.AddComponent<SpriteRenderer>();
-                
-                
+
+
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();
                 //设置格子的透明度
@@ -87,8 +88,8 @@ public class GridManager : Singleton<GridManager>
         // 设置格子的类型，确保相邻格子类型不同时为 BirdSquare
         AssignGridTypes();
 
-        Debug.Log($"Total Cells Generated: {width * height}");        // 生成迷雾
         GridPainter.Instance?.GenerateAllMist(width, height);
+        GridPainter.Instance?.GenerateGrass(width, height, GrassCount); // 生成 4 个草地
     }
 
     // 辅助方法：检查并设置指定方向的邻居

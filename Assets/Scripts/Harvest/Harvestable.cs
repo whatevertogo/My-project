@@ -10,7 +10,7 @@ namespace HexGame.Harvest
     {
         [Header("收获设置")]
         [Tooltip("收获冷却时间（秒）")]
-        [SerializeField] private float cooldownTime = 5f;
+        [SerializeField] private float cooldownTime = 10f;
         public void SetCooldownTime(float time)
         {
             cooldownTime = time;

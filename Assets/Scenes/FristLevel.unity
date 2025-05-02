@@ -804,6 +804,13 @@ MonoBehaviour:
   misLocalScaleMax: 1.2
   poissonRadius: 0.5
   poissonSamplesBeforeRejection: 20
+  grassDensity: 0.35
+  grassSamplesBeforeRejection: 20
+  grassPrefabs:
+  - {fileID: 4828149175286137343, guid: 63778b572ddfc9749bcf98302574c9af, type: 3}
+  - {fileID: 4989427132158459890, guid: 02494db82283f01418762cb1de0288e3, type: 3}
+  - {fileID: 2405536447535347192, guid: 4151455ece3b7f54aa7509f2495e0dec, type: 3}
+  - {fileID: 2191957910052331678, guid: c2c860e61affa3a47bc5d34437efa531, type: 3}
   enableDebugLogs: 1
 --- !u!114 &621430828
 MonoBehaviour:
@@ -1628,6 +1635,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridTypeConfig: {fileID: 11400000, guid: 6467ab8470781914e80e94de5ef94a7d, type: 2}
   cellMaterial: {fileID: 2100000, guid: 75806e34cf6dbb84181227bdd611748e, type: 2}
+  GrassCount: 100
   AllBridCells: []
   AllDontMoveCells: []
 --- !u!4 &1010826480

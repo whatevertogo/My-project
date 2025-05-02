@@ -36,6 +36,7 @@ public class HarvestManager : Singleton<HarvestManager>
     {
         { HarvestType.Branch, 0 },
         { HarvestType.PineCone, 0 },
+        { HarvestType.Feather, 0 }
     };
 
     private void Start()

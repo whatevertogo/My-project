@@ -7,22 +7,24 @@ using System.Collections;
 public class GridPainter : Singleton<GridPainter>
 {
     private PlayerGridComponent playerGridComponent;
-    public Renderer currentCellRenderer;
+    [ReadOnly] public Renderer currentCellRenderer;
 
-    [Header("迷雾相关配置")]
-    public GameObject[] mistPrefabs; // 迷雾预制体
+    [Header("迷雾相关配置")] public GameObject[] mistPrefabs; // 迷雾预制体
     public float fadeDuration = 1.0f; // 迷雾消失时间
     public float startSpeed = 0f; // 初始速度
     public float acceleration = 1f; // 每秒加速度
     public float misLocalScaleMin = 0.8f;
     public float misLocalScaleMax = 1.2f;
 
-    [Header("泊松分布参数")]
-    public float poissonRadius = 0.5f; // 最小距离
+    [Header("泊松分布参数")] public float poissonRadius = 0.5f; // 最小距离
     public int poissonSamplesBeforeRejection = 20; // 采样次数
 
-    [Header("调试设置")]
-    public bool enableDebugLogs = true; // 控制日志输出
+    [Header("草地")] public float grassDensity = 0.5f; // 草地密度
+    public int grassSamplesBeforeRejection = 20; // 草地采样次数
+    public GameObject[] grassPrefabs; // 草地预制体
+
+    [Header("调试设置")] public bool enableDebugLogs = true; // 控制日志输出
+
     // 使用字典存储每个格子位置的迷雾对象
     private Dictionary<Vector2Int, List<GameObject>> fogDictionary = new();
     private Transform fogParent; // 迷雾的父物体
@@ -48,6 +50,7 @@ public class GridPainter : Singleton<GridPainter>
             GameObject fogParentObj = new GameObject("FogContainer");
             fogParent = fogParentObj.transform;
         }
+
         // 确保迷雾容器在场景根级别
         fogParent.SetParent(null);
     }
@@ -58,6 +61,7 @@ public class GridPainter : Singleton<GridPainter>
         {
             playerGridComponent.OnCellChanged += OnPlayerCellChanged;
         }
+
         if (playerGridComponent?.currentCell?.CellRenderer is not null)
         {
             currentCellRenderer = playerGridComponent.currentCell.CellRenderer;
@@ -75,6 +79,7 @@ public class GridPainter : Singleton<GridPainter>
 
         PaintArea(e.cell);
     }
+
     /// <summary>
     /// 画小鸟和雾
     /// </summary>
@@ -126,6 +131,7 @@ public class GridPainter : Singleton<GridPainter>
                     Debug.LogError("未能加载小鸟图片，跳过设置。");
                     continue;
                 }
+
                 sr.material = cell.CellRenderer.material; // 使用格子的unit材质
                 birdOverlay.transform.localRotation = Quaternion.Euler(-10, 0, 0);
                 birdOverlay.transform.localPosition = new Vector3(0, 0, -0.1f); // 确保在格子上面
@@ -195,9 +201,10 @@ public class GridPainter : Singleton<GridPainter>
         if (mistSr is null) yield break;
 
         Color color = mistSr.color;
-        Vector2Int cellPos = new Vector2Int(Mathf.RoundToInt(mist.transform.position.x), Mathf.RoundToInt(mist.transform.position.y));
+        Vector2Int cellPos = new Vector2Int(Mathf.RoundToInt(mist.transform.position.x),
+            Mathf.RoundToInt(mist.transform.position.y));
 
-        while (elapsedTime < fadeDuration && mist is not null)
+        while (elapsedTime < fadeDuration)
         {
             elapsedTime += Time.deltaTime;
             float alpha = Mathf.Lerp(color.a, 0f, elapsedTime / fadeDuration);
@@ -208,11 +215,8 @@ public class GridPainter : Singleton<GridPainter>
             yield return null;
         }
 
-        if (mist is not null)
-        {
-            RemoveFogFromDictionary(cellPos, mist);
-            Destroy(mist);
-        }
+        RemoveFogFromDictionary(cellPos, mist);
+        Destroy(mist);
     }
 
     private void OnDestroy()
@@ -230,6 +234,7 @@ public class GridPainter : Singleton<GridPainter>
         {
             fogDictionary[cellPos] = new List<GameObject>();
         }
+
         fogDictionary[cellPos].Add(fog);
     }
 
@@ -249,6 +254,39 @@ public class GridPainter : Singleton<GridPainter>
                 AddFogToDictionary(cellPos, fog);
             }
         }
+    }
+
+    public void GenerateGrass(int width, int height, int grassCount)
+    {
+        var GrassAll = new GameObject("GrassAll");
+        for (int i = 0; i < grassCount; i++)
+        {
+            // 随机选择一个格子
+            int x = Random.Range(0, width);
+            int y = Random.Range(0, height);
+
+            // 在选定的格子中生成泊松分布的草地
+            List<Vector2> grassPoints = GeneratePoissonPoints(grassDensity, grassSamplesBeforeRejection);
+
+            foreach (var pt in grassPoints)
+            {
+                // 随机生成草地位置
+                Vector3 pos = new Vector3(x + pt.x - 0.5f, y + pt.y - 0.5f, -1f);
+                GameObject grass = CreateGrassObject(pos);
+                if (grass is not null)
+                {
+                    grass.transform.SetParent(GrassAll.transform, false); // 将草地对象设置为当前对象的子物体
+                }
+            }
+        }
+    }
+
+    private GameObject CreateGrassObject(Vector3 position)
+    {
+        GameObject prefab = grassPrefabs[Random.Range(0, grassPrefabs.Length)]; // 使用现有的草地预制体
+        GameObject grass = Instantiate(prefab, position, Quaternion.identity);
+        grass.transform.localScale *= Random.Range(misLocalScaleMin, misLocalScaleMax);
+        return grass;
     }
 
     // 创建迷雾对象
@@ -271,29 +309,29 @@ public class GridPainter : Singleton<GridPainter>
     /// <returns>生成的点列表</returns>
     public List<Vector2> GeneratePoissonPoints(float radius, int numSamplesBeforeRejection = 20)
     {
-        List<Vector2> points = new List<Vector2>();// 最终结果
-        List<Vector2> spawnPoints = new List<Vector2>();// 当前可以生成新点的“种子点”
+        List<Vector2> points = new List<Vector2>(); // 最终结果
+        List<Vector2> spawnPoints = new List<Vector2>(); // 当前可以生成新点的“种子点”
 
         float cellSize = radius / Mathf.Sqrt(2);
         int gridSize = Mathf.CeilToInt(1f / cellSize); // 限制在 1x1 区域内
-        Vector2[,] grid = new Vector2[gridSize, gridSize];
 
         // 初始点中心
         spawnPoints.Add(new Vector2(0.5f, 0.5f));
 
         while (spawnPoints.Any())
         {
-            int spawnIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
+            int spawnIndex = Random.Range(0, spawnPoints.Count);
             Vector2 spawnCenter = spawnPoints[spawnIndex];
             bool accepted = false;
 
             for (int i = 0; i < numSamplesBeforeRejection; i++)
             {
-                float angle = UnityEngine.Random.value * Mathf.PI * 2;
-                float dist = UnityEngine.Random.Range(radius, 2 * radius);
+                float angle = Random.value * Mathf.PI * 2;
+                float dist = Random.Range(radius, 2 * radius);
                 Vector2 candidate = spawnCenter + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * dist;
 
-                if (candidate.x >= 0 && candidate.x < 1 && candidate.y >= 0 && candidate.y < 1 && IsFarEnough(candidate, points, radius))
+                if (candidate.x is >= 0 and < 1 && candidate.y is >= 0 and < 1 &&
+                    IsFarEnough(candidate, points, radius))
                 {
                     points.Add(candidate);
                     spawnPoints.Add(candidate);
@@ -310,6 +348,7 @@ public class GridPainter : Singleton<GridPainter>
 
         return points;
     }
+
     /// <summary>
     /// 判断候选点是否与已有所有点之间的距离都大于等于给定的半径。
     /// </summary>
@@ -324,6 +363,7 @@ public class GridPainter : Singleton<GridPainter>
             if ((candidate - p).sqrMagnitude < radius * radius)
                 return false;
         }
+
         return true;
     }
 
@@ -337,6 +377,7 @@ public class GridPainter : Singleton<GridPainter>
                 GenerateMist(x, y);
             }
         }
+
         if (enableDebugLogs) Debug.Log($"已生成 {fogDictionary.Count} 个格子的迷雾");
     }
 
@@ -347,6 +388,7 @@ public class GridPainter : Singleton<GridPainter>
         {
             fogDictionary[cellPos] = new List<GameObject>();
         }
+
         fogDictionary[cellPos].Add(fog);
     }
 
@@ -362,9 +404,9 @@ public class GridPainter : Singleton<GridPainter>
             }
         }
     }
+
     private bool HasFogInDictionary(Vector2Int cellPos)
     {
         return fogDictionary.ContainsKey(cellPos) && fogDictionary[cellPos].Count > 0;
     }
-
 }

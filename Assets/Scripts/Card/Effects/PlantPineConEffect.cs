@@ -16,6 +16,8 @@ public class PlantPineConeEffect : CardEffect
 
         // 将格子转为稻田格子
         targetCell.SetGridType(GridType.PlantedTree);
+        
+        targetCell.CellRenderer.sprite = Resources.Load<Sprite>("Images/PineCone");
 
         // 添加可收获组件
         var harvestable = targetCell.gameObject.AddComponent<Harvestable>();
