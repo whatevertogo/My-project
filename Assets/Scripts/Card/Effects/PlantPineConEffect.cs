@@ -22,7 +22,7 @@ public class PlantPineConeEffect : CardEffect
         harvestable.SetResourceType(HarvestType.PineCone);
         harvestable.SetHarvestAmount(1);
 
-        Debug.Log($"在 {targetCell.Coordinates} 种植了羽毛");
+        Debug.Log($"在 {targetCell.Coordinates} 种植了松树");
 
         // 直接移除当前执行的卡牌
         CardManager.Instance.RemoveCard(card);

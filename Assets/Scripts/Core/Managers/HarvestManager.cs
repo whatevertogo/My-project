@@ -32,7 +32,7 @@ public class HarvestManager : Singleton<HarvestManager>
     /// <summary>
     /// 存储每种资源的数量
     /// </summary>
-    private readonly Dictionary<HarvestType, int> harvestAmounts = new()
+    private Dictionary<HarvestType, int> harvestAmounts = new()
     {
         { HarvestType.Branch, 0 },
         { HarvestType.PineCone, 0 },
