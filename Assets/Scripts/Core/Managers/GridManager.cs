@@ -171,11 +171,6 @@ public class GridManager : Singleton<GridManager>
                     cellType = GridType.SimpleSquare;
 
                 cell.SetGridType(cellType);
-
-                if (cell.GetGridType() == GridType.BirdSquare)
-                {
-                    AllBridCells.Add(cell);
-                }
             }
         }
     }
