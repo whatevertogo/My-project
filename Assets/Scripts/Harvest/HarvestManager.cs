@@ -34,7 +34,7 @@ namespace HexGame.Harvest
         }
 
         // 存储各类资源的数量
-        private Dictionary<HarvestType, int> resourceCounts = new Dictionary<HarvestType, int>();        protected override void Awake()
+        private readonly Dictionary<HarvestType, int> resourceCounts = new Dictionary<HarvestType, int>();        protected override void Awake()
         {
             base.Awake();
             InitializeResourceCounts();
