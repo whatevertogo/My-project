@@ -1,7 +1,10 @@
 ﻿namespace Conclutions
 {
-    public class ConclutionsType
+    public enum ConclutionsType
     {
-        
+        None,
+        Part1,
+        Part2,
+        Part3,
     }
 }

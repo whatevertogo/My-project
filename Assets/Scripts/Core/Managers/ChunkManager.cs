@@ -43,7 +43,7 @@ public class ChunkManager : Singleton<ChunkManager>
     void Start()
     {
         InitializeChunks(GridManager.Instance.cells);
-        //todo- 可视化所有区块（调试用）
+        //TODO- 可视化所有区块（调试用）
         VisualizeAllChunks(chunkWrapperPrefab);
     }
 
@@ -83,7 +83,7 @@ public class ChunkManager : Singleton<ChunkManager>
     public Chunk GetChunk(int chunkX, int chunkY)
     {
         var chunkKey = (chunkX, chunkY);
-        return chunks.TryGetValue(chunkKey, out var chunk) ? chunk : null;
+        return chunks.GetValueOrDefault(chunkKey);
     }
 
     /// <summary>
@@ -215,7 +215,7 @@ public class ChunkManager : Singleton<ChunkManager>
     /// </summary>
     public void VisualizeAllChunks(GameObject chunkWrapperPrefab)
     {
-        if (chunkWrapperPrefab == null)
+        if (chunkWrapperPrefab is null)
         {
             Debug.LogWarning("ChunkWrapperPrefab is not assigned!");
             return;

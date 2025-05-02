@@ -9,7 +9,7 @@ public class Chunk
 
     public GameObject RenderObject { get; private set; }
     public bool IsVisible { get; private set; } = true;
-    public Material SharedMaterial { get; private set; } = ChunkManager.Instance.Material;
+    private Material SharedMaterial { get; set; } = ChunkManager.Instance.Material;
 
     private int chunkSize;
 

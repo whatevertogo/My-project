@@ -13,14 +13,7 @@ public class InteractManager : Singleton<InteractManager>
         if (EventSystem.current?.IsPointerOverGameObject() == true) return;
 
         Vector2 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (Camera.main.orthographic)
-        {
-            hoverHit = Physics2D.Raycast(point, Vector2.zero);
-        }
-        else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
-        {
-            hoverHit = Physics2D.Raycast(point, Vector2.zero);
-        }
+        hoverHit = Physics2D.Raycast(point, Vector2.zero);
 
         SquareCell cell = hoverHit.collider?.GetComponent<SquareCell>();
         if (cell is not null && cell != hoveredCell && cell.GetHoverHandler() is not DefaultHoverHandler)
@@ -29,7 +22,7 @@ public class InteractManager : Singleton<InteractManager>
             hoveredCell = cell;
             hoveredCell.OnHoverEnter();
         }
-        else if (hoveredCell is not null && hoverHit.collider == null)
+        else if (hoveredCell is null && hoverHit.collider is null)
         {
             hoveredCell.OnHoverExit();
             hoveredCell = null;
@@ -70,7 +63,7 @@ public class InteractManager : Singleton<InteractManager>
                 Debug.LogWarning($"物体 {hit.collider.name} 上没有SquareCell组件");
             }
         }
-        
+
 
         return null;
     }
