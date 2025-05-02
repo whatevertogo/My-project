@@ -6,13 +6,6 @@ public class GameManager : Singleton<GameManager>
     
     public static ConclutionsType ConclutionType;
     
-    
-    protected override void Awake()
-    {
-        base.Awake();
-        
-    }
-
     private void SetConclutionType()
     {
         ConclutionType = ConclutionsType.None;

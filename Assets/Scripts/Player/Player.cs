@@ -23,8 +23,9 @@ public class Player : Singleton<Player>
 
     protected override void Awake()
     {
-        gameObject.transform.position = GridManager.Instance.GetGridCenter();
+        var Center = GridManager.Instance.GetGridCenter();
 
+        this.transform.position = Center + new Vector3(0f, -0.1f, 0f);
         if (moveCooldown <= 0)
         {
             Debug.LogWarning("moveCooldown must be a positive value. Setting it to the default value of 1f.");

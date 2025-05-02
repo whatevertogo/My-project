@@ -22,11 +22,9 @@ public class ChunkWrapper : MonoBehaviour
         chunk.BindRenderToObject();
 
         // 将 RenderObject 设置为 ChunkWrapper 的子物体
-        if (chunk.RenderObject is not null)
-        {
-            chunk.RenderObject.transform.SetParent(this.transform,false);
-            chunk.RenderObject.transform.localPosition = Vector3.zero;
-        }
+        if (chunk.RenderObject is null) return;
+        chunk.RenderObject.transform.SetParent(this.transform,false);
+        chunk.RenderObject.transform.localPosition = Vector3.zero;
     }
 
     private void OnDrawGizmos()

@@ -148,11 +148,11 @@ public class PlayerAnimationController : MonoBehaviour
     /// </summary>
     private void PlayAnimation(PlayerAnimationState state, bool loop)
     {
-        if (playerAnimationControl == null) return;
+        if (playerAnimationControl is null) return;
 
         // 使用新的公共方法获取资源
         AnimationReferenceAsset animationAsset = playerAnimationControl.GetAnimationAsset(state);
-        if (animationAsset == null)
+        if (!animationAsset)
         {
             Debug.LogWarning($"动画资源 {state} 未在 PlayerAnimationControl 中设置或获取失败。");
             return;
@@ -174,11 +174,11 @@ public class PlayerAnimationController : MonoBehaviour
     /// </summary>
     private void PlayAnimationIfNeeded(PlayerAnimationState state, bool loop)
     {
-        if (playerAnimationControl == null) return;
+        if (playerAnimationControl is null) return;
 
         // 使用新的公共方法获取资源
         AnimationReferenceAsset animationAsset = playerAnimationControl.GetAnimationAsset(state);
-        if (animationAsset == null) return; // 如果资源不存在，则不执行任何操作
+        if (animationAsset is null) return; // 如果资源不存在，则不执行任何操作
 
         var currentTrack = playerAnimationControl.skeletonAnimation?.state?.GetCurrent(0);
         // 仅当当前没有动画，或者当前动画不是目标动画时才播放

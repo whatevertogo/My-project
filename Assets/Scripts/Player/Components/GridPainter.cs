@@ -126,6 +126,9 @@ public class GridPainter : Singleton<GridPainter>
                     Debug.LogError("未能加载小鸟图片，跳过设置。");
                     continue;
                 }
+                sr.material = cell.CellRenderer.material; // 使用格子的unit材质
+                birdOverlay.transform.localRotation = Quaternion.Euler(-10, 0, 0);
+                birdOverlay.transform.localPosition = new Vector3(0, 0, -0.1f); // 确保在格子上面
                 sr.sortingLayerName = "Behavior";
                 sr.sortingOrder = cell.CellRenderer.sortingOrder + 1; // 确保盖在上面
 
