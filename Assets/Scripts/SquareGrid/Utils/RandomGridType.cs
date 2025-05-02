@@ -1,10 +1,8 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public static class RandomGridType
 {
     private static GridTypeConfig config;
-    private static bool hasBirdSquare = false; // 标记是否已经生成了 BirdSquare
 
     /// <summary>
     /// 初始化配置
@@ -12,7 +10,6 @@ public static class RandomGridType
     public static void Initialize(GridTypeConfig gridTypeConfig)
     {
         config = gridTypeConfig;
-        hasBirdSquare = false; // 每次初始化时重置标记
     }
 
     /// <summary>
@@ -30,7 +27,6 @@ public static class RandomGridType
         float r = Random.Range(0f, 1f);
         if (r < config.birdSquareProbability)
         {
-            hasBirdSquare = true;
             return GridType.BirdSquare;
         }
         else

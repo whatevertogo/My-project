@@ -175,7 +175,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         isHovered = false;
 
         SquareCell cell = InteractManager.Instance.GetCellUnderMouse();
-        if (cell != null && cell.IsExplored && cell.IsPlaceable)
+        if (cell is not null && cell.IsExplored && cell.IsPlaceable)
         {
             HandleCardPlacement(cell);
         }
@@ -189,7 +189,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     #region 动画方法
     private void AnimateTo(Vector2 targetPosition, float targetScale)
     {
-        if (rectTransform == null) return;
+        if (rectTransform is null) return;
 
         StopCurrentAnimation();
         SetLayoutGroupEnabled(false);

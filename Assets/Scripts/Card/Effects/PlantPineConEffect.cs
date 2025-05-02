@@ -17,8 +17,6 @@ public class PlantPineConeEffect : CardEffect
         // 将格子转为稻田格子
         targetCell.SetGridType(GridType.PlantedTree);
 
-        GridManager.Instance.AllDontMoveCells.Add(targetCell); // 将格子添加到不可移动列表中
-
         // 添加可收获组件
         var harvestable = targetCell.gameObject.AddComponent<Harvestable>();
         harvestable.SetResourceType(HarvestType.PineCone);
