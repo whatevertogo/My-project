@@ -65,8 +65,7 @@ public class GridManager : Singleton<GridManager>
 
                 // 添加并配置 SpriteRenderer
                 var CellRenderer = cellObj.AddComponent<SpriteRenderer>();
-                CellRenderer.material = this.cellMaterial;
-                CellRenderer.maskInteraction = SpriteMaskInteraction.None; // 避免mask带来的精度问题
+                
                 
                 // 为格子对象添加SquareCell组件
                 var cell = cellObj.AddComponent<SquareCell>();

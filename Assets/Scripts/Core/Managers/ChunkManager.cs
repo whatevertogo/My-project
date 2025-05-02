@@ -10,29 +10,33 @@ public class ChunkManager : Singleton<ChunkManager>
     private int mapWidth; // 地图宽度（格子数）
     [ReadOnly]
     private int mapHeight; // 地图高度（格子数）
+    
+    [Header("渲染设置")]
+    [Tooltip("用于渲染的共享材质")]
+    [SerializeField] private Material material;
+    public Material Material 
+    {
+        get => material;
+        private set => material = value;
+    }
+    [Tooltip("地面精灵")]
+    [SerializeField] private Sprite DiBanSprite;
 
     [Header("调试用宝宝")]
     public GameObject chunkWrapperPrefab;
 
     private Dictionary<(int, int), Chunk> chunks = new();
-    private static Camera sharedCamera; // 共享的持久摄像机
-    [Tooltip("地面精灵")]
-    [SerializeField] private Sprite DiBanSprite;
 
     protected override void Awake()
     {
         base.Awake();
         mapWidth = GridManager.Instance?.width ?? 0;
         mapHeight = GridManager.Instance?.height ?? 0;
-    }
 
-    private void OnDestroy()
-    {
-        // 清理共享摄像机
-        if (sharedCamera is not null)
+        // 确保材质已分配
+        if (Material == null)
         {
-            Destroy(sharedCamera.gameObject);
-            sharedCamera = null;
+            Debug.LogError("ChunkManager: Material is not assigned!");
         }
     }
 
@@ -64,10 +68,8 @@ public class ChunkManager : Singleton<ChunkManager>
         }
 
         // 初始化所有区块的渲染
-        foreach (var chunk in chunks.Values)
+        foreach (Chunk chunk in chunks.Values)
         {
-            chunk.InitializeRenderTexture();
-            chunk.RefreshRenderTexture();
             chunk.BindRenderToObject();
             chunk.SetChunkSprite(DiBanSprite);
         }
@@ -124,20 +126,18 @@ public class ChunkManager : Singleton<ChunkManager>
             }
         }
 
-        // 更新区块渲染
-        chunk.RefreshRenderTexture();
     }
 
     /// <summary>
-    /// 刷新指定区块
+    /// 刷新指定区块的渲染
     /// </summary>
     public void RefreshChunk(int chunkX, int chunkY)
     {
         var chunk = GetChunk(chunkX, chunkY);
         if (chunk is not null)
         {
-            chunk.RefreshRenderTexture();
             chunk.BindRenderToObject();
+            chunk.SetChunkSprite(DiBanSprite); // 重新应用默认地板精灵
         }
         else
         {
@@ -156,30 +156,26 @@ public class ChunkManager : Singleton<ChunkManager>
         }
     }
 
-    // 刷新所有区块
+    /// <summary>
+    /// 刷新所有区块的渲染
+    /// </summary>
     public void RefreshAllChunks()
     {
         foreach (var chunk in chunks.Values)
         {
-            chunk.RefreshRenderTexture();
             chunk.BindRenderToObject();
+            chunk.SetChunkSprite(DiBanSprite); // 重新应用默认地板精灵
         }
     }
 
-    // 清理所有区块
+    /// <summary>
+    /// 清理所有区块资源
+    /// </summary>
     public void ClearAllChunks()
     {
         foreach (var chunk in chunks.Values)
         {
-            if (chunk.RenderObject is not null)
-            {
-                Destroy(chunk.RenderObject);
-            }
-            if (chunk.RenderTexture is not null)
-            {
-                chunk.RenderTexture.Release();
-                Destroy(chunk.RenderTexture);
-            }
+            chunk.Cleanup(); // 使用 Chunk 的 Cleanup 方法来正确清理资源
         }
         chunks.Clear();
     }
@@ -187,9 +183,6 @@ public class ChunkManager : Singleton<ChunkManager>
     /// <summary>
     /// 为指定区块设置一张大图片
     /// </summary>
-    /// <param name="chunkX">区块的 X 坐标</param>
-    /// <param name="chunkY">区块的 Y 坐标</param>
-    /// <param name="sprite">要设置的图片</param>
     public void SetChunkImage(int chunkX, int chunkY, Sprite sprite)
     {
         var chunk = GetChunk(chunkX, chunkY);
@@ -205,8 +198,6 @@ public class ChunkManager : Singleton<ChunkManager>
     /// <summary>
     /// 清除指定区块的图片
     /// </summary>
-    /// <param name="chunkX">区块的 X 坐标</param>
-    /// <param name="chunkY">区块的 Y 坐标</param>
     public void ClearChunkImage(int chunkX, int chunkY)
     {
         var chunk = GetChunk(chunkX, chunkY);
@@ -220,16 +211,27 @@ public class ChunkManager : Singleton<ChunkManager>
     }
 
     /// <summary>
-    /// 在场景中可视化所有区块
+    /// 在场景中可视化所有区块（调试用）
     /// </summary>
-    /// <param name="chunkWrapperPrefab">包含 ChunkWrapper 的预制体</param>
     public void VisualizeAllChunks(GameObject chunkWrapperPrefab)
     {
+        if (chunkWrapperPrefab == null)
+        {
+            Debug.LogWarning("ChunkWrapperPrefab is not assigned!");
+            return;
+        }
+
         foreach (var chunk in chunks.Values)
         {
             // 创建一个 ChunkWrapper 实例
             GameObject wrapperObject = Instantiate(chunkWrapperPrefab, Vector3.zero, Quaternion.identity, transform);
             ChunkWrapper wrapper = wrapperObject.GetComponent<ChunkWrapper>();
+            
+            if (wrapper == null)
+            {
+                Debug.LogError($"ChunkWrapper component not found on prefab {chunkWrapperPrefab.name}");
+                continue;
+            }
 
             // 初始化 ChunkWrapper
             wrapper.Initialize(chunk);
