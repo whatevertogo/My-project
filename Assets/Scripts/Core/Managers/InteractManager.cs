@@ -16,14 +16,17 @@ public class InteractManager : Singleton<InteractManager>
         hoverHit = Physics2D.Raycast(point, Vector2.zero);
 
         SquareCell cell = hoverHit.collider?.GetComponent<SquareCell>();
+
         if (cell is not null && cell != hoveredCell && cell.GetHoverHandler() is not DefaultHoverHandler)
         {
+            // 如果悬停的格子发生变化，调用之前格子的 OnHoverExit
             hoveredCell?.OnHoverExit();
             hoveredCell = cell;
             hoveredCell.OnHoverEnter();
         }
-        else if (hoveredCell is null && hoverHit.collider is null)
+        else if (hoveredCell is not null && (cell is null || cell == hoveredCell))
         {
+            // 如果没有悬停的格子或悬停的格子未变化，调用 OnHoverExit 并清空 hoveredCell
             hoveredCell.OnHoverExit();
             hoveredCell = null;
         }
