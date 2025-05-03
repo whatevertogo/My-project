@@ -212,7 +212,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         if (this.cellType == GridType.BirdSquare)
         {
             IsPlaceable = false;
-            GridManager.Instance.AllBridCells.Add(this);
+            GridManager.Instance.AllBirdCells.Add(this);
             GridManager.Instance.AllDontMoveCells.Add(this);
         }
         else if (this.cellType == GridType.SimpleSquare)

@@ -27,7 +27,7 @@ public class GridManager : Singleton<GridManager>
         }
     }
 
-    public List<SquareCell> AllBridCells = new();
+    public List<SquareCell> AllBirdCells = new();
     public List<SquareCell> AllDontMoveCells = new();
 
     protected override void Awake()

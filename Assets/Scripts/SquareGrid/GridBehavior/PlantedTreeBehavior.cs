@@ -1,7 +1,6 @@
-﻿namespace SquareGrid.GridBehavior
+﻿public class PlantedTreeBehavior : IGridTypeBehavior
 {
-    public class PlantedTreeBehavior
+    public void ApplyBehavior(SquareCell cell)
     {
-        
     }
 }
