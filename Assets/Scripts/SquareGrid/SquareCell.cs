@@ -22,6 +22,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     private IGridTypeBehavior gridTypeBehavior;
     public GameObject chatObject; // 对话框对象
+    public HarvestType WantedHarvestType; // 需要的物体
 
     public HarvestType harvestTypeWanted = HarvestType.None; // 需要的HarvestType
 
@@ -213,13 +214,13 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     #endregion
 
     #region 网格Type方法
+
     /// <summary>
     /// 设置网格类型
     ///  通过工厂模式获取不同的行为类
     ///  通过工厂模式获取不同的悬停Handler
     /// </summary>
     /// <param name="type"></param>
-
     public void SetGridType(GridType type)
     {
         //todo-激活不同type的逻辑
@@ -228,7 +229,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         SetHoverHandler(hoverHandler);
         gridTypeBehavior = GridTypeBehaviorFactory.GetBehavior(cellType);
         gridTypeBehavior.ApplyBehavior(this);
-
     }
 
     public GridType GetGridType()
@@ -247,14 +247,17 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public void Interact()
     {
-        if (IsExplored == false)
-        {
-            harvestableComponent?.OnMouseDown();
-        }
-        else if (cellType == GridType.Feather)
+        harvestableComponent?.OnMouseDown();
+        if (cellType == GridType.Feather)
         {
             HarvestManager.Instance.AddHarvest(HarvestType.PineCone, 1);
             this.SetGridType(GridType.SimpleSquare);
+        }
+        else if (cellType == GridType.BirdSquare && HarvestManager.Instance.GetResourceCount(harvestTypeWanted) > 0)
+        {
+            HarvestManager.Instance.ConsumeResource(harvestTypeWanted, 1);
+            this.chatObject.transform.Find("ChatBox").Find("HarvestImage").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/heart");
+            GameManager.Instance.WinCore();
         }
     }
 
@@ -296,13 +299,26 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     {
         harvestTypeWanted = harvestType;
     }
+
     public HarvestType GetHarvestTypeWanted()
     {
         return harvestTypeWanted;
     }
 
-
     #endregion
 
-
+    public void ShowWantedHarvest()
+    {
+        if (chatObject is not null)
+        {
+            var Image = new GameObject("HarvestImage");
+            var spriteRenderer = Image.AddComponent<SpriteRenderer>();
+            spriteRenderer.sprite = Resources.Load<Sprite>($"Images/zuoWu/{WantedHarvestType}");
+            Image.transform.SetParent(chatObject.transform, false);
+            spriteRenderer.sortingLayerName = "Behavior";
+            spriteRenderer.sortingOrder = 4; // 设置渲染顺序
+            Image.transform.localScale = new Vector3(0.6f, 0.6f, 0.6f);
+            Image.transform.localPosition = new Vector3(0, 0, -0.1f);
+        }
+    }
 }

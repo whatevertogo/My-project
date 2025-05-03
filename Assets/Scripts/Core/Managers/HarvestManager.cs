@@ -30,14 +30,14 @@ namespace HexGame.Harvest
         }
 
         // 存储各类资源的数量
-        private Dictionary<HarvestType, int> resourceCounts = new Dictionary<HarvestType, int>();        
+        private Dictionary<HarvestType, int> resourceCounts = new Dictionary<HarvestType, int>();
+        private Dictionary<HarvestType, int> usedCounts = new Dictionary<HarvestType, int>(); // 存储已使用的资源数量
         protected override void Awake()
         {
             base.Awake();
-            // 确保在场景切换时不销毁
-            DontDestroyOnLoad(gameObject);
             InitializeResourceCounts();
         }
+
 
         private void Start()
         {
@@ -49,6 +49,7 @@ namespace HexGame.Harvest
                     TriggerHarvestChangedEvent(type, resourceCounts[type]);
                 }
             }
+
         }
 
         private void InitializeResourceCounts()
@@ -59,13 +60,14 @@ namespace HexGame.Harvest
                 if (type != HarvestType.None)
                 {
                     resourceCounts[type] = 0;
+                    usedCounts[type] = 0;
                 }
             }
         }        /// <summary>
-        /// 增加指定类型的资源
-        /// </summary>
-        /// <param name="type">资源类型</param>
-        /// <param name="amount">增加数量</param>
+                 /// 增加指定类型的资源
+                 /// </summary>
+                 /// <param name="type">资源类型</param>
+                 /// <param name="amount">增加数量</param>
         public void AddHarvest(HarvestType type, int amount)
         {
             if (amount <= 0)
@@ -80,7 +82,7 @@ namespace HexGame.Harvest
             }
 
             resourceCounts[type] += amount;
-            
+
             TriggerHarvestChangedEvent(type, resourceCounts[type]);
 
             Debug.Log($"收获了 {amount} 个 {type}，当前总数：{resourceCounts[type]}");
@@ -109,7 +111,7 @@ namespace HexGame.Harvest
         public bool ConsumeResource(HarvestType type, int amount)
         {
             if (type == HarvestType.None) return false;
-            
+
             if (amount <= 0)
             {
                 Debug.LogWarning("减少的资源数量必须大于 0！");
@@ -123,10 +125,11 @@ namespace HexGame.Harvest
             }
 
             resourceCounts[type] -= amount;
+            usedCounts[type] += amount; // 更新已使用的资源数量
             TriggerHarvestChangedEvent(type, resourceCounts[type]);
             return true;
         }
-        
+
         /// <summary>
         /// 减少指定类型的资源 (别名方法，保持API兼容性)
         /// </summary>
@@ -134,7 +137,7 @@ namespace HexGame.Harvest
         {
             ConsumeResource(type, amount);
         }
-        
+
         /// <summary>
         /// 检查是否拥有指定数量的资源
         /// </summary>
@@ -142,13 +145,14 @@ namespace HexGame.Harvest
         {
             return resourceCounts.TryGetValue(type, out int count) && count >= amount;
         }
-        
+
         /// <summary>
         /// 触发资源变化事件
         /// </summary>
         private void TriggerHarvestChangedEvent(HarvestType type, int amount)
         {
             OnHarvestChanged?.Invoke(this, new OnHarvestChangedEventArgs(type, amount));
+
         }
 
         private void OnApplicationQuit()

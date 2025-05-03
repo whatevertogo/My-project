@@ -32,11 +32,6 @@ public class PlantPineConeEffect : CardEffect
         spriteRenderer.sortingLayerName = "Behavior";
         spriteRenderer.sortingOrder = 3;// 设置渲染顺序
 
-
-        spriteRenderer.sortingLayerName = "Behavior";
-        spriteRenderer.sortingOrder = 3;// 设置渲染顺序
-
-
         // 添加可收获组件
         Harvestable harvestable = targetCell.gameObject.AddComponent<Harvestable>();
         harvestable.SetResourceType(HarvestType.PineCone);

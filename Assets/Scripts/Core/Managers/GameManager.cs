@@ -23,6 +23,7 @@ public class GameManager : SingletonDD<GameManager>
             // 结束游戏
             //todo-游戏结束逻辑
             Debug.Log("游戏结束");
+            
         }
     }
 
@@ -40,7 +41,7 @@ public class GameManager : SingletonDD<GameManager>
 
     public void WinCore()
     {
-        core++;
+        core = core + 1;
     }
 
 
