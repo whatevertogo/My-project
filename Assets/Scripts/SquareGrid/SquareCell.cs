@@ -207,12 +207,13 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public void SetGridType(GridType type)
     {
-        // 初始化Hover控制器
         //todo-激活不同type的逻辑
         this.cellType = type;
-        hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
         gridTypeBehavior = GridTypeBehaviorFactory.GetBehavior(cellType);
         gridTypeBehavior.ApplyBehavior(this);
+        hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
+        SetHoverHandler(hoverHandler);
+        
 
         // if (this.cellType == GridType.BirdSquare)
         // {
