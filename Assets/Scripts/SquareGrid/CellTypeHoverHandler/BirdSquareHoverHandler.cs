@@ -23,7 +23,8 @@ public class BirdSquareHoverHandler : ICellHoverHandler
                 spriteRenderer.transform.position = cell.GetWorldPosition() + new Vector3(0, 1, -1); // 设置位置
                 spriteRenderer.transform.localScale = new Vector3(0.5f, 0.5f, 1); // 设置缩放
                 spriteRenderer.transform.rotation = Quaternion.Euler(-10, 0, 0); // 设置旋转
-                spriteRenderer.sortingOrder = 4;// 设置渲染顺序
+                spriteRenderer.sortingLayerName = "Behavior";
+                spriteRenderer.sortingOrder = 3;// 设置渲染顺序
                 cell.IsCreateChatBox = true; // 标记为已创建
                                  //todo-更多的视觉效果
             }
