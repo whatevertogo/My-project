@@ -10,7 +10,15 @@ namespace HexGame.Harvest
     {
         [Header("收获设置")]
         [Tooltip("收获冷却时间（秒）")]
-        [SerializeField] private float cooldownTime = 10f;
+        private float cooldownTime = 10f;
+        [Tooltip("生长时间（秒）")]
+        private float growthTime = 10f; // 生长时间
+
+        [Header("动画设置")]
+        [Tooltip("树木的Animator组件")]
+        private Animator treeAnimator;
+        [SerializeField] private float growthDuration = 10f; // 总生长时间
+
         public void SetCooldownTime(float time)
         {
             cooldownTime = time;
@@ -20,11 +28,12 @@ namespace HexGame.Harvest
         [SerializeField] private HarvestType resourceType;
 
         [Tooltip("每次收获数量")]
-        [SerializeField] private int harvestAmount = 1;
+        public int harvestAmount = 1;
 
         private SquareCell cell;
         private float currentCooldown; // 当前剩余冷却时间
         private bool canHarvest = true;
+        private bool isGrown = true;
 
         /// <summary>
         /// 在Awake中初始化组件
@@ -37,6 +46,13 @@ namespace HexGame.Harvest
                 Debug.LogError("Harvestable组件必须附加到带有SquareCell的物体上");
                 enabled = false;
                 return;
+            }
+        }
+        private void Start()
+        {
+            if (resourceType == HarvestType.PineCone)
+            {
+                isGrown = false;
             }
         }
 
@@ -56,11 +72,31 @@ namespace HexGame.Harvest
         /// </summary>
         private void Update()
         {
+            if (!isGrown)
+            {
+                growthTime -= Time.deltaTime;
+
+                // 更新生长动画
+                if (treeAnimator != null)
+                {
+                    // 计算生长进度（0到1之间）
+                    float growthProgress = 1f - Mathf.Clamp01(growthTime / growthDuration);
+                    treeAnimator.SetFloat("GrowthProgress", growthProgress);
+
+                    // 检查是否生长完成
+                    if (growthTime <= 0)
+                    {
+                        isGrown = true;
+                        treeAnimator.SetBool("IsGrown", true);
+                        treeAnimator.Play("Tree_Grown"); // 播放成熟动画
+                    }
+                }
+            }
+
+
             if (!canHarvest && currentCooldown > 0)
             {
-                // 使用 Time.deltaTime，这样在游戏暂停时（TimeScale = 0）就不会继续倒计时
                 currentCooldown -= Time.deltaTime;
-            
             }
         }
 

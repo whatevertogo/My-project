@@ -211,37 +211,22 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     #endregion
 
     #region 网格Type方法
+    /// <summary>
+    /// 设置网格类型
+    ///  通过工厂模式获取不同的行为类
+    ///  通过工厂模式获取不同的悬停Handler
+    /// </summary>
+    /// <param name="type"></param>
 
     public void SetGridType(GridType type)
     {
         //todo-激活不同type的逻辑
         this.cellType = type;
-        gridTypeBehavior = GridTypeBehaviorFactory.GetBehavior(cellType);
-        gridTypeBehavior.ApplyBehavior(this);
         hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
         SetHoverHandler(hoverHandler);
+        gridTypeBehavior = GridTypeBehaviorFactory.GetBehavior(cellType);
+        gridTypeBehavior.ApplyBehavior(this);
 
-
-        // if (this.cellType == GridType.BirdSquare)
-        // {
-        //     IsPlaceable = false;
-        //     GridManager.Instance.AllBridCells.Add(this);
-        //     GridManager.Instance.AllDontMoveCells.Add(this);
-        // }
-        // else if (this.cellType == GridType.SimpleSquare)
-        // {
-        //     IsPlaceable = true;
-        // }
-        // else if (this.cellType == GridType.PlantedFeather)
-        // {
-        //     IsPlaceable = false;
-        //     GridManager.Instance.AllDontMoveCells.Add(this);
-        // }
-        // else if (this.cellType == GridType.PlantedTree)
-        // {
-        //     IsPlaceable = false;
-        //     GridManager.Instance.AllDontMoveCells.Add(this);
-        // }
     }
 
     public GridType GetGridType()

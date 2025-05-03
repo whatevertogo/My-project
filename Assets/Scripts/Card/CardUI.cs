@@ -160,6 +160,12 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
 
         // 禁用 LayoutGroup
         SetLayoutGroupEnabled(false);
+        
+        // 在拖拽时禁用射线阻挡
+        if (cardCanvasGroup != null)
+        {
+            cardCanvasGroup.blocksRaycasts = false;
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -173,6 +179,12 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     {
         isDragging = false;
         isHovered = false;
+
+        // 恢复射线阻挡
+        if (cardCanvasGroup != null)
+        {
+            cardCanvasGroup.blocksRaycasts = true;
+        }
 
         SquareCell cell = InteractManager.Instance.GetCellUnderMouse();
         if (cell is not null && cell.IsExplored && cell.IsPlaceable)

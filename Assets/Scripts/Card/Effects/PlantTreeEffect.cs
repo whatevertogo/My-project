@@ -17,6 +17,14 @@ public class PlantTreeEffect : CardEffect
         // 将格子转为树格子
         targetCell.SetGridType(GridType.PlantedTree);
 
+        var CellTree = new GameObject("CellTree");
+        CellTree.transform.position = targetCell.transform.position;
+
+        // 将树对象设置为格子对象的子对象
+        CellTree.transform.SetParent(targetCell.transform);
+        var spriteRenderer = CellTree.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Tree/songShu");
+
         // 添加可收获组件
         Harvestable harvestable = targetCell.gameObject.AddComponent<Harvestable>();
         harvestable.SetResourceType(HarvestType.Branch);

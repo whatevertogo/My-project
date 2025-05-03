@@ -8,6 +8,5 @@ public class BirdSquareBehavior : IGridTypeBehavior
         cell.IsPlaceable = false;
         GridManager.Instance.AllBridCells.Add(cell);
         GridManager.Instance.AllDontMoveCells.Add(cell);
-        cell.harvestTypeWanted = RandomWantedHarvestType.GetRandomHarvestType();
     }
 }

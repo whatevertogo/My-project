@@ -7,9 +7,17 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class InteractManager : Singleton<InteractManager>
 {
+    [Header("射线检测配置")]
+    [SerializeField] private LayerMask gridLayerMask; // 用于检测格子的层级掩码
     private SquareCell hoveredCell;        // 当前悬停的格子
     private RaycastHit2D currentHit;       // 当前射线检测结果
 
+    protected override void Awake()
+    {
+        base.Awake();
+        // 获取Grid层的LayerMask
+        gridLayerMask = LayerMask.GetMask("ChunkCell");
+    }
 
     void Update()
     {
@@ -20,8 +28,8 @@ public class InteractManager : Singleton<InteractManager>
         // 获取鼠标在 Z=0 平面上的世界坐标（支持有旋转的摄像机）
         Vector2 point = GetMouseWorldPointOnZ0();
 
-        // 进行物理检测（注意：只能检测启用了 Collider2D 的物体）
-        currentHit = Physics2D.Raycast(point, Vector2.zero);
+        // 进行物理检测（注意：只检测Grid层的物体）
+        currentHit = Physics2D.Raycast(point, Vector2.zero, Mathf.Infinity, gridLayerMask);
 
         HandleHover();
         HandleClick();
