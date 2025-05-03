@@ -121,7 +121,8 @@ public class GridPainter : Singleton<GridPainter>
                 // {
                 //     birdOverlay.transform.localPosition = new Vector3(0.2f, -0.2f, 0); // 可微调位置
                 // }
-                birdOverlay.transform.localScale = Vector3.one * 0.6f; // 缩小一点
+                birdOverlay.transform.localScale = Vector3.one * 0.4f; // 缩小一点
+                birdOverlay.transform.localPosition = new Vector3(0, 0.4f, -0.1f);
 
                 // 添加 SpriteRenderer 并设置小鸟图
                 SpriteRenderer sr = birdOverlay.AddComponent<SpriteRenderer>();

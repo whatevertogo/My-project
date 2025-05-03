@@ -10,6 +10,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     [ReadOnly] public GridType cellType = GridType.None; // 默认值为None
     public SpriteRenderer CellRenderer;
 
+
     /// <summary>
     /// 存储邻居的列表，包括自身和8个方向的邻居
     /// </summary>
@@ -18,11 +19,13 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     private ICellHoverHandler hoverHandler;
 
     private IGridTypeBehavior gridTypeBehavior;
+    public GameObject chatObject; // 对话框对象
 
     public bool IsExplored { get; set; } = false; // 是否被探索过
 
     public bool IsPlaceable { get; set; } = true; // 是否可以放置物体
 
+    public bool IsCreateChatBox { get; set; } = false; // 是否可以创建聊天框
 
     private void Awake()
     {
