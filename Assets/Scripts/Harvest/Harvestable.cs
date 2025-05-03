@@ -62,11 +62,10 @@ namespace HexGame.Harvest
                 if (pineObj == null) return;
                 pineConeRenderer = pineObj.GetComponent<SpriteRenderer>();
                 // 预加载三张生长阶段图片
-                pineSprites = new Sprite[3];
-                pineSprites[0] = Resources.Load<Sprite>("Images/Tree/huaShu3");
-                pineSprites[1] = Resources.Load<Sprite>("Images/Tree/huaShu2");
-                pineSprites[2] = Resources.Load<Sprite>("Images/Tree/huaShu1");
-                if (pineConeRenderer != null && pineSprites[0] != null)
+                pineSprites = new Sprite[2];
+                pineSprites[0] = Resources.Load<Sprite>("Images/Tree/huaShu2");
+                pineSprites[1] = Resources.Load<Sprite>("Images/Tree/huaShu1");
+                if (pineConeRenderer is not null && pineSprites[0] is not null)
                     pineConeRenderer.sprite = pineSprites[0];
             }
         }
@@ -90,30 +89,31 @@ namespace HexGame.Harvest
             if (resourceType == HarvestType.PineCone && pineConeRenderer && pineSprites != null)
             {
                 float progress = 1f - Mathf.Clamp01(growthTime / growthDuration);
-                if (progress < 1f / 3f)
+                if (progress < 1f / 2f)
                 {
                     pineConeRenderer.sprite = pineSprites[0];
                 }
-                else if (progress < 2f / 3f)
+                else if (progress < 1f)
                 {
                     pineConeRenderer.sprite = pineSprites[1];
-                }
-                else
-                {
-                    pineConeRenderer.sprite = pineSprites[2];
                 }
             }
 
             if (!isGrown)
             {
                 growthTime -= Time.deltaTime;
-
             }
 
-
+            // 处理冷却时间
             if (!canHarvest && currentCooldown > 0)
             {
                 currentCooldown -= Time.deltaTime;
+                // 当冷却时间结束时，重置可收获状态
+                if (currentCooldown <= 0)
+                {
+                    canHarvest = true;
+                    currentCooldown = 0;
+                }
             }
         }
 
