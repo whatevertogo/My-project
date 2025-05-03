@@ -6,7 +6,7 @@ public enum CardType
     /// </summary>
     tree = 1,
     /// <summary>
-    /// 稻田
+    /// 
     /// </summary>
     PineTree = 2,
 

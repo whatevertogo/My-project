@@ -11,6 +11,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     [ReadOnly] public GridType cellType = GridType.None; // 默认值为None
     public SpriteRenderer CellRenderer;
 
+    private Harvestable harvestableComponent;
 
     /// <summary>
     /// 存储邻居的列表，包括自身和8个方向的邻居
@@ -35,6 +36,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     {
         CellRenderer = GetComponent<SpriteRenderer>();
         CellRenderer.sprite = Resources.Load<Sprite>("Images/Default");
+        harvestableComponent = GetComponent<Harvestable>();
     }
 
     // 存储邻居的列表
@@ -245,7 +247,8 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public void Interact()
     {
-        Debug.Log($"与格子 {this.Coordinates} 交互！");
+        if (IsExplored == false) return;
+        harvestableComponent?.OnMouseDown();
     }
 
     #endregion

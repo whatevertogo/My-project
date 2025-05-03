@@ -56,8 +56,7 @@ public class InteractManager : Singleton<InteractManager>
     {
         SquareCell newCell = currentHit.collider?.GetComponent<SquareCell>();
 
-        // 添加调试日志
-        Debug.Log($"Hovered Cell: {hoveredCell?.name}, New Cell: {newCell?.name}");
+        //Debug.Log($"Hovered Cell: {hoveredCell?.name}, New Cell: {newCell?.name}");
 
         // 悬停对象发生变化
         if (newCell != hoveredCell)

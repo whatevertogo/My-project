@@ -24,7 +24,6 @@ public class PlantPineConeEffect : CardEffect
 
         cellPineCone.transform.SetParent(targetCell.transform);
         var spriteRenderer = cellPineCone.AddComponent<SpriteRenderer>();
-        spriteRenderer.sprite = Resources.Load<Sprite>($"Images/Tree/huaShu1");
 
         cellPineCone.transform.localPosition = new Vector3(0, 0.5f, 0);
 

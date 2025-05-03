@@ -1,149 +1,166 @@
+using UnityEngine;
 using System;
 using System.Collections.Generic;
 using CDTU.Utils;
-using HexGame.Harvest;
-using UnityEngine;
 
-/// <summary>
-/// 管理收获资源的单例类
-/// </summary>
-public class HarvestManager : Singleton<HarvestManager>
+namespace HexGame.Harvest
 {
     /// <summary>
-    /// 当资源数量发生变化时触发的事件，用于更新 UI 等逻辑
+    /// 收获管理器，负责管理所有资源的收获
     /// </summary>
-    public event EventHandler<OnHarvestChangedEventArgs> OnHarvestChanged;
-
-    /// <summary>
-    /// 资源变化事件参数
-    /// </summary>
-    public class OnHarvestChangedEventArgs : EventArgs
+    public class HarvestManager : Singleton<HarvestManager>
     {
-        public HarvestType HarvestType { get; }
-        public int Amount { get; }
 
-        public OnHarvestChangedEventArgs(HarvestType harvestType, int amount)
+        // 收获事件，当资源变化时触发 - 支持C#事件方式
+        public event EventHandler<OnHarvestChangedEventArgs> OnHarvestChanged;
+
+        /// <summary>
+        /// 资源变化事件参数
+        /// </summary>
+        public class OnHarvestChangedEventArgs : EventArgs
         {
-            HarvestType = harvestType;
-            Amount = amount;
-        }
-    }
+            public HarvestType HarvestType { get; }
+            public int Amount { get; }
 
-    /// <summary>
-    /// 存储每种资源的数量
-    /// </summary>
-    private Dictionary<HarvestType, int> harvestAmounts = new()
-    {
-        { HarvestType.Branch, 0 },
-        { HarvestType.PineCone, 0 },
-        { HarvestType.Feather, 0 }
-    };
-
-    private void Start()
-    {
-        // 初始化时触发事件，通知 UI 当前资源状态
-        TriggerHarvestChangedEvent(HarvestType.Branch, 0);
-        TriggerHarvestChangedEvent(HarvestType.PineCone, 0);
-        TriggerHarvestChangedEvent(HarvestType.Feather, 0);
-        //TODO- 其他资源的初始化
-    }
-
-    /// <summary>
-    /// 增加指定类型的资源数量
-    /// </summary>
-    /// <param name="harvestType">资源类型</param>
-    /// <param name="amount">增加的数量</param>
-    public void AddHarvest(HarvestType harvestType, int amount)
-    {
-        if (amount <= 0)
-        {
-            Debug.LogWarning("增加的资源数量必须大于 0！");
-            return;
-        }
-
-        if (harvestAmounts.TryGetValue(harvestType, out int currentAmount))
-        {
-            harvestAmounts[harvestType] = currentAmount + amount;
-        }
-        else
-        {
-            Debug.Log($"资源类型 {harvestType} 不存在，已自动添加到字典中。");
-            harvestAmounts[harvestType] = amount;
-        }
-
-        Debug.Log($"增加了 {amount} 个 {harvestType}，当前数量为：{harvestAmounts[harvestType]}");
-        TriggerHarvestChangedEvent(harvestType, harvestAmounts[harvestType]);
-    }
-
-    /// <summary>
-    /// 减少指定类型的资源数量
-    /// </summary>
-    /// <param name="harvestType">资源类型</param>
-    /// <param name="amount">减少的数量</param>
-    public void ReduceHarvest(HarvestType harvestType, int amount)
-    {
-        if (amount <= 0)
-        {
-            Debug.LogWarning("减少的资源数量必须大于 0！");
-            return;
-        }
-
-        if (harvestAmounts.TryGetValue(harvestType, out int currentAmount))
-        {
-            if (currentAmount >= amount)
+            public OnHarvestChangedEventArgs(HarvestType harvestType, int amount)
             {
-                harvestAmounts[harvestType] -= amount;
-                Debug.Log($"减少了 {amount} 个 {harvestType}，当前数量为：{harvestAmounts[harvestType]}");
+                HarvestType = harvestType;
+                Amount = amount;
             }
-            else
+        }
+
+        // 存储各类资源的数量
+        private Dictionary<HarvestType, int> resourceCounts = new Dictionary<HarvestType, int>();        
+        protected override void Awake()
+        {
+            base.Awake();
+            // 确保在场景切换时不销毁
+            DontDestroyOnLoad(gameObject);
+            InitializeResourceCounts();
+        }
+
+        private void Start()
+        {
+            // 初始化时触发事件，通知 UI 当前资源状态
+            foreach (HarvestType type in Enum.GetValues(typeof(HarvestType)))
             {
-                Debug.LogWarning($"无法减少 {amount} 个 {harvestType}，当前数量不足！");
-                //todo-失败结局
+                if (type != HarvestType.None)
+                {
+                    TriggerHarvestChangedEvent(type, resourceCounts[type]);
+                }
+            }
+        }
+
+        private void InitializeResourceCounts()
+        {
+            // 初始化所有资源类型的计数为0
+            foreach (HarvestType type in Enum.GetValues(typeof(HarvestType)))
+            {
+                if (type != HarvestType.None)
+                {
+                    resourceCounts[type] = 0;
+                }
+            }
+        }        /// <summary>
+        /// 增加指定类型的资源
+        /// </summary>
+        /// <param name="type">资源类型</param>
+        /// <param name="amount">增加数量</param>
+        public void AddHarvest(HarvestType type, int amount)
+        {
+            if (amount <= 0)
+            {
+                Debug.LogWarning("增加的资源数量必须大于 0！");
                 return;
             }
+
+            if (!resourceCounts.ContainsKey(type))
+            {
+                resourceCounts[type] = 0;
+            }
+
+            resourceCounts[type] += amount;
+            
+            TriggerHarvestChangedEvent(type, resourceCounts[type]);
+
+            Debug.Log($"收获了 {amount} 个 {type}，当前总数：{resourceCounts[type]}");
         }
-        else
+
+        /// <summary>
+        /// 获取指定类型资源的数量
+        /// </summary>
+        public int GetResourceCount(HarvestType type)
         {
-            Debug.LogWarning($"资源类型 {harvestType} 不存在，无法减少！");
-            return;
+            return resourceCounts.ContainsKey(type) ? resourceCounts[type] : 0;
         }
 
-        TriggerHarvestChangedEvent(harvestType, harvestAmounts[harvestType]);
-    }
-
-    /// <summary>
-    /// 检查是否拥有指定类型的资源
-    /// </summary>
-    /// <param name="harvestType">资源类型</param>
-    /// <returns>是否拥有该资源</returns>
-    public bool HasHarvest(HarvestType harvestType)
-    {
-        return harvestAmounts.TryGetValue(harvestType, out int amount) && amount > 0;
-    }
-
-    /// <summary>
-    /// 获取指定类型资源的数量
-    /// </summary>
-    /// <param name="harvestType">资源类型</param>
-    /// <returns>资源数量</returns>
-    public int GetHarvestCount(HarvestType harvestType)
-    {
-        if (harvestAmounts.TryGetValue(harvestType, out int count))
+        /// <summary>
+        /// 获取指定类型资源的数量 (别名方法，保持API兼容性)
+        /// </summary>
+        public int GetHarvestCount(HarvestType type)
         {
-            return count;
+            return GetResourceCount(type);
         }
 
-        Debug.LogWarning($"资源类型 {harvestType} 不存在！");
-        return 0;
-    }
+        /// <summary>
+        /// 消耗指定类型的资源
+        /// </summary>
+        /// <returns>是否消耗成功</returns>
+        public bool ConsumeResource(HarvestType type, int amount)
+        {
+            if (type == HarvestType.None) return false;
+            
+            if (amount <= 0)
+            {
+                Debug.LogWarning("减少的资源数量必须大于 0！");
+                return false;
+            }
 
-    /// <summary>
-    /// 触发资源变化事件
-    /// </summary>
-    /// <param name="harvestType">资源类型</param>
-    /// <param name="amount">当前数量</param>
-    private void TriggerHarvestChangedEvent(HarvestType harvestType, int amount)
-    {
-        OnHarvestChanged?.Invoke(this, new OnHarvestChangedEventArgs(harvestType, amount));
+            if (!resourceCounts.ContainsKey(type) || resourceCounts[type] < amount)
+            {
+                Debug.LogWarning($"无法消耗 {amount} 个 {type}，当前数量不足！");
+                return false;
+            }
+
+            resourceCounts[type] -= amount;
+            TriggerHarvestChangedEvent(type, resourceCounts[type]);
+            return true;
+        }
+        
+        /// <summary>
+        /// 减少指定类型的资源 (别名方法，保持API兼容性)
+        /// </summary>
+        public void ReduceHarvest(HarvestType type, int amount)
+        {
+            ConsumeResource(type, amount);
+        }
+        
+        /// <summary>
+        /// 检查是否拥有指定数量的资源
+        /// </summary>
+        public bool HasHarvest(HarvestType type, int amount = 1)
+        {
+            return resourceCounts.TryGetValue(type, out int count) && count >= amount;
+        }
+        
+        /// <summary>
+        /// 触发资源变化事件
+        /// </summary>
+        private void TriggerHarvestChangedEvent(HarvestType type, int amount)
+        {
+            OnHarvestChanged?.Invoke(this, new OnHarvestChangedEventArgs(type, amount));
+        }
+
+        private void OnApplicationQuit()
+        {
+            // 在应用退出时清理事件，防止空引用
+            if (OnHarvestChanged != null)
+            {
+                foreach (var d in OnHarvestChanged.GetInvocationList())
+                {
+                    OnHarvestChanged -= (EventHandler<OnHarvestChangedEventArgs>)d;
+                }
+            }
+        }
     }
 }

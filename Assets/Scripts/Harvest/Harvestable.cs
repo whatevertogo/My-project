@@ -30,6 +30,10 @@ namespace HexGame.Harvest
         [Tooltip("每次收获数量")]
         public int harvestAmount = 1;
 
+        private SpriteRenderer pineConeRenderer;
+
+        private Sprite[] pineSprites;
+
         private SquareCell cell;
         private float currentCooldown; // 当前剩余冷却时间
         private bool canHarvest = true;
@@ -53,13 +57,24 @@ namespace HexGame.Harvest
             if (resourceType == HarvestType.PineCone)
             {
                 isGrown = false;
+                // 获取CellPineCone子物体的SpriteRenderer
+                var pineObj = transform.Find("CellPineCone");
+                if (pineObj == null) return;
+                pineConeRenderer = pineObj.GetComponent<SpriteRenderer>();
+                // 预加载三张生长阶段图片
+                pineSprites = new Sprite[3];
+                pineSprites[0] = Resources.Load<Sprite>("Images/Tree/huaShu3");
+                pineSprites[1] = Resources.Load<Sprite>("Images/Tree/huaShu2");
+                pineSprites[2] = Resources.Load<Sprite>("Images/Tree/huaShu1");
+                if (pineConeRenderer != null && pineSprites[0] != null)
+                    pineConeRenderer.sprite = pineSprites[0];
             }
         }
 
         /// <summary>
         /// 鼠标点击事件，用于收获资源
         /// </summary>
-        private void OnMouseDown()
+        public void OnMouseDown()
         {
             if (canHarvest && currentCooldown <= 0)
             {
@@ -72,25 +87,27 @@ namespace HexGame.Harvest
         /// </summary>
         private void Update()
         {
+            if (resourceType == HarvestType.PineCone && pineConeRenderer && pineSprites != null)
+            {
+                float progress = 1f - Mathf.Clamp01(growthTime / growthDuration);
+                if (progress < 1f / 3f)
+                {
+                    pineConeRenderer.sprite = pineSprites[0];
+                }
+                else if (progress < 2f / 3f)
+                {
+                    pineConeRenderer.sprite = pineSprites[1];
+                }
+                else
+                {
+                    pineConeRenderer.sprite = pineSprites[2];
+                }
+            }
+
             if (!isGrown)
             {
                 growthTime -= Time.deltaTime;
 
-                // 更新生长动画
-                if (treeAnimator != null)
-                {
-                    // 计算生长进度（0到1之间）
-                    float growthProgress = 1f - Mathf.Clamp01(growthTime / growthDuration);
-                    treeAnimator.SetFloat("GrowthProgress", growthProgress);
-
-                    // 检查是否生长完成
-                    if (growthTime <= 0)
-                    {
-                        isGrown = true;
-                        treeAnimator.SetBool("IsGrown", true);
-                        treeAnimator.Play("Tree_Grown"); // 播放成熟动画
-                    }
-                }
             }
 
 
@@ -151,18 +168,5 @@ namespace HexGame.Harvest
         }
     }
 
-    /// <summary>
-    /// 让UI始终面向摄像机的组件
-    /// </summary>
-    public class Billboard : MonoBehaviour
-    {
-        private void LateUpdate()
-        {
-            if (Camera.main is not null)
-            {
-                transform.forward = Camera.main.transform.forward;
-            }
-        }
-    }
 }
 
