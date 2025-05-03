@@ -17,14 +17,19 @@ public class PlantTreeEffect : CardEffect
         // 将格子转为树格子
         targetCell.SetGridType(GridType.PlantedTree);
 
-        var cellPineCone = new GameObject("CellTree");
+                var CellTree = new GameObject("CellTree");
+        CellTree.transform.position = targetCell.transform.position;
 
-        cellPineCone.transform.SetParent(targetCell.transform);
-        var spriteRenderer = cellPineCone.AddComponent<SpriteRenderer>();
+        // 将树对象设置为格子对象的子对象
+        CellTree.transform.SetParent(targetCell.transform);
+        var spriteRenderer = CellTree.AddComponent<SpriteRenderer>();
+        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Tree/songShu");
 
-        cellPineCone.transform.localPosition = new Vector3(0, 0.5f, 0);
+        CellTree.transform.localPosition = new Vector3(0, 0.5f, 0);
 
         spriteRenderer.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+
+        // spriteRenderer.transform.rotation = Quaternion.Euler(-10, 0, 0); // 设置旋转
 
 
         // 添加可收获组件

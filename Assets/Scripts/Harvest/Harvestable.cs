@@ -59,14 +59,37 @@ namespace HexGame.Harvest
                 isGrown = false;
                 // 获取CellPineCone子物体的SpriteRenderer
                 var pineObj = transform.Find("CellPineCone");
-                if (pineObj == null) return;
+                if (pineObj == null)
+                {
+                    Debug.LogError("找不到CellPineCone子物体");
+                    return;
+                }
+                
                 pineConeRenderer = pineObj.GetComponent<SpriteRenderer>();
-                // 预加载三张生长阶段图片
+                if (pineConeRenderer == null)
+                {
+                    Debug.LogError("CellPineCone上找不到SpriteRenderer组件");
+                    return;
+                }
+
+                // 预加载两张生长阶段图片
                 pineSprites = new Sprite[2];
                 pineSprites[0] = Resources.Load<Sprite>("Images/Tree/huaShu2");
                 pineSprites[1] = Resources.Load<Sprite>("Images/Tree/huaShu1");
-                if (pineConeRenderer is not null && pineSprites[0] is not null)
+
+                // 检查图片是否加载成功
+                for (int i = 0; i < pineSprites.Length; i++)
+                {
+                    if (pineSprites[i] == null)
+                    {
+                        Debug.LogError($"无法加载图片: Images/Tree/huaShu{2-i}");
+                    }
+                }
+
+                if (pineConeRenderer != null && pineSprites[0] != null)
+                {
                     pineConeRenderer.sprite = pineSprites[0];
+                }
             }
         }
 
@@ -89,13 +112,13 @@ namespace HexGame.Harvest
             if (resourceType == HarvestType.PineCone && pineConeRenderer && pineSprites != null)
             {
                 float progress = 1f - Mathf.Clamp01(growthTime / growthDuration);
-                if (progress < 1f / 2f)
+                if (progress < 1f / 2f) // 只分两个阶段
                 {
-                    pineConeRenderer.sprite = pineSprites[0];
+                    pineConeRenderer.sprite = pineSprites[0]; // huaShu2
                 }
-                else if (progress < 1f)
+                else
                 {
-                    pineConeRenderer.sprite = pineSprites[1];
+                    pineConeRenderer.sprite = pineSprites[1]; // huaShu1
                 }
             }
 

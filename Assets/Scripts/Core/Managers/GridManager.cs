@@ -169,8 +169,10 @@ public class GridManager : Singleton<GridManager>
 
                 // 确保出生点不是 BirdSquare
                 if (GetCell(GetGridCenter()).GetGridType() == GridType.BirdSquare)
+                {
                     cellType = GridType.SimpleSquare;
-
+                    cell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Home");
+                }
                 cell.SetGridType(cellType);
             }
         }

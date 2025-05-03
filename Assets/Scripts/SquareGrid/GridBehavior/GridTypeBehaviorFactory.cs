@@ -6,7 +6,7 @@ public static class GridTypeBehaviorFactory
         return gridType switch
         {
             GridType.BirdSquare => new BirdSquareBehavior(),
-            GridType.PlantedFeather => new PlantedFeatherBehavior(),
+            GridType.Feather => new PlantedFeatherBehavior(),
             GridType.SimpleSquare => new SimpleSquareBehavior(),
             GridType.PlantedTree => new PlantedTreeBehavior(),
             _ => throw new System.ArgumentOutOfRangeException(nameof(gridType), gridType, null)

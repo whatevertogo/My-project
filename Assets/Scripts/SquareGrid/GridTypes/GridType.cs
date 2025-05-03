@@ -16,5 +16,5 @@ public enum GridType
     /// <summary>
     /// 羽毛网格
     /// </summary>
-    PlantedFeather
+    Feather
 }

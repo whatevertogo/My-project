@@ -247,8 +247,15 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public void Interact()
     {
-        if (IsExplored == false) return;
-        harvestableComponent?.OnMouseDown();
+        if (IsExplored == false)
+        {
+            harvestableComponent?.OnMouseDown();
+        }
+        else if (cellType == GridType.Feather)
+        {
+            HarvestManager.Instance.AddHarvest(HarvestType.PineCone, 1);
+            this.SetGridType(GridType.SimpleSquare);
+        }
     }
 
     #endregion
