@@ -1,7 +1,6 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using UnityEngine.Events;
 using CDTU.Utils;
 
 namespace HexGame.Harvest
@@ -11,9 +10,6 @@ namespace HexGame.Harvest
     /// </summary>
     public class HarvestManager : Singleton<HarvestManager>
     {
-        [System.Serializable]
-        public class HarvestEvent : UnityEvent<HarvestType, int> { }
-
 
         // 收获事件，当资源变化时触发 - 支持C#事件方式
         public event EventHandler<OnHarvestChangedEventArgs> OnHarvestChanged;

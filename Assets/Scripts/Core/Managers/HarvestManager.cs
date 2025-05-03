@@ -44,6 +44,7 @@ public class HarvestManager : Singleton<HarvestManager>
         // 初始化时触发事件，通知 UI 当前资源状态
         TriggerHarvestChangedEvent(HarvestType.Branch, 0);
         TriggerHarvestChangedEvent(HarvestType.PineCone, 0);
+        TriggerHarvestChangedEvent(HarvestType.Feather, 0);
         //TODO- 其他资源的初始化
     }
 
