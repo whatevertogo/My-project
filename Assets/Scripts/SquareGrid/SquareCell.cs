@@ -17,6 +17,8 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     private ICellHoverHandler hoverHandler;
 
+    private IGridTypeBehavior gridTypeBehavior;
+
     public bool IsExplored { get; set; } = false; // 是否被探索过
 
     public bool IsPlaceable { get; set; } = true; // 是否可以放置物体
@@ -209,26 +211,29 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         //todo-激活不同type的逻辑
         this.cellType = type;
         hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
-        if (this.cellType == GridType.BirdSquare)
-        {
-            IsPlaceable = false;
-            GridManager.Instance.AllBirdCells.Add(this);
-            GridManager.Instance.AllDontMoveCells.Add(this);
-        }
-        else if (this.cellType == GridType.SimpleSquare)
-        {
-            IsPlaceable = true;
-        }
-        else if (this.cellType == GridType.PlantedFeather)
-        {
-            IsPlaceable = false;
-            GridManager.Instance.AllDontMoveCells.Add(this);
-        }
-        else if (this.cellType == GridType.PlantedTree)
-        {
-            IsPlaceable = false;
-            GridManager.Instance.AllDontMoveCells.Add(this);
-        }
+        gridTypeBehavior = GridTypeBehaviorFactory.GetBehavior(cellType);
+        gridTypeBehavior.ApplyBehavior(this);
+
+        // if (this.cellType == GridType.BirdSquare)
+        // {
+        //     IsPlaceable = false;
+        //     GridManager.Instance.AllBirdCells.Add(this);
+        //     GridManager.Instance.AllDontMoveCells.Add(this);
+        // }
+        // else if (this.cellType == GridType.SimpleSquare)
+        // {
+        //     IsPlaceable = true;
+        // }
+        // else if (this.cellType == GridType.PlantedFeather)
+        // {
+        //     IsPlaceable = false;
+        //     GridManager.Instance.AllDontMoveCells.Add(this);
+        // }
+        // else if (this.cellType == GridType.PlantedTree)
+        // {
+        //     IsPlaceable = false;
+        //     GridManager.Instance.AllDontMoveCells.Add(this);
+        // }
     }
 
     public GridType GetGridType()
