@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using HexGame.Harvest;
 
 public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 {
@@ -20,6 +21,9 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     private IGridTypeBehavior gridTypeBehavior;
     public GameObject chatObject; // 对话框对象
+
+    public HarvestType harvestTypeWanted = HarvestType.None; // 需要的HarvestType
+
 
     public bool IsExplored { get; set; } = false; // 是否被探索过
 
@@ -216,12 +220,12 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         gridTypeBehavior.ApplyBehavior(this);
         hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
         SetHoverHandler(hoverHandler);
-        
+
 
         // if (this.cellType == GridType.BirdSquare)
         // {
         //     IsPlaceable = false;
-        //     GridManager.Instance.AllBirdCells.Add(this);
+        //     GridManager.Instance.AllBridCells.Add(this);
         //     GridManager.Instance.AllDontMoveCells.Add(this);
         // }
         // else if (this.cellType == GridType.SimpleSquare)
@@ -290,4 +294,20 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     }
 
     #endregion
+
+    #region 鸟类格子随机需要的物品
+
+    public void SetHarvestTypeWanted(HarvestType harvestType)
+    {
+        harvestTypeWanted = harvestType;
+    }
+    public HarvestType GetHarvestTypeWanted()
+    {
+        return harvestTypeWanted;
+    }
+
+
+    #endregion
+
+
 }

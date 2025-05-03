@@ -17,13 +17,12 @@ public class BirdSquareHoverHandler : ICellHoverHandler
             {
                 Debug.Log("加载对话框图片成功！");
                 cell.chatObject = new GameObject("ChatImage");
-                cell.chatObject.transform.SetParent(cell.transform,true);
+                cell.chatObject.transform.SetParent(cell.transform, true);
                 var spriteRenderer = cell.chatObject.AddComponent<SpriteRenderer>();
                 spriteRenderer.sprite = chatImage;
                 spriteRenderer.transform.position = cell.GetWorldPosition() + new Vector3(0, 1, -1); // 设置位置
                 spriteRenderer.transform.localScale = new Vector3(0.5f, 0.5f, 1); // 设置缩放
                 spriteRenderer.transform.rotation = Quaternion.Euler(-10, 0, 0); // 设置旋转
-                spriteRenderer.sortingLayerName = "UI";//设置渲染层级
                 spriteRenderer.sortingOrder = 4;// 设置渲染顺序
                 cell.IsCreateChatBox = true; // 标记为已创建
                                  //todo-更多的视觉效果
