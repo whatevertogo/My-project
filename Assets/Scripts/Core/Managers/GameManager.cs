@@ -96,10 +96,7 @@ public class GameManager : SingletonDD<GameManager>
     /// </summary>
     public void AddUsedCount(HarvestType type, int amount = 1)
     {
-        if (!usedCounts.ContainsKey(type))
-        {
-            usedCounts[type] = 0;
-        }
+        usedCounts.TryAdd(type, 1);
         usedCounts[type] += amount;
         Debug.Log($"使用了 {amount} 个 {type}，总共使用：{usedCounts[type]}");
     }
