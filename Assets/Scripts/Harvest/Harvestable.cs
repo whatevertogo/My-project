@@ -15,8 +15,6 @@ namespace HexGame.Harvest
         private float growthTime = 10f; // 生长时间
 
         [Header("动画设置")]
-        [Tooltip("树木的Animator组件")]
-        private Animator treeAnimator;
         [SerializeField] private float growthDuration = 10f; // 总生长时间
 
         public void SetCooldownTime(float time)
@@ -30,13 +28,13 @@ namespace HexGame.Harvest
         [Tooltip("每次收获数量")]
         public int harvestAmount = 1;
 
-        private SpriteRenderer pineConeRenderer;
+        private SpriteRenderer BranchRenderer;
 
-        private Sprite[] pineSprites;
+        private Sprite[] CellTreesprites;
 
         private SquareCell cell;
         private float currentCooldown; // 当前剩余冷却时间
-        private bool canHarvest = true;
+        private bool canHarvest = false;// 是否可以收获
         private bool isGrown = true;
 
         /// <summary>
@@ -54,41 +52,41 @@ namespace HexGame.Harvest
         }
         private void Start()
         {
-            if (resourceType == HarvestType.PineCone)
+            if (resourceType == HarvestType.Branch)
             {
                 isGrown = false;
-                // 获取CellPineCone子物体的SpriteRenderer
-                var pineObj = transform.Find("CellPineCone");
-                if (pineObj == null)
+                // 获取Cell子物体的SpriteRenderer
+                var treeObj = transform.Find("CellTree");
+                if (treeObj == null)
                 {
-                    Debug.LogError("找不到CellPineCone子物体");
+                    Debug.LogError("找不到CellTree子物体");
                     return;
                 }
                 
-                pineConeRenderer = pineObj.GetComponent<SpriteRenderer>();
-                if (pineConeRenderer == null)
+                BranchRenderer = treeObj.GetComponent<SpriteRenderer>();
+                if (BranchRenderer == null)
                 {
-                    Debug.LogError("CellPineCone上找不到SpriteRenderer组件");
+                    Debug.LogError("CellTree上找不到SpriteRenderer组件");
                     return;
                 }
 
                 // 预加载两张生长阶段图片
-                pineSprites = new Sprite[2];
-                pineSprites[0] = Resources.Load<Sprite>("Images/Tree/huaShu2");
-                pineSprites[1] = Resources.Load<Sprite>("Images/Tree/huaShu1");
+                CellTreesprites = new Sprite[2];
+                CellTreesprites[0] = Resources.Load<Sprite>("Images/Tree/huaShu2");
+                CellTreesprites[1] = Resources.Load<Sprite>("Images/Tree/huaShu1");
 
                 // 检查图片是否加载成功
-                for (int i = 0; i < pineSprites.Length; i++)
+                for (int i = 0; i < CellTreesprites.Length; i++)
                 {
-                    if (pineSprites[i] == null)
+                    if (CellTreesprites[i] == null)
                     {
                         Debug.LogError($"无法加载图片: Images/Tree/huaShu{2-i}");
                     }
                 }
 
-                if (pineConeRenderer != null && pineSprites[0] != null)
+                if (BranchRenderer != null && CellTreesprites[0] != null)
                 {
-                    pineConeRenderer.sprite = pineSprites[0];
+                    BranchRenderer.sprite = CellTreesprites[0];
                 }
             }
         }
@@ -109,16 +107,16 @@ namespace HexGame.Harvest
         /// </summary>
         private void Update()
         {
-            if (resourceType == HarvestType.PineCone && pineConeRenderer && pineSprites != null)
+            if (resourceType == HarvestType.Branch && BranchRenderer && CellTreesprites != null)
             {
                 float progress = 1f - Mathf.Clamp01(growthTime / growthDuration);
                 if (progress < 1f / 2f) // 只分两个阶段
                 {
-                    pineConeRenderer.sprite = pineSprites[0]; // huaShu2
+                    BranchRenderer.sprite = CellTreesprites[0]; // huaShu2
                 }
                 else
                 {
-                    pineConeRenderer.sprite = pineSprites[1]; // huaShu1
+                    BranchRenderer.sprite = CellTreesprites[1]; // huaShu1
                 }
             }
 

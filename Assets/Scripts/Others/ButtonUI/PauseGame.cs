@@ -13,6 +13,14 @@ public class PauseGame : MonoBehaviour
         button.onClick.AddListener(TogglePause);
     }
 
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
+        }
+    }
+
     private void TogglePause()
     {
         if (Time.timeScale == 1f)

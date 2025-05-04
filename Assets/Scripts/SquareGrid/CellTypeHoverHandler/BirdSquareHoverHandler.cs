@@ -27,7 +27,7 @@ public class BirdSquareHoverHandler : ICellHoverHandler
                 spriteRenderer.sortingOrder = 4;// 设置渲染顺序
                 cell.IsCreateChatBox = true; // 标记为已创建
                 // 设置小鸟对话框希望的物体类型
-                cell.WantedHarvestType = WantedRandomHarvestType.GetRandomHarvestType();
+                cell.harvestTypeWanted = WantedRandomHarvestType.GetRandomHarvestType();
                 cell.ShowWantedHarvest();
                 // cell.
                 //todo-更多的视觉效果

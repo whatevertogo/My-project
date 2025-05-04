@@ -22,8 +22,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     private IGridTypeBehavior gridTypeBehavior;
     public GameObject chatObject; // 对话框对象
-    public HarvestType WantedHarvestType; // 需要的物体
-
     public HarvestType harvestTypeWanted = HarvestType.None; // 需要的HarvestType
 
 
@@ -256,7 +254,8 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         else if (cellType == GridType.BirdSquare && HarvestManager.Instance.GetResourceCount(harvestTypeWanted) > 0)
         {
             HarvestManager.Instance.ConsumeResource(harvestTypeWanted, 1);
-            this.chatObject.transform.Find("ChatBox").Find("HarvestImage").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/heart");
+            this.chatObject.transform.Find("ChatBox").Find("HarvestImage").GetComponent<SpriteRenderer>().sprite =
+                Resources.Load<Sprite>("Images/heart");
             GameManager.Instance.WinCore();
         }
     }
@@ -313,7 +312,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         {
             var Image = new GameObject("HarvestImage");
             var spriteRenderer = Image.AddComponent<SpriteRenderer>();
-            spriteRenderer.sprite = Resources.Load<Sprite>($"Images/zuoWu/{WantedHarvestType}");
+            spriteRenderer.sprite = Resources.Load<Sprite>($"Images/zuoWu/{harvestTypeWanted}");
             Image.transform.SetParent(chatObject.transform, false);
             spriteRenderer.sortingLayerName = "Behavior";
             spriteRenderer.sortingOrder = 4; // 设置渲染顺序

@@ -48,7 +48,7 @@ public class CardManager : Singleton<CardManager>
         if (cardToUIDic.TryGetValue(card, out CardUI cardUI))
         {
             // 销毁 UI 对象
-            Destroy(cardUI.gameObject);
+            Destroy(cardUI.CardObject);
 
             // 从映射中移除
             cardToUIDic.Remove(card);

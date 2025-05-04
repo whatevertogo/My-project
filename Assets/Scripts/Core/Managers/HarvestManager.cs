@@ -31,7 +31,6 @@ namespace HexGame.Harvest
 
         // 存储各类资源的数量
         private Dictionary<HarvestType, int> resourceCounts = new Dictionary<HarvestType, int>();
-        private Dictionary<HarvestType, int> usedCounts = new Dictionary<HarvestType, int>(); // 存储已使用的资源数量
         protected override void Awake()
         {
             base.Awake();
@@ -60,7 +59,6 @@ namespace HexGame.Harvest
                 if (type != HarvestType.None)
                 {
                     resourceCounts[type] = 0;
-                    usedCounts[type] = 0;
                 }
             }
         }        /// <summary>
@@ -125,7 +123,7 @@ namespace HexGame.Harvest
             }
 
             resourceCounts[type] -= amount;
-            usedCounts[type] += amount; // 更新已使用的资源数量
+            GameManager.Instance.usedCounts[type] += amount; // 更新已使用的资源数量
             TriggerHarvestChangedEvent(type, resourceCounts[type]);
             return true;
         }

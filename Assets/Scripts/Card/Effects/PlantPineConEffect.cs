@@ -26,11 +26,13 @@ public class PlantPineConeEffect : CardEffect
 
         cellPineCone.transform.localPosition = new Vector3(0, 0.5f, 0);
 
-        spriteRenderer.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        cellPineCone.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+
+        spriteRenderer.sprite = Resources.Load<Sprite>("Images/Tree/songShu");
 
         // spriteRenderer.transform.rotation = Quaternion.Euler(-10, 0, 0); // 设置旋转
         spriteRenderer.sortingLayerName = "Behavior";
-        spriteRenderer.sortingOrder = 3;// 设置渲染顺序
+        spriteRenderer.sortingOrder = 3; // 设置渲染顺序
 
         // 添加可收获组件
         Harvestable harvestable = targetCell.gameObject.AddComponent<Harvestable>();

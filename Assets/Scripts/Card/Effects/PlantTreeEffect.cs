@@ -17,7 +17,7 @@ public class PlantTreeEffect : CardEffect
         // 将格子转为树格子
         targetCell.SetGridType(GridType.PlantedTree);
 
-                var CellTree = new GameObject("CellTree");
+        var CellTree = new GameObject("CellTree");
         CellTree.transform.position = targetCell.transform.position;
 
         // 将树对象设置为格子对象的子对象

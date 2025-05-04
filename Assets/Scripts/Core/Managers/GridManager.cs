@@ -18,6 +18,12 @@ public class GridManager : Singleton<GridManager>
     public Material cellMaterial;
     public int GrassCount = 100;
 
+
+    [Header("羽毛刷新相关")] 
+    public float FeatherTimer = 20;
+    [Tooltip("每次刷新羽毛的数量")] 
+    public int FeatherCount = 3;
+
     public IEnumerable<SquareCell> AllCells
     {
         get
@@ -36,6 +42,41 @@ public class GridManager : Singleton<GridManager>
         RandomGridType.Initialize(gridTypeConfig);
         //生成网格
         GenerateGrid();
+    }
+
+    public void Update()
+    {
+        if (FeatherTimer > 0)
+        {
+            FeatherTimer = FeatherTimer - Time.deltaTime;
+        }
+        else
+            RandomSetFeatherType();
+
+    }
+
+
+    /// <summary>
+    /// 随机在可用格子中刷新羽毛（Feather）类型
+    /// </summary>
+    private void RandomSetFeatherType()
+    {
+        
+
+        // 1. 过滤出可作为羽毛的格子（这里只允许普通格子）
+        var candidates = AllCells
+            .Where(cell => cell.GetGridType() == GridType.SimpleSquare && cell.IsPlaceable)
+            .ToList();
+
+        // 2. 随机抽取指定数量的格子
+        int count = Mathf.Min(FeatherCount, candidates.Count);
+        for (int i = 0; i < count; i++)
+        {
+            // Unity 推荐的洗牌算法：Fisher-Yates
+            int randomIndex = UnityEngine.Random.Range(i, candidates.Count);
+            (candidates[i], candidates[randomIndex]) = (candidates[randomIndex], candidates[i]);
+            candidates[i].SetGridType(GridType.Feather);
+        }
     }
 
     public void GenerateGrid()
@@ -171,7 +212,9 @@ public class GridManager : Singleton<GridManager>
                 if (GetCell(GetGridCenter()).GetGridType() == GridType.BirdSquare)
                 {
                     cellType = GridType.SimpleSquare;
-                    cell.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Home");
+                    var home = new GameObject("home");
+                    home.gameObject.AddComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/Home");
+                    cell.IsPlaceable = false; // 设置出生点不可放置
                 }
                 cell.SetGridType(cellType);
             }

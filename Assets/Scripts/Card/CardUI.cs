@@ -13,6 +13,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     [ReadOnly] public Image image;
     public CanvasGroup TextArea;
     public CanvasGroup cardCanvasGroup;
+    public GameObject CardObject; 
     #endregion
 
     #region 动画配置

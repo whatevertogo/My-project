@@ -85,6 +85,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1176854079553539409}
     - target: {fileID: 3141366329970995451, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
+      propertyPath: CardObject
+      value: 
+      objectReference: {fileID: 3572883755342282142}
+    - target: {fileID: 3141366329970995451, guid: c3be66f126b50dc47abe58ece1b1cd63, type: 3}
       propertyPath: cardCanvas
       value: 
       objectReference: {fileID: 8336196884179845287}
