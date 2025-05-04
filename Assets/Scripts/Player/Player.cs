@@ -19,6 +19,7 @@ public class Player : Singleton<Player>
     public Vector2 input;
     private SpriteRenderer spriteRenderer; // 添加精灵渲染器引用
     public PlayerAnimationController PlayerAnimationController;
+    public static event Action OnNotify;
 
 
     protected override void Awake()
@@ -114,10 +115,11 @@ public class Player : Singleton<Player>
 
             // 等待平滑移动完成
             yield return StartCoroutine(SmoothMove(targetPos));
-
+            
             // 移动完成后更新当前格子并重置冷却
             playerGridComponent.SetCurrentCell(nextCell);//原版
             //playerGridComponent.SetCurrentCell(nextCell,moveVector);//修改版
+            MoveNotify();
             CooldownTimer = moveCooldown;
         }
         finally
@@ -154,5 +156,9 @@ public class Player : Singleton<Player>
 
         // 确保最终位置精确
         transform.position = targetPos;
+    }
+    void MoveNotify()
+    {
+        OnNotify?.Invoke(); // 通知所有监听者
     }
 }

@@ -80,7 +80,8 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
 
         // 获取父对象的 LayoutGroup
         layoutGroup = transform.parent?.GetComponent<LayoutGroup>();
-    }    private void InitializePosition()
+    }    
+    private void InitializePosition()
     {
         originalPosition = rectTransform.anchoredPosition;
         rectTransform.localScale = Vector3.one;
@@ -338,6 +339,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         {
             CardText.text = card.CardName;
             image.sprite = card.CardSprite;
+            //补充动效
         }
     }
 

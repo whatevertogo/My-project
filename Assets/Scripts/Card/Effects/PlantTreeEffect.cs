@@ -31,6 +31,9 @@ public class PlantTreeEffect : CardEffect
 
         // spriteRenderer.transform.rotation = Quaternion.Euler(-10, 0, 0); // 设置旋转
 
+        spriteRenderer.sortingLayerName = "Behavior";
+        spriteRenderer.sortingOrder = 3; // 设置渲染顺序
+
 
         // 添加可收获组件
         Harvestable harvestable = targetCell.gameObject.AddComponent<Harvestable>();

@@ -371,7 +371,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -656,7 +656,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveCooldown: 1
-  moveDuration: 1
+  moveDuration: 0.68
   input: {x: 0, y: 0}
   PlayerAnimationController: {fileID: 621430832}
 --- !u!114 &621430827
@@ -682,9 +682,9 @@ MonoBehaviour:
   misLocalScaleMin: 0.8
   misLocalScaleMax: 1.2
   poissonRadius: 0.5
-  poissonSamplesBeforeRejection: 20
-  grassDensity: 0.35
-  grassSamplesBeforeRejection: 20
+  poissonSamplesBeforeRejection: 15
+  grassDensity: 0.5
+  grassSamplesBeforeRejection: 5
   grassPrefabs:
   - {fileID: 4828149175286137343, guid: 63778b572ddfc9749bcf98302574c9af, type: 3}
   - {fileID: 4989427132158459890, guid: 02494db82283f01418762cb1de0288e3, type: 3}
@@ -1468,9 +1468,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7a5ee278f78c554d9f97a271a8fba95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GrassCount: 600
   gridTypeConfig: {fileID: 11400000, guid: 6467ab8470781914e80e94de5ef94a7d, type: 2}
   cellMaterial: {fileID: 2100000, guid: 75806e34cf6dbb84181227bdd611748e, type: 2}
-  GrassCount: 100
+  FeatherTimer: 10
+  currentFeatherTime: 0
+  FeatherCount: 1
   AllBridCells: []
   AllDontMoveCells: []
 --- !u!4 &1010826480
@@ -2192,6 +2195,55 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &1421275569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1421275571}
+  - component: {fileID: 1421275570}
+  m_Layer: 0
+  m_Name: fanguang
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1421275570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421275569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 0400aa3f3980fcb47a48ccc17a1d9b85, type: 2}
+--- !u!4 &1421275571
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1421275569}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.108723, y: 21.397789, z: -0.79720813}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1606219758
 GameObject:
   m_ObjectHideFlags: 0
@@ -2481,6 +2533,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18a261905a439b145be499f36146949e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  time: 0
+  core: 0
+  timeLimit: 3000
 --- !u!1 &1857835929
 GameObject:
   m_ObjectHideFlags: 0
@@ -3129,3 +3184,4 @@ SceneRoots:
   - {fileID: 1881955325}
   - {fileID: 443371279}
   - {fileID: 2101266000}
+  - {fileID: 1421275571}

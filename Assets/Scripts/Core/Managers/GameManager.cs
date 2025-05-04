@@ -8,16 +8,21 @@ using UnityEngine;
 public class GameManager : SingletonDD<GameManager>
 {
 
-    public static ConclutionsType ConclutionType;
+    public static ConclutionsPart1Type ConclutionPart1Type = ConclutionsPart1Type.None;
+
+    public static ConclutionsPart2Type ConclutionPart2Type = ConclutionsPart2Type.None;
+
+    public static ConclutionsPart3Type ConclutionPart3Type = ConclutionsPart3Type.None;
 
     public float time = 0.0f;
 
-    public int core=0;
+    public int core = 0;
 
     public float timeLimit = 3000f; // 5分钟
 
     // 存储各类资源的数量
     public Dictionary<HarvestType, int> usedCounts = new();
+    private int EndCount = 0;//用于计算能否进入结局part3
 
 
     public void Start()
@@ -27,7 +32,7 @@ public class GameManager : SingletonDD<GameManager>
         {
             usedCounts[type] = 0;
         }
-        ConclutionType = ConclutionsType.None;
+        EndCount = 0; // 保证结局参数为0
     }
 
 
@@ -39,7 +44,7 @@ public class GameManager : SingletonDD<GameManager>
         {
             // 结束游戏
             CheckConclusion();
-            Debug.Log($"游戏结束，结局：{ConclutionType}");
+            Debug.Log($"游戏结束，结局：{ConclutionPart1Type}");
 
         }
     }
@@ -51,56 +56,39 @@ public class GameManager : SingletonDD<GameManager>
         int pineConeUsed = usedCounts.ContainsKey(HarvestType.PineCone) ? usedCounts[HarvestType.PineCone] : 0;
         int featherUsed = usedCounts.ContainsKey(HarvestType.Feather) ? usedCounts[HarvestType.Feather] : 0;
 
-        // 默认结局
-        ConclutionType = ConclutionsType.None;
-
-        // Part1 判断
-        if (branchUsed <= 5 && pineConeUsed < 5)
+        // Part1 判断（同时判断树枝和羽毛）
+        if (branchUsed < 5 || featherUsed < 5)
         {
-            ConclutionType = ConclutionsType.Part1_WastedResources; // 亲康失败
+            ConclutionPart1Type = ConclutionsPart1Type.Part1_Wasted; //筑巢失败
         }
-        else if (branchUsed >= 5 && pineConeUsed < 5)
+        else if (branchUsed >= 5 && featherUsed >= 5)
         {
-            ConclutionType = ConclutionsType.Part1_Weak; // 弱小
-        }
-        else if (branchUsed >= 5 && pineConeUsed >= 5)
-        {
-            ConclutionType = ConclutionsType.Part1_Warm; // 温暖
+            ConclutionPart1Type = ConclutionsPart1Type.Part1_Home; // 筑巢成功
+            EndCount++;
         }
 
         // Part2 判断（米粒判断）
         if (pineConeUsed < 5)
         {
-            ConclutionType = ConclutionsType.Part2_Hungry; // 饥饿
+            ConclutionPart2Type = ConclutionsPart2Type.Part2_Hungry; // 饥饿
         }
         else if (pineConeUsed >= 5)
         {
-            ConclutionType = ConclutionsType.Part2_Full; // 吃饱
+            ConclutionPart2Type = ConclutionsPart2Type.Part2_Full; // 吃饱
+            EndCount++;
         }
 
         // Part3 判断（基于帮助的小鸟数量和资源使用）
-        if (core < 5)
+        if (EndCount < 2 || core < 5)
         {
-            ConclutionType = ConclutionsType.Part3_CompleteNo1; // 亲更弱1
+            ConclutionPart3Type = ConclutionsPart3Type.Part3_Lonely; // 孤零零灵
         }
-        else if (pineConeUsed < 5)
+        else if (EndCount == 2 && core >= 5)
         {
-            ConclutionType = ConclutionsType.Part3_CompleteNo2; // 亲更弱2
-        }
-        else if (branchUsed >= 5 && pineConeUsed >= 5 && core < 5)
-        {
-            ConclutionType = ConclutionsType.Part3_Lonely; // 孤零零灵
-        }
-        else if (branchUsed >= 5 && pineConeUsed >= 5 && core >= 5 && core < 10)
-        {
-            ConclutionType = ConclutionsType.Part3_GoodFriend; // 好朋友灵
-        }
-        else if (branchUsed >= 5 && pineConeUsed >= 5 && core >= 10)
-        {
-            ConclutionType = ConclutionsType.Part3_Home; // 守"星"空
+            ConclutionPart3Type = ConclutionsPart3Type.Part3_GoodFriend; // 好朋友灵
         }
 
-        Debug.Log($"游戏结束，结局：{ConclutionType}");
+        Debug.Log($"游戏结束，结局：{ConclutionPart1Type},{ConclutionPart2Type},{ConclutionPart3Type}");
     }
 
     /// <summary>

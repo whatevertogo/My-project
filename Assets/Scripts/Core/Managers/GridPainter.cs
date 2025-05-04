@@ -16,7 +16,7 @@ public class GridPainter : Singleton<GridPainter>
     public float misLocalScaleMin = 0.8f;
     public float misLocalScaleMax = 1.2f;
 
-    [Header("泊松分布参数")] public float poissonRadius = 0.5f; // 最小距离
+    [Header("雾泊松分布参数")] public float poissonRadius = 0.5f; // 雾最最小距离
     public int poissonSamplesBeforeRejection = 20; // 采样次数
 
     [Header("草地")] public float grassDensity = 0.5f; // 草地密度
@@ -259,12 +259,38 @@ public class GridPainter : Singleton<GridPainter>
 
     public void GenerateGrass(int width, int height, int grassCount)
     {
+        int maxCount = width * height;
+        if (grassCount > maxCount)
+        {
+            Debug.LogError("请求的坐标数超过了范围内所有可能组合！");
+        }
+
+        List<int[]> allGridPos = new List<int[]>();
+        for (int x = 0; x < width; x++)//生成一个包括了所有位置的数组
+        {
+            for (int y = 0; y < height; y++)
+            {
+                allGridPos.Add(new int[] { x, y });
+            }
+        }
+
+        // 2. 打乱数组
+        for (int i = 0; i < allGridPos.Count; i++)
+        {
+            int j = UnityEngine.Random.Range(i, allGridPos.Count);
+            var temp = allGridPos[i];
+            allGridPos[i] = allGridPos[j];
+            allGridPos[j] = temp;
+        }
+
+        // 3. 截取前 grassCount 个作为不重复的随机格子
+        var selectedPos = allGridPos.GetRange(0, grassCount);
+
         var GrassAll = new GameObject("GrassAll");
         for (int i = 0; i < grassCount; i++)
         {
-            // 随机选择一个格子
-            int x = Random.Range(0, width);
-            int y = Random.Range(0, height);
+            int x = selectedPos[i][0];
+            int y = selectedPos[i][1];
 
             // 在选定的格子中生成泊松分布的草地
             List<Vector2> grassPoints = GeneratePoissonPoints(grassDensity, grassSamplesBeforeRejection);
@@ -300,11 +326,7 @@ public class GridPainter : Singleton<GridPainter>
     }
 
     // 网上找的泊松分布
-    // numSamplesBeforeRejection用于控制采样次数，次数减少可以减少雾气数量
-
-    /// <summary>
-    /// 生成泊松分布的点
-    /// </summary>
+    // numSamplesBeforeRejection用于控制采样次数，次数减少可以减少雾气数量,反之
     /// <param name="radius">最小允许距离</param>
     /// <param name="numSamplesBeforeRejection">控制采样次数</param>
     /// <returns>生成的点列表</returns>

@@ -248,8 +248,9 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         harvestableComponent?.OnMouseDown();
         if (cellType == GridType.Feather)
         {
-            HarvestManager.Instance.AddHarvest(HarvestType.PineCone, 1);
+            HarvestManager.Instance.AddHarvest(HarvestType.Feather, 1);
             this.SetGridType(GridType.SimpleSquare);
+            GridManager.Instance.AllDontMoveCells.Remove(this);
         }
         else if (cellType == GridType.BirdSquare && HarvestManager.Instance.GetResourceCount(harvestTypeWanted) > 0)
         {

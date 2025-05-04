@@ -34,7 +34,7 @@ namespace HexGame.Harvest
 
         private SquareCell cell;
         private float currentCooldown; // 当前剩余冷却时间
-        private bool canHarvest = false;// 是否可以收获
+        private bool canHarvest = true;// 是否可以收获
         private bool isGrown = true;
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace HexGame.Harvest
                     Debug.LogError("找不到CellTree子物体");
                     return;
                 }
-                
+
                 BranchRenderer = treeObj.GetComponent<SpriteRenderer>();
                 if (BranchRenderer == null)
                 {
@@ -80,7 +80,7 @@ namespace HexGame.Harvest
                 {
                     if (CellTreesprites[i] == null)
                     {
-                        Debug.LogError($"无法加载图片: Images/Tree/huaShu{2-i}");
+                        Debug.LogError($"无法加载图片: Images/Tree/huaShu{2 - i}");
                     }
                 }
 
@@ -126,6 +126,7 @@ namespace HexGame.Harvest
             }
 
             // 处理冷却时间
+            // todo-如果需要可以添加UI冷却进度条
             if (!canHarvest && currentCooldown > 0)
             {
                 currentCooldown -= Time.deltaTime;

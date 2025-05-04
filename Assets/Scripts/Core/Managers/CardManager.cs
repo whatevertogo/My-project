@@ -8,12 +8,13 @@ public class CardManager : Singleton<CardManager>
     public Transform cardGrid;     // 卡片UI的父物体
     public List<CardData> cardDataList; // 从编辑器配置的卡牌数据列表
     public Dictionary<Card, CardUI> cardToUIDic = new(); // 运行时卡牌与UI的映射
-    private void Start()
+
+    /* private void Start()
     {
         GenerateCards();
-    }
+    } */
 
-    // todo-测试生成卡牌
+    /* // todo-测试生成卡牌
     void GenerateCards()
     {
         foreach (var cardData in cardDataList)
@@ -21,7 +22,7 @@ public class CardManager : Singleton<CardManager>
             Debug.Log($"Processing CardData: {cardData.cardName}");
             AddCard(cardData);
         }
-    }
+    } */
 
     // 添加卡牌
     public void AddCard(CardData cardData)
@@ -32,6 +33,7 @@ public class CardManager : Singleton<CardManager>
         // 创建并绑定 UI
         var cardUIContainerObj = Instantiate(cardUIContainerPrefab, cardGrid);
         CardUI cardUI = cardUIContainerObj.transform.Find("CardUI")?.GetComponent<CardUI>();
+        
         if (cardUI is null)
         {
             Debug.LogError("CardUI component not found in the instantiated prefab. Please check the prefab structure.");
@@ -53,5 +55,27 @@ public class CardManager : Singleton<CardManager>
             // 从映射中移除
             cardToUIDic.Remove(card);
         }
+    }
+    private void OnEnable()
+    {
+        Player.OnNotify += DoSomething;
+    }
+
+    private void OnDisable()
+    {
+        Player.OnNotify -= DoSomething;
+    }
+
+    void DoSomething()//启动抽卡
+    {
+        Debug.Log("Manager 响应 Player 的通知");
+        CallAddCards();
+
+    }
+    void CallAddCards()//随机抽卡
+    {
+        if (cardDataList is null || cardDataList.Count == 0) return;
+        int index = Random.Range(0, cardDataList.Count); // [0, Count)
+        AddCard(cardDataList[index]);
     }
 }

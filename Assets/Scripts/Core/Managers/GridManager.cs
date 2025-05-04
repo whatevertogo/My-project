@@ -11,18 +11,18 @@ public class GridManager : Singleton<GridManager>
     public readonly int height = 25;
 
     public Vector3 GetGridCenter() => new Vector3(width / 2, height / 2, 0);
+    public int GrassCount = 100;
 
     [Header("网格类型配置和需要的BridSquare数量")]
     public GridTypeConfig gridTypeConfig; // 网格类型配置文件
     public SquareCell[,] cells;
     public Material cellMaterial;
-    public int GrassCount = 100;
-
 
     [Header("羽毛刷新相关")] 
-    public float FeatherTimer = 20;
+    public float FeatherTimer = 10;
+    public float currentFeatherTime = 0;
     [Tooltip("每次刷新羽毛的数量")] 
-    public int FeatherCount = 3;
+    public int FeatherCount = 1;
 
     public IEnumerable<SquareCell> AllCells
     {
@@ -40,18 +40,22 @@ public class GridManager : Singleton<GridManager>
     {
         base.Awake();
         RandomGridType.Initialize(gridTypeConfig);
+        currentFeatherTime = FeatherTimer;
         //生成网格
         GenerateGrid();
     }
 
     public void Update()
     {
-        if (FeatherTimer > 0)
+        if (currentFeatherTime > 0)
         {
-            FeatherTimer = FeatherTimer - Time.deltaTime;
+            currentFeatherTime -= Time.deltaTime;
         }
         else
+        {
             RandomSetFeatherType();
+            currentFeatherTime = FeatherTimer;
+        }
 
     }
 
@@ -76,7 +80,7 @@ public class GridManager : Singleton<GridManager>
             int randomIndex = UnityEngine.Random.Range(i, candidates.Count);
             (candidates[i], candidates[randomIndex]) = (candidates[randomIndex], candidates[i]);
             candidates[i].SetGridType(GridType.Feather);
-        }
+        }  
     }
 
     public void GenerateGrid()

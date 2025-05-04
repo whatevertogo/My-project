@@ -123,7 +123,7 @@ namespace HexGame.Harvest
             }
 
             resourceCounts[type] -= amount;
-            GameManager.Instance.usedCounts[type] += amount; // 更新已使用的资源数量
+            GameManager.Instance.AddUsedCount(type, amount); // 更新已使用的资源数量
             TriggerHarvestChangedEvent(type, resourceCounts[type]);
             return true;
         }
