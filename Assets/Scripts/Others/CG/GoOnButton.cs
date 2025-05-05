@@ -33,7 +33,7 @@ public class GoOnButton : MonoBehaviour
         }
         else if (clickTimes == images.Length + 1)
         {
-            SceneManager.LoadSceneAsync("FirstLevel"); // 异步加载场景
+            SceneManager.LoadSceneAsync("FristLevel"); // 异步加载场景
         }
     }
 }

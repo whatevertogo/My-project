@@ -1,13 +1,19 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class BackToFirst : MonoBehaviour
 {
+    private Button button1;
 
-    public static readonly string SceneName = "开始界面";
+    private void Start()
+    {
+        button1 = GetComponent<Button>();
+        button1.onClick.AddListener(LoadFirstScene);
+    }
 
     public void LoadFirstScene()
     {
-        SceneManager.LoadScene(SceneName);
+        SceneManager.LoadScene(0);
     }
 }

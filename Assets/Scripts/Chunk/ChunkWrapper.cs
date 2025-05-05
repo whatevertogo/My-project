@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 
 public class ChunkWrapper : MonoBehaviour
@@ -36,6 +35,5 @@ public class ChunkWrapper : MonoBehaviour
         // 在场景中显示区块的坐标
         GUIStyle style = new GUIStyle();
         style.normal.textColor = Color.white;
-        Handles.Label(transform.position, $"Chunk ({ChunkX}, {ChunkY})", style);
     }
 }

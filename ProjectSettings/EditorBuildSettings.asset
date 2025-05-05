@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FristLevel.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/CG2.unity
+    guid: 44833fa90c11c7440b55dd8943cf4439
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: a28943a902022544487feae4fa329764, type: 3}

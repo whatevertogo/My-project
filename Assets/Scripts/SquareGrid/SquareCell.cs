@@ -251,13 +251,17 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
             HarvestManager.Instance.AddHarvest(HarvestType.Feather, 1);
             this.SetGridType(GridType.SimpleSquare);
             GridManager.Instance.AllDontMoveCells.Remove(this);
+            var feather = transform.Find("Feather");
+            var Feather = feather.gameObject;
+            if (Feather is not null)
+                Destroy(Feather);
         }
-        else if (cellType == GridType.BirdSquare && HarvestManager.Instance.GetResourceCount(harvestTypeWanted) > 0)
+        if (cellType == GridType.BirdSquare && HarvestManager.Instance.GetResourceCount(harvestTypeWanted) > 0)
         {
             HarvestManager.Instance.ConsumeResource(harvestTypeWanted, 1);
-            this.chatObject.transform.Find("ChatBox").Find("HarvestImage").GetComponent<SpriteRenderer>().sprite =
-                Resources.Load<Sprite>("Images/heart");
-            GameManager.Instance.WinCore();
+            this.chatObject.transform.Find("ChatBox").Find("HarvestImage").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/heart");
+            HarvestManager.Instance.ConsumeResource(harvestTypeWanted, 1);//消耗资源
+            GameManager.Instance.WinCore();//得分
         }
     }
 

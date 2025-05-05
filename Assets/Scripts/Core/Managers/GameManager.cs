@@ -4,6 +4,7 @@ using CDTU.Utils;
 using Conclutions;
 using HexGame.Harvest;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : SingletonDD<GameManager>
 {
@@ -44,7 +45,7 @@ public class GameManager : SingletonDD<GameManager>
         {
             // 结束游戏
             CheckConclusion();
-            Debug.Log($"游戏结束，结局：{ConclutionPart1Type}");
+            SceneManager.LoadSceneAsync(3);
 
         }
     }

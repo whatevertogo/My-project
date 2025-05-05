@@ -2,14 +2,6 @@ using System.Collections.Generic;
 using Spine.Unity;
 using UnityEngine;
 
-
-public enum PlayerAnimationState
-{
-    Standby1,
-    Standby2,
-    Jump
-}
-
 /// <summary>
 /// 玩家动画控制器
 /// </summary>
@@ -73,7 +65,7 @@ public class PlayerAnimationControl : MonoBehaviour
     /// <summary>
     /// 设置玩家动画
     /// </summary>
-    /// <param name="trackIndex">轨道索引</param>
+    /// /// <param name="trackIndex">轨道索引</param>
     /// <param name="animationType">要播放的动画类型</param>
     /// <param name="loop">是否循环播放</param>
     public void SetPlayerAnimation(int trackIndex, PlayerAnimationState animationType, bool loop = false)
