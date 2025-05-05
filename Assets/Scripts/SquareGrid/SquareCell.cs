@@ -259,7 +259,8 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         if (cellType == GridType.BirdSquare && HarvestManager.Instance.GetResourceCount(harvestTypeWanted) > 0)
         {
             HarvestManager.Instance.ConsumeResource(harvestTypeWanted, 1);//消耗资源
-            this.chatObject.transform.Find("ChatBox").Find("HarvestImage").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/heart");
+            this.chatObject.transform.Find("ChatImage").Find("HarvestImage").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/heart");
+            harvestTypeWanted = HarvestType.None; // 重置需要的物品类型
             GameManager.Instance.WinCore();//得分
         }
     }

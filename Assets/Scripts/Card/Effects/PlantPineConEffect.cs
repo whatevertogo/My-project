@@ -24,9 +24,11 @@ public class PlantPineConeEffect : CardEffect
         cellPineCone.transform.SetParent(targetCell.transform);
         var spriteRenderer = cellPineCone.AddComponent<SpriteRenderer>();
 
-        cellPineCone.transform.localPosition = new Vector3(0, 0.5f, 0);
+        cellPineCone.transform.localPosition = new Vector3(0, 0.5f, -1);
 
         cellPineCone.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+
+        cellPineCone.transform.localRotation = Quaternion.Euler(-10, 0, 0); // 设置旋转
 
         spriteRenderer.sprite = Resources.Load<Sprite>("Images/Tree/songShu");
 

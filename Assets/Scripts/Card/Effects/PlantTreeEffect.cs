@@ -25,11 +25,11 @@ public class PlantTreeEffect : CardEffect
         var spriteRenderer = CellTree.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = Resources.Load<Sprite>("Images/Tree/songShu");
 
-        CellTree.transform.localPosition = new Vector3(0, 0.5f, 0);
+        CellTree.transform.localPosition = new Vector3(0, 0.5f, -1f);
 
         spriteRenderer.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
 
-        // spriteRenderer.transform.rotation = Quaternion.Euler(-10, 0, 0); // 设置旋转
+        spriteRenderer.transform.rotation = Quaternion.Euler(-10, 0, 0); // 设置旋转
 
         spriteRenderer.sortingLayerName = "Behavior";
         spriteRenderer.sortingOrder = 3; // 设置渲染顺序
