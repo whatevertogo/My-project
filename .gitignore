@@ -93,3 +93,6 @@ crashlytics-build.properties
 
 #spine
 .spine/
+
+
+*.meta
