@@ -1,6 +1,4 @@
-﻿using HexGame.Harvest;
-using UnityEngine;
-
+﻿
 public class PlantedTreeBehavior : IGridTypeBehavior
 {
     public void ApplyBehavior(SquareCell cell)

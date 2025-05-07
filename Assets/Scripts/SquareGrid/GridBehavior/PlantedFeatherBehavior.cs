@@ -3,6 +3,7 @@ using HexGame.Harvest;
 
 public class PlantedFeatherBehavior : IGridTypeBehavior
 {
+    public static readonly Sprite featherSprite = Resources.Load<Sprite>("Images/Feather");
     public void ApplyBehavior(SquareCell cell)
     {
         cell.IsPlaceable = false;
@@ -12,7 +13,6 @@ public class PlantedFeatherBehavior : IGridTypeBehavior
         feather.transform.SetParent(cell.transform);
         feather.transform.localPosition = new Vector3(0, 0, 0);
         feather.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
-        var featherSprite = Resources.Load<Sprite>("Images/Feather");
         featherRenderer.sprite = featherSprite;
     }
     

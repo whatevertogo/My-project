@@ -1,3 +1,4 @@
+using System.Collections;
 using HexGame.Harvest;
 using TMPro;
 using UnityEngine;
@@ -6,15 +7,23 @@ public class HarvestChange : MonoBehaviour
 {
     public HarvestType harvestType; // 资源类型
     public TextMeshProUGUI harvestText; // 显示资源数量的文本
+    private Color originalColor; // 保存原始颜色
+    private string originalText; // 保存原始文本
 
     public void Start()
     {
+        // 保存初始状态
+        if (harvestText != null)
+        {
+            originalColor = harvestText.color;
+            originalText = harvestText.text;
+        }
+
         HarvestManager.Instance.OnHarvestChanged += OnHarvestChanged;
     }
 
     private void OnDestroy()
     {
-        // 在对象销毁时取消订阅事件，防止内存泄漏和空引用异常
         if (HarvestManager.Instance != null)
         {
             HarvestManager.Instance.OnHarvestChanged -= OnHarvestChanged;
@@ -23,7 +32,6 @@ public class HarvestChange : MonoBehaviour
 
     private void OnDisable()
     {
-        // 在对象被禁用时取消订阅事件
         if (HarvestManager.Instance != null)
         {
             HarvestManager.Instance.OnHarvestChanged -= OnHarvestChanged;
@@ -32,7 +40,6 @@ public class HarvestChange : MonoBehaviour
 
     private void OnEnable()
     {
-        // 在对象被启用时重新订阅事件
         if (HarvestManager.Instance != null)
         {
             HarvestManager.Instance.OnHarvestChanged += OnHarvestChanged;
@@ -45,7 +52,34 @@ public class HarvestChange : MonoBehaviour
         {
             // 更新文本显示资源数量
             harvestText.text = e.Amount.ToString();
+
+            // 设置颜色
+            harvestText.color = Color.yellow;
+
+            // 设置粗体（通过富文本）
+            harvestText.text = $"<b>{harvestText.text}</b>";
+
+            // 设置字体红色
+            Color c = harvestText.color;
+            c.r = 1f;
+            c.g = 0f;
+            c.b = 0f;
+            harvestText.color = c;
+
+            // 启动协程在 2 秒后恢复原样
+            StartCoroutine(ResetTextAfterDelay(2f));
         }
     }
 
+    private IEnumerator ResetTextAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // 恢复原始颜色和文本
+        if (harvestText != null)
+        {
+            harvestText.color = originalColor;
+            harvestText.text = originalText;
+        }
+    }
 }
