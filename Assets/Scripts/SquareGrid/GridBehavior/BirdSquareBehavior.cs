@@ -1,6 +1,6 @@
 using UnityEngine;
-using System.Collections.Generic;
 using HexGame.Harvest;
+using Spine.Unity;
 
 public class BirdSquareBehavior : IGridTypeBehavior
 {
@@ -78,11 +78,11 @@ public class BirdSquareBehavior : IGridTypeBehavior
         int randomValue = Random.Range(1, 3); // 生成1或2
         
         sr.sprite = Resources.Load<Sprite>("Images/Bird" + randomValue);
-        if (sr.sprite == null)
-        {
-            Debug.LogWarning("未能加载小鸟图片，使用默认图");
-            sr.sprite = Resources.Load<Sprite>("Images/Default");
-        }
+
+        //添加动画
+        var birdAnimation =birdOverlay.AddComponent<SkeletonAnimation>();
+        int i = Random.Range(1, 3); // 生成1或2
+        birdAnimation.skeletonDataAsset = Resources.Load<SkeletonDataAsset>($"Birds/YaQue/ReferenceAssets/shanQue_Standby{i}");
 
         // 使用格子的材质
         sr.material = cell.CellRenderer.material;

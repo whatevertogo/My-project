@@ -280,7 +280,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
 
         if (hoveredState)
         {
-            if (currentTopCard == null)
+            if (currentTopCard is null)
             {
                 currentTopCard = this;
             }
@@ -356,7 +356,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         }
         else
         {
-            CardText.text = card.CardName;
+            CardText.text = card.Description;
             image.sprite = card.CardSprite;
             //补充动效
         }
