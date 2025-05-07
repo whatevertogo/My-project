@@ -9,7 +9,6 @@ public static class CellHoverHandlerFactory
         { GridType.PlantedTree, new TreeHoverHandler() },
         { GridType.Feather, new FeatherHoverHandler() },
         { GridType.SimpleSquare, new DefaultHoverHandler() },
-        //todo- 添加更多类型
     };
 
     public static ICellHoverHandler GetHandler(GridType type)

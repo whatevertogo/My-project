@@ -208,7 +208,6 @@ public class GridPainter : Singleton<GridPainter>
 
         foreach (var pt in fogPoints)
         {
-            //todo-也许你会微调他的值
             Vector3 pos = new Vector3(x + pt.x - 0.5f, y + pt.y-0.3f - 0.5f, -1f);
             GameObject fog = CreateFogObject(pos);
             if (fog is not null)
