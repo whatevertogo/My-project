@@ -37,8 +37,6 @@ public class BirdSquareBehavior : IGridTypeBehavior
     public void OnInteract(SquareCell cell)
     {
         // 鸟类格子的交互逻辑
-        // 不直接调用OnMouseDown，因为Harvestable没有这个方法
-        
         // 检查是否有足够的所需资源
         HarvestType wantedType = cell.GetHarvestTypeWanted();
         if (wantedType != HarvestType.None && HarvestManager.Instance.GetResourceCount(wantedType) > 0)

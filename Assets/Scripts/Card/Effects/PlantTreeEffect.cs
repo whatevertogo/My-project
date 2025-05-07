@@ -68,6 +68,7 @@ public class PlantTreeEffect : CardEffect
 
         // 添加可收获组件
         Harvestable harvestable = targetCell.gameObject.AddComponent<Harvestable>();
+        targetCell.SetHarvestable(harvestable);
         harvestable.SetResourceType(HarvestType.Branch);
         harvestable.SetHarvestAmount(1);
 

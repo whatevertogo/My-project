@@ -34,7 +34,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     {
         CellRenderer = GetComponent<SpriteRenderer>();
         CellRenderer.sprite = Resources.Load<Sprite>("Images/Default");
-        harvestableComponent = GetComponent<Harvestable>();
     }
 
     // 存储邻居的列表
@@ -290,6 +289,19 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     public HarvestType GetHarvestTypeWanted()
     {
         return harvestTypeWanted;
+    }
+
+    #endregion
+
+    #region Harvestable
+    public void SetHarvestable(Harvestable harvestable)
+    {
+        harvestableComponent = harvestable;
+    }
+
+    public Harvestable GetHarvestable()
+    {
+        return harvestableComponent;
     }
 
     #endregion

@@ -8,7 +8,7 @@ public static class CellHoverHandlerFactory
         { GridType.BirdSquare, new BirdSquareHoverHandler() },
         { GridType.PlantedTree, new TreeHoverHandler() },
         { GridType.Feather, new FeatherHoverHandler() },
-        { GridType.SimpleSquare, new DefaultHoverHandler() },
+        { GridType.SimpleSquare, new DefaultHoverHandler() }
     };
 
     public static ICellHoverHandler GetHandler(GridType type)

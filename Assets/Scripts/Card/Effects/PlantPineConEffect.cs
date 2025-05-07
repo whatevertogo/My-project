@@ -3,7 +3,7 @@ using HexGame.Harvest;
 using DG.Tweening;
 public class PlantPineConeEffect : CardEffect
 {
-    public PlantPineConeEffect(Card card) : base(card){}
+    public PlantPineConeEffect(Card card) : base(card) { }
 
     public override bool CanUse(SquareCell targetCell)
     {
@@ -48,7 +48,7 @@ public class PlantPineConeEffect : CardEffect
         cellPineCone.transform.localScale = new Vector3(0.2f, 0f, 0.2f); // Y轴初始为0
         spriteRenderer.transform.localScale = new Vector3(0.2f, 0f, 0.2f);
 
-         // 添加从下往上生长的动画
+        // 添加从下往上生长的动画
         cellPineCone.transform.DOKill();  // 停止任何现有的动画
         cellPineCone.transform.DOScaleY(0.2f, 1f)  // Y轴从0增长到0.2
             .SetEase(Ease.OutBounce); // 弹性效果
@@ -64,6 +64,7 @@ public class PlantPineConeEffect : CardEffect
 
         // 添加可收获组件
         Harvestable harvestable = targetCell.gameObject.AddComponent<Harvestable>();
+        targetCell.SetHarvestable(harvestable);
         harvestable.SetResourceType(HarvestType.PineCone);
         harvestable.SetHarvestAmount(1);
 
