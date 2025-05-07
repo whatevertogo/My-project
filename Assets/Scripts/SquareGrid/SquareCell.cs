@@ -19,7 +19,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
 
     private ICellHoverHandler hoverHandler;
-
     private IGridTypeBehavior gridTypeBehavior;
     public GameObject chatObject; // 对话框对象
     public HarvestType harvestTypeWanted = HarvestType.None; // 需要的HarvestType
@@ -245,24 +244,8 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
 
     public void Interact()
     {
-        harvestableComponent?.OnMouseDown();
-        if (cellType == GridType.Feather)
-        {
-            HarvestManager.Instance.AddHarvest(HarvestType.Feather, 1);
-            this.SetGridType(GridType.SimpleSquare);
-            GridManager.Instance.AllDontMoveCells.Remove(this);
-            var feather = transform.Find("Feather");
-            var Feather = feather.gameObject;
-            if (Feather is not null)
-                Destroy(Feather);
-        }
-        if (cellType == GridType.BirdSquare && HarvestManager.Instance.GetResourceCount(harvestTypeWanted) > 0)
-        {
-            HarvestManager.Instance.ConsumeResource(harvestTypeWanted, 1);//消耗资源
-            this.chatObject.transform.Find("ChatImage").Find("HarvestImage").GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Images/heart");
-            harvestTypeWanted = HarvestType.None; // 重置需要的物品类型
-            GameManager.Instance.WinCore();//得分
-        }
+        // 委托给当前的gridTypeBehavior处理交互逻辑
+        gridTypeBehavior?.OnInteract(this);
     }
 
     #endregion

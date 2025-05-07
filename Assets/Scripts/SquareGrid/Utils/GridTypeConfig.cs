@@ -4,5 +4,5 @@ using UnityEngine;
 public class GridTypeConfig : ScriptableObject
 {
     [Range(0, 1)]
-    public float birdSquareProbability = 0.02f; // 鸟形方格的概率
+    public float birdSquareProbability = 0.03f; // 鸟形方格的概率
 }

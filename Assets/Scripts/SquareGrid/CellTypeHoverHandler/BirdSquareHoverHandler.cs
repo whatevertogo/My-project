@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class BirdSquareHoverHandler : ICellHoverHandler
 {
@@ -9,50 +10,52 @@ public class BirdSquareHoverHandler : ICellHoverHandler
     {
         // 输出日志信息，显示当前悬停的格子坐标，并提示显示小鸟特效
         Debug.Log(message: $"鸟格子 {cell.Coordinates} 悬停，显示小鸟特效！");
-        if (!cell.IsCreateChatBox)
+        
+        // 已经有chatObject但可能被隐藏，显示它
+        if (cell.chatObject != null)
         {
-            // 对话或者爱心特效
-            var chatImage = Resources.Load<Sprite>("Images/Chat");
-            if (chatImage is not null)
-            {
-                Debug.Log("加载对话框图片成功！");
-                cell.chatObject = new GameObject("ChatImage");
-                cell.chatObject.transform.SetParent(cell.transform, true);
-                var spriteRenderer = cell.chatObject.AddComponent<SpriteRenderer>();
-                spriteRenderer.sprite = chatImage;
-                spriteRenderer.transform.position = cell.GetWorldPosition() + new Vector3(0, 1, -1); // 设置位置
-                spriteRenderer.transform.localScale = new Vector3(0.5f, 0.5f, 1); // 设置缩放
-                spriteRenderer.transform.rotation = Quaternion.Euler(-10, 0, 0); // 设置旋转
-                spriteRenderer.sortingLayerName = "Behavior";
-                spriteRenderer.sortingOrder = 4;// 设置渲染顺序
-                cell.IsCreateChatBox = true; // 标记为已创建
-                // 设置小鸟对话框希望的物体类型
-                cell.harvestTypeWanted = WantedRandomHarvestType.GetRandomHarvestType();
-                cell.ShowWantedHarvest();
-                // cell.
-                //todo-更多的视觉效果
-            }
-            else
-            {
-                Debug.LogError("加载对话框图片失败！");
-            }
-
-            // 自定义逻辑
-            defaultHandler.OnHoverEnter(cell); // 调用默认逻辑
+            cell.chatObject.SetActive(true);
         }
-        else
-        {
-            cell.chatObject.SetActive(true); // 显示对话框
-        }
+        // 启用悬停效果
+        defaultHandler.OnHoverEnter(cell);
     }
 
     public void OnHoverExit(SquareCell cell)
     {
         Debug.Log($"鸟格子 {cell.Coordinates} 悬停结束！");
         defaultHandler.OnHoverExit(cell); // 调用默认逻辑
-        if (cell.IsCreateChatBox)
+        
+        // 隐藏对话框但不销毁它
+        if (cell.chatObject != null)
         {
-            cell.chatObject.SetActive(false); // 隐藏对话框
+            cell.chatObject.SetActive(false);
         }
+    }
+    private void AnimateChatAppear(GameObject chatObject)
+    {
+        var spriteRenderer = chatObject.GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null) return;
+
+        // 初始状态
+        spriteRenderer.color = new Color(1f, 1f, 1f, 0f); // 透明
+        chatObject.transform.localScale = Vector3.zero;
+
+        // 动画：淡入 + 放大
+        spriteRenderer.DOFade(1f, 0.3f);
+        chatObject.transform.DOScale(new Vector3(0.5f, 0.5f, 1f), 0.3f).SetEase(Ease.OutBack);
+    }
+    private void PlayChatAppearAnimation(GameObject chatObject)
+    {
+        var spriteRenderer = chatObject.GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null) return;
+
+        DOTween.Kill(chatObject.transform);
+        DOTween.Kill(spriteRenderer);
+
+        // 动画
+        spriteRenderer.DOFade(1f, 0.3f).From(0f);
+        chatObject.transform.DOScale(new Vector3(0.5f, 0.5f, 1f), 0.3f)
+            .From(Vector3.zero)
+            .SetEase(Ease.OutBack);
     }
 }

@@ -1,5 +1,5 @@
-
 using UnityEngine;
+using HexGame.Harvest;
 
 public class PlantedFeatherBehavior : IGridTypeBehavior
 {
@@ -14,5 +14,21 @@ public class PlantedFeatherBehavior : IGridTypeBehavior
         feather.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
         var featherSprite = Resources.Load<Sprite>("Images/Feather");
         featherRenderer.sprite = featherSprite;
+    }
+    
+    public void OnInteract(SquareCell cell)
+    {
+        // 羽毛格子的交互逻辑
+        // 收集羽毛并重置为普通格子
+        HarvestManager.Instance.AddHarvest(HarvestType.Feather, 1);
+        cell.SetGridType(GridType.SimpleSquare);
+        GridManager.Instance.AllDontMoveCells.Remove(cell);
+        
+        // 移除羽毛对象
+        var feather = cell.transform.Find("Feather");
+        if (feather != null)
+        {
+            Object.Destroy(feather.gameObject);
+        }
     }
 }

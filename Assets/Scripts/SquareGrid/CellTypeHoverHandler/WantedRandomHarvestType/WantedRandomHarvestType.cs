@@ -2,7 +2,7 @@ using HexGame.Harvest;
 
 public static class WantedRandomHarvestType
 {
-    public static HarvestType GetRandomHarvestType()
+    public static HarvestType GetRandomBirdWantedType()
     {
         // 获取所有的 HarvestType 枚举值
         HarvestType[] harvestTypes = (HarvestType[])System.Enum.GetValues(typeof(HarvestType));

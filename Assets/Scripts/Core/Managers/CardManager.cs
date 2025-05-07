@@ -8,32 +8,19 @@ public class CardManager : Singleton<CardManager>
     public Transform cardGrid;     // 卡片UI的父物体
     public List<CardData> cardDataList; // 从编辑器配置的卡牌数据列表
     public Dictionary<Card, CardUI> cardToUIDic = new(); // 运行时卡牌与UI的映射
-
-    /* private void Start()
-    {
-        GenerateCards();
-    } */
-
-    /* // todo-测试生成卡牌
-    void GenerateCards()
-    {
-        foreach (var cardData in cardDataList)
-        {
-            Debug.Log($"Processing CardData: {cardData.cardName}");
-            AddCard(cardData);
-        }
-    } */
+    public int CardCount = 0; // 卡牌数量
 
     // 添加卡牌
     public void AddCard(CardData cardData)
     {
+        if (CardCount > 10) return;
         // 创建运行时卡牌
         var card = new Card(cardData);
 
         // 创建并绑定 UI
         var cardUIContainerObj = Instantiate(cardUIContainerPrefab, cardGrid);
         CardUI cardUI = cardUIContainerObj.transform.Find("CardUI")?.GetComponent<CardUI>();
-        
+
         if (cardUI is null)
         {
             Debug.LogError("CardUI component not found in the instantiated prefab. Please check the prefab structure.");
@@ -42,6 +29,7 @@ public class CardManager : Singleton<CardManager>
         cardUI.Bind(card);
         // 记录映射关系
         cardToUIDic[card] = cardUI;
+        CardCount++;
     }
 
     // 移除卡牌
@@ -54,19 +42,20 @@ public class CardManager : Singleton<CardManager>
 
             // 从映射中移除
             cardToUIDic.Remove(card);
+            CardCount--;
         }
     }
     private void OnEnable()
     {
-        Player.OnNotify += DoSomething;
+        Player.OnNotify += Duel;
     }
 
     private void OnDisable()
     {
-        Player.OnNotify -= DoSomething;
+        Player.OnNotify -= Duel;
     }
 
-    void DoSomething()//启动抽卡
+    void Duel()//启动抽卡
     {
         Debug.Log("Manager 响应 Player 的通知");
         CallAddCards();
@@ -74,7 +63,12 @@ public class CardManager : Singleton<CardManager>
     }
     void CallAddCards()//随机抽卡
     {
-        if (cardDataList is null || cardDataList.Count == 0) return;
+        int RandomInt = Random.Range(0,10);
+        if (RandomInt >= 8)
+        {
+            return;
+        }
+        else if (cardDataList is null || cardDataList.Count == 0) return;
         int index = Random.Range(0, cardDataList.Count); // [0, Count)
         AddCard(cardDataList[index]);
     }

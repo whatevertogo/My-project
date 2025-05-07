@@ -111,7 +111,9 @@ public class Player : Singleton<Player>
             SquareCell nextCell = GridManager.Instance.GetCell(targetPos);
             //todo-这里可以提示玩家格子不可移动
             Debug.Log($"{nextCell},{GridManager.Instance.AllDontMoveCells.Contains(nextCell)}");
-            if (nextCell is null || GridManager.Instance.AllDontMoveCells.Contains(nextCell)) yield break;
+            if (nextCell is null || GridManager.Instance.AllDontMoveCells.Contains(nextCell)) {
+                //交互提示无法移动
+                yield break;}
 
             // 等待平滑移动完成
             yield return StartCoroutine(SmoothMove(targetPos));

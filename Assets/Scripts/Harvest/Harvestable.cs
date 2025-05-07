@@ -12,7 +12,6 @@ namespace HexGame.Harvest
         [Tooltip("收获冷却时间（秒）")]
         private float cooldownTime = 10f;
         [Tooltip("生长时间（秒）")]
-        private float growthTime = 10f; // 生长时间
 
         [Header("动画设置")]
         [SerializeField] private float growthDuration = 10f; // 总生长时间
@@ -28,14 +27,10 @@ namespace HexGame.Harvest
         [Tooltip("每次收获数量")]
         public int harvestAmount = 1;
 
-        private SpriteRenderer BranchRenderer;
-
-        private Sprite[] CellTreesprites;
 
         private SquareCell cell;
         private float currentCooldown; // 当前剩余冷却时间
         private bool canHarvest = true;// 是否可以收获
-        private bool isGrown = true;
 
         /// <summary>
         /// 在Awake中初始化组件
@@ -50,7 +45,7 @@ namespace HexGame.Harvest
                 return;
             }
         }
-        private void Start()
+        /* private void Start()
         {
             if (resourceType == HarvestType.Branch)
             {
@@ -86,15 +81,12 @@ namespace HexGame.Harvest
 
                 if (BranchRenderer != null && CellTreesprites[0] != null)
                 {
-                    BranchRenderer.sprite = CellTreesprites[0];
+                    BranchRenderer.sprite = CellTreesprites[randomHuaShu];
                 }
             }
-        }
+        } */
 
-        /// <summary>
-        /// 鼠标点击事件，用于收获资源
-        /// </summary>
-        public void OnMouseDown()
+        public void TryHarvest()//尝试收获
         {
             if (canHarvest && currentCooldown <= 0)
             {
@@ -107,26 +99,7 @@ namespace HexGame.Harvest
         /// </summary>
         private void Update()
         {
-            if (resourceType == HarvestType.Branch && BranchRenderer && CellTreesprites != null)
-            {
-                float progress = 1f - Mathf.Clamp01(growthTime / growthDuration);
-                if (progress < 1f / 2f) // 只分两个阶段
-                {
-                    BranchRenderer.sprite = CellTreesprites[0]; // huaShu2
-                }
-                else
-                {
-                    BranchRenderer.sprite = CellTreesprites[1]; // huaShu1
-                }
-            }
-
-            if (!isGrown)
-            {
-                growthTime -= Time.deltaTime;
-            }
-
             // 处理冷却时间
-            // todo-如果需要可以添加UI冷却进度条
             if (!canHarvest && currentCooldown > 0)
             {
                 currentCooldown -= Time.deltaTime;
@@ -136,6 +109,10 @@ namespace HexGame.Harvest
                     canHarvest = true;
                     currentCooldown = 0;
                 }
+            }
+            if (canHarvest)//可收获时才执行收获操作
+            {
+                TryHarvest();
             }
         }
 

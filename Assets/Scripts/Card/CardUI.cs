@@ -30,6 +30,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     private LayoutGroup layoutGroup;
     private Vector2 originalPosition;
     private Sequence currentSequence;
+    private int originalSortingOrder;//记录原始的层级
 
     // 状态控制
     private bool isHovered = false;
@@ -86,6 +87,8 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         originalPosition = rectTransform.anchoredPosition;
         rectTransform.localScale = Vector3.one;
         SetSortingOrder(normalSortingOrder + 1);
+        originalSortingOrder = normalSortingOrder + 1;
+        SetSortingOrder(originalSortingOrder);
     }
 
     private void InitializeUI()
@@ -224,6 +227,21 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         });
     }
 
+    private void AnimateToGenerate()
+    {
+        if (rectTransform == null || cardCanvasGroup == null) return;
+
+        SetLayoutGroupEnabled(false); // 禁用布局
+
+        rectTransform.localScale = Vector3.zero;
+        cardCanvasGroup.alpha = 0f;
+
+        Sequence spawnSequence = DOTween.Sequence();
+        spawnSequence.Append(rectTransform.DOScale(1f, 0.3f).SetEase(Ease.OutBack));
+        spawnSequence.Join(cardCanvasGroup.DOFade(1f, 0.3f));
+        spawnSequence.OnComplete(() => SetLayoutGroupEnabled(true));// 动画完毕恢复布局
+    }
+
     private void AnimateToHovered()
     {
         SetSortingOrder(hoverSortingOrder);
@@ -234,7 +252,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
 
     private void AnimateToNormal()
     {
-        SetSortingOrder(normalSortingOrder);
+        SetSortingOrder(originalSortingOrder);
         AnimateTo(originalPosition, 1.0f);
         MyTweenUtils.FadeOut(TextArea, 0.2f);
         MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
@@ -326,6 +344,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
     {
         card = newCard;
         UpdateUI();
+        AnimateToGenerate();
     }
 
     public void UpdateUI()

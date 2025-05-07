@@ -85,11 +85,7 @@ public class GridPainter : Singleton<GridPainter>
     /// </summary>
     public void PaintArea(SquareCell centerCell)
     {
-        if (centerCell is null || centerCell.CellRenderer is null)
-        {
-            Debug.LogError("Center cell or its renderer is null. Cannot paint area.");
-            return;
-        }
+        if (centerCell is null || centerCell.CellRenderer is null) return;
 
         // 清除当前格子及周围的迷雾
         ClearMistAround(centerCell);
@@ -98,52 +94,17 @@ public class GridPainter : Singleton<GridPainter>
         List<SquareCell> surroundingCells = centerCell.GetSurroundingCells().ToList();
         foreach (SquareCell cell in surroundingCells)
         {
-            // 如果是小鸟格子，添加小鸟贴图
-            if (cell.GetGridType() == GridType.BirdSquare)
-            {
-                // 检查是否已经有 BirdOverlay 子物体，避免重复创建
-                if (cell.transform.Find("BirdOverlay") is not null)
-                {
-                    Debug.Log("BirdOverlay 已存在，跳过创建。");
-                    continue;
-                }
-
-                int randomValue = Random.Range(1, 3); // 生成 1 或 2
-
-                // 创建子物体用于显示小鸟图
-                GameObject birdOverlay = new GameObject("BirdOverlay");
-                birdOverlay.transform.SetParent(cell.transform, false);
-                // if (randomValue == 1)
-                // {
-                //     birdOverlay.transform.localPosition = new Vector3(-0.2f, -0.2f, 0); // 可微调位置
-                // }
-                // else if (randomValue == 2)
-                // {
-                //     birdOverlay.transform.localPosition = new Vector3(0.2f, -0.2f, 0); // 可微调位置
-                // }
-                birdOverlay.transform.localScale = Vector3.one * 0.4f; // 缩小一点
-                birdOverlay.transform.localPosition = new Vector3(0, 0.4f, -0.1f);
-
-                // 添加 SpriteRenderer 并设置小鸟图
-                SpriteRenderer sr = birdOverlay.AddComponent<SpriteRenderer>();
-                sr.sprite = Resources.Load<Sprite>("Images/Bird" + randomValue);
-                if (sr.sprite is null)
-                {
-                    Debug.LogError("未能加载小鸟图片，跳过设置。");
-                    continue;
-                }
-
-                sr.material = cell.CellRenderer.material; // 使用格子的unit材质
-                birdOverlay.transform.localRotation = Quaternion.Euler(-10, 0, 0);
-                birdOverlay.transform.localPosition = new Vector3(0, 0, -0.1f); // 确保在格子上面
-                sr.sortingLayerName = "Behavior";
-                sr.sortingOrder = cell.CellRenderer.sortingOrder + 1; // 确保盖在上面
-
-                Debug.Log("在 BirdSquare 上添加了鸟的贴图。");
-            }
-
+            // 检查是否之前未探索
+            bool wasExplored = cell.IsExplored;
+            
             // 标记为已探索
             cell.IsExplored = true;
+            
+            // 如果探索状态改变，重新应用行为（适用于所有类型的格子）
+            if (!wasExplored)
+            {
+                cell.SetGridType(cell.GetGridType());  // 重新应用当前类型的行为
+            }
         }
     }
 
@@ -248,7 +209,7 @@ public class GridPainter : Singleton<GridPainter>
         foreach (var pt in fogPoints)
         {
             //todo-也许你会微调他的值
-            Vector3 pos = new Vector3(x + pt.x - 0.5f, y + pt.y - 0.5f, -1f);
+            Vector3 pos = new Vector3(x + pt.x - 0.5f, y + pt.y-0.3f - 0.5f, -1f);
             GameObject fog = CreateFogObject(pos);
             if (fog is not null)
             {
@@ -258,7 +219,7 @@ public class GridPainter : Singleton<GridPainter>
     }
 
     public void GenerateGrass(int width, int height, int grassCount)
-    {
+    {    //-----随机筛选不重复的格子用于生成草地
         int maxCount = width * height;
         if (grassCount > maxCount)
         {
@@ -285,6 +246,7 @@ public class GridPainter : Singleton<GridPainter>
 
         // 3. 截取前 grassCount 个作为不重复的随机格子
         var selectedPos = allGridPos.GetRange(0, grassCount);
+        //-----------
 
         var GrassAll = new GameObject("GrassAll");
         for (int i = 0; i < grassCount; i++)
@@ -333,7 +295,7 @@ public class GridPainter : Singleton<GridPainter>
     public List<Vector2> GeneratePoissonPoints(float radius, int numSamplesBeforeRejection = 20)
     {
         List<Vector2> points = new List<Vector2>(); // 最终结果
-        List<Vector2> spawnPoints = new List<Vector2>(); // 当前可以生成新点的“种子点”
+        List<Vector2> spawnPoints = new List<Vector2>(); // 当前可以生成新点的"种子点"
 
         float cellSize = radius / Mathf.Sqrt(2);
         int gridSize = Mathf.CeilToInt(1f / cellSize); // 限制在 1x1 区域内
