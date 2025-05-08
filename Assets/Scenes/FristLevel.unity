@@ -2455,7 +2455,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   time: 0
   core: 0
-  timeLimit: 720
+  timeLimit: 600
 --- !u!1 &1857835929
 GameObject:
   m_ObjectHideFlags: 0
