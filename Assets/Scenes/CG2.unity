@@ -427,9 +427,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9681773f48ed7b6428534ba1311fb62b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  part1Type: 1
-  part2Type: 1
-  part3Type: 2
+  part1Type: 0
+  part2Type: 0
+  part3Type: 0
   CGs:
   - {fileID: 21300000, guid: e0beff24a9d286d4f83dc3a614827869, type: 3}
   - {fileID: 21300000, guid: 36b8fe0a0890c1a46b2e97f96a9bfe6b, type: 3}
