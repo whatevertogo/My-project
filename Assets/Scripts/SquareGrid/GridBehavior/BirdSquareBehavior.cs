@@ -77,35 +77,37 @@ public class BirdSquareBehavior : IGridTypeBehavior
         SpriteRenderer sr = birdOverlay.AddComponent<SpriteRenderer>();
         int randomValue = Random.Range(1, 3); // 生成1或2
 
-        AnimationClip animClipA = null;
-        AnimationClip animClipB = null;
+        string stateNameA = "AnimA"; // Animator Controller中的状态名
+        string stateNameB = "AnimB"; // Animator Controller中的状态名
+        RuntimeAnimatorController animatorController = null;
+        birdOverlay.transform.localScale = Vector3.one * 0.5f;
 
         // 根据随机值选择不同的小鸟资源
         if (randomValue == 1)
         {
-            sr.sprite =Resources.Load<Sprite>("Animation/zaoZeQue-1-yaQue-shanQue-Standby_00");
-            // 为第一种小鸟加载动画片段 (请确保路径和文件名正确)
-            animClipA = Resources.Load<AnimationClip>("Animation/try");
-            animClipB = Resources.Load<AnimationClip>("Animation/try2");
+            sr.sprite = Resources.Load<Sprite>("Animation/zaoZeQue-1-yaQue-shanQue-Standby_00");
+            // 为第一种小鸟加载 Animator Controller (确保路径和文件名正确)
+            animatorController = Resources.Load<RuntimeAnimatorController>("AnimationControllers/Bird1AnimatorController");
         }
         else // randomValue == 2
         {
-            sr.sprite =Resources.Load<Sprite>("Animation/yaQue-yaQue-shanQue-Standby_000");
-            // 为第二种小鸟加载动画片段 (请确保路径和文件名正确)
-            animClipA = Resources.Load<AnimationClip>("Animation/YaQue_standby");
-            animClipB = Resources.Load<AnimationClip>("Animation/YaQue_standby1");
+            sr.sprite = Resources.Load<Sprite>("Animation/yaQue-yaQue-shanQue-Standby_000");
+            // 为第二种小鸟加载 Animator Controller
+            animatorController = Resources.Load<RuntimeAnimatorController>("AnimationControllers/Bird2AnimatorController");
         }
 
-        // 检查动画片段是否成功加载
-        if (animClipA == null || animClipB == null)
+        // 检查 Animator Controller 是否成功加载
+        if (animatorController == null)
         {
-            Debug.LogError($"未能为小鸟类型 {randomValue} 加载动画片段。请检查 Resources/Animations/ 文件夹下的文件名和路径。例如: Bird{randomValue}_AnimA.anim 和 Bird{randomValue}_AnimB.anim");
+            Debug.LogError($"未能为小鸟类型 {randomValue} 加载 RuntimeAnimatorController。请检查 Resources/AnimationControllers/ 文件夹下的文件名和路径。例如: Bird{randomValue}AnimatorController.controller");
         }
         else
         {
             // 添加并初始化动画播放器组件
             BirdAnimationPlayer player = birdOverlay.AddComponent<BirdAnimationPlayer>();
-            player.Initialize(animClipA, animClipB, 8f); // 8秒延迟
+            // Animator 组件会在 BirdAnimationPlayer 的 Awake 中自动获取或添加
+            // 如果Animator组件已经在birdOverlay上，并且已经预设了Controller,则不需要传入animatorController
+            player.Initialize(stateNameA, stateNameB, 8f, animatorController); // 8秒延迟
         }
 
         // 使用 Unity 默认的 Sprite 材质
@@ -113,7 +115,7 @@ public class BirdSquareBehavior : IGridTypeBehavior
         sr.sortingLayerName = "Behavior";
         sr.sortingOrder = cell.CellRenderer.sortingOrder + 1; // 确保盖在上面
 
-        Debug.Log($"在BirdSquare上为小鸟 (类型 {randomValue}) 添加了动画播放器。");
+        // Debug.Log($"在BirdSquare上为小鸟 (类型 {randomValue}) 添加了动画播放器 (Animator)。"); // 日志已在BirdAnimationPlayer中处理或移除
     }
 
     private void CreateChatBox(SquareCell cell)

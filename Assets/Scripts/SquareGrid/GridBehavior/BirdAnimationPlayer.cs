@@ -3,54 +3,52 @@ using System.Collections;
 
 public class BirdAnimationPlayer : MonoBehaviour
 {
-    private Animation animComponent;
-    private AnimationClip clipA;
-    private AnimationClip clipB;
-    private float delayAfterClipA = 8f;
+    private Animator animator;
+    private string stateNameA;
+    private string stateNameB;
+    private float delayAfterStateA;
     private Coroutine animationRoutine;
 
     void Awake()
     {
-        animComponent = GetComponent<Animation>();
-        if (animComponent == null)
+        animator = GetComponent<Animator>();
+        if (animator == null)
         {
-            animComponent = gameObject.AddComponent<Animation>();
+            animator = gameObject.AddComponent<Animator>();
+            Debug.LogWarning($"[{gameObject.name}] 未找到Animator组件，已添加。请分配一个Animator Controller。", this.gameObject);
         }
-        // 我们将手动控制播放，所以禁用自动播放
-        animComponent.playAutomatically = false;
+        // Animator没有与'playAutomatically'相当的功能。
+        // 自动播放行为由Animator Controller的默认状态管理。
     }
 
-    /// <summary>
-    /// 初始化动画播放器并开始播放序列
-    /// </summary>
-    /// <param name="firstClip">第一个播放的动画片段</param>
-    /// <param name="secondClip">第二个播放的动画片段</param>
-    /// <param name="delay">第一个动画播放完毕后的延迟时间</param>
-    public void Initialize(AnimationClip firstClip, AnimationClip secondClip, float delay)
+    public void Initialize(string firstStateName, string secondStateName, float delay, RuntimeAnimatorController controller = null)
     {
-        this.clipA = firstClip;
-        this.clipB = secondClip;
-        this.delayAfterClipA = delay;
+        this.stateNameA = firstStateName;
+        this.stateNameB = secondStateName;
+        this.delayAfterStateA = delay;
 
-        if (this.clipA == null || this.clipB == null)
+        if (animator.runtimeAnimatorController == null && controller != null)
         {
-            Debug.LogError("动画片段未正确设置，无法初始化 BirdAnimationPlayer。", this.gameObject);
-            enabled = false; // 如果未正确初始化，则禁用此组件
+            animator.runtimeAnimatorController = controller;
+        }
+        else if (animator.runtimeAnimatorController == null)
+        {
+            Debug.LogError($"[{gameObject.name}] Animator没有分配RuntimeAnimatorController。动画将不会播放。请在检视器中分配一个或在Initialize方法中分配。", this.gameObject);
+            enabled = false;
             return;
         }
 
-        // 将动画片段添加到 Animation 组件中
-        // 检查是否已存在同名片段，避免重复添加（尽管 AddClip 通常会处理覆盖）
-        if (animComponent.GetClip(this.clipA.name) == null)
+        if (string.IsNullOrEmpty(this.stateNameA) || string.IsNullOrEmpty(this.stateNameB))
         {
-            animComponent.AddClip(this.clipA, this.clipA.name);
-        }
-        if (animComponent.GetClip(this.clipB.name) == null)
-        {
-            animComponent.AddClip(this.clipB, this.clipB.name);
+            Debug.LogError($"[{gameObject.name}] 动画状态名称未正确设置。stateNameA: '{this.stateNameA}', stateNameB: '{this.stateNameB}'。禁用播放器。", this.gameObject);
+            enabled = false;
+            return;
         }
 
-        // 如果已有动画协程在运行，先停止它
+        // 在播放前确保Animator准备就绪并且状态存在是一个好习惯，
+        // 但在播放前直接验证状态存在的复杂性。
+        // 我们依赖于Animator在运行时找不到状态时抛出错误。
+
         if (animationRoutine != null)
         {
             StopCoroutine(animationRoutine);
@@ -60,42 +58,66 @@ public class BirdAnimationPlayer : MonoBehaviour
 
     private IEnumerator PlayAnimationSequence()
     {
-        // 确保动画片段已加载
-        if (clipA == null || clipB == null)
+        if (animator == null || animator.runtimeAnimatorController == null || string.IsNullOrEmpty(stateNameA) || string.IsNullOrEmpty(stateNameB))
         {
-            Debug.LogError("动画片段为空，无法播放动画序列。", this.gameObject);
+            Debug.LogError($"[{gameObject.name}] PlayAnimationSequence: Animator未正确配置或状态名称缺失。退出协程。", this.gameObject);
             yield break;
         }
 
-        while (true) // 无限循环播放动画序列
+        // 等待一帧以确保Animator完全初始化，特别是如果控制器刚刚分配。
+        yield return null;
+
+        while (true)
         {
-            // 播放第一个动画 (clipA)
-            Debug.Log($"播放动画: {clipA.name}", this.gameObject);
-            animComponent.Play(clipA.name);
-            // 等待第一个动画播放完成
-            yield return new WaitForSeconds(clipA.length);
+            // --- 播放状态A ---
+            animator.Play(stateNameA, 0, 0f); // 播放状态，在第0层，从开始
 
-            // 第一个动画播放完成后的延迟
-            Debug.Log($"动画 {clipA.name} 播放完毕，延迟 {delayAfterClipA} 秒。", this.gameObject);
-            yield return new WaitForSeconds(delayAfterClipA);
+            // 等待动画开始并获取其长度
+            yield return null;
+            float stateALength = GetCurrentAnimatorStateLength(0);
+            if (stateALength <= 0)
+            { // 如果长度无效则回退
+                Debug.LogWarning($"[{gameObject.name}] 状态 {stateNameA} 的长度为0或无效。等待1秒作为回退。", this.gameObject);
+                stateALength = 1f;
+            }
+            yield return new WaitForSeconds(stateALength);
 
-            // 播放第二个动画 (clipB)
-            Debug.Log($"播放动画: {clipB.name}", this.gameObject);
-            animComponent.Play(clipB.name);
-            // 等待第二个动画播放完成
-            yield return new WaitForSeconds(clipB.length);
-            Debug.Log($"动画 {clipB.name} 播放完毕，循环回第一个动画。", this.gameObject);
-            // 循环由 while(true) 控制，将自动回到序列的开始
+            yield return new WaitForSeconds(delayAfterStateA);
+
+            // --- 播放状态B ---
+            animator.Play(stateNameB, 0, 0f);
+
+            yield return null;
+            float stateBLength = GetCurrentAnimatorStateLength(0);
+            if (stateBLength <= 0)
+            { // 如果长度无效则回退
+                Debug.LogWarning($"[{gameObject.name}] 状态 {stateNameB} 的长度为0或无效。等待1秒作为回退。", this.gameObject);
+                stateBLength = 1f;
+            }
+            yield return new WaitForSeconds(stateBLength);
+
         }
+    }
+
+    private float GetCurrentAnimatorStateLength(int layerIndex = 0)
+    {
+        if (animator != null && animator.runtimeAnimatorController != null && animator.gameObject.activeInHierarchy && animator.enabled)
+        {
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(layerIndex);
+            // 状态的长度可以直接获取。
+            // 对于非循环动画，这是单次播放的持续时间。
+            return stateInfo.length;
+        }
+        return 0f;
     }
 
     void OnDisable()
     {
-        // 当组件被禁用或对象被销毁时，停止协程以避免潜在问题
         if (animationRoutine != null)
         {
             StopCoroutine(animationRoutine);
             animationRoutine = null;
         }
     }
+
 }
