@@ -30,7 +30,7 @@ namespace HexGame.Harvest
 
         private SquareCell cell;
         private float currentCooldown; // 当前剩余冷却时间
-        private bool canHarvest = true;// 是否可以收获
+        private bool canHarvest = false;// 是否可以收获
 
         /// <summary>
         /// 在Awake中初始化组件
@@ -85,6 +85,10 @@ namespace HexGame.Harvest
                 }
             }
         } */
+        private void Start()
+        {
+            currentCooldown = cooldownTime;
+        }
 
         public void TryHarvest()//尝试收获
         {
@@ -110,7 +114,7 @@ namespace HexGame.Harvest
                     currentCooldown = 0;
                 }
             }
-            if (canHarvest)//可收获时才执行收获操作
+            else if (canHarvest)//可收获时才执行收获操作
             {
                 TryHarvest();
             }

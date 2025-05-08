@@ -13,7 +13,7 @@ public class CardManager : Singleton<CardManager>
     // 添加卡牌
     public void AddCard(CardData cardData)
     {
-        if (CardCount > 10) return;
+        if (CardCount > 9) return;
         // 创建运行时卡牌
         var card = new Card(cardData);
 

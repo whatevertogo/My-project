@@ -1,10 +1,9 @@
 using UnityEngine;
 using HexGame.Harvest;
-using Spine.Unity;
-using Spine;
 
 public class BirdSquareBehavior : IGridTypeBehavior
 {
+
     public void ApplyBehavior(SquareCell cell)
     {
         GridManager.Instance.AllDontMoveCells.Add(cell);
@@ -12,10 +11,7 @@ public class BirdSquareBehavior : IGridTypeBehavior
         if (!cell.IsExplored) return;
 
         // 检查是否已经有BirdOverlay子物体，避免重复创建
-        if (cell.transform.Find("BirdOverlay") != null)
-        {
-            return;
-        }
+        if (cell.transform.Find("BirdOverlay") is not null) return;
 
         CreateBirdOverlay(cell);
 
@@ -77,28 +73,47 @@ public class BirdSquareBehavior : IGridTypeBehavior
         birdOverlay.transform.localPosition = new Vector3(0, 0.4f, -0.1f);
         birdOverlay.transform.localRotation = Quaternion.Euler(-10, 0, 0);
 
-        // SpriteRenderer sr = birdOverlay.AddComponent<SpriteRenderer>();
-        // int randomValue = Random.Range(1, 3); // 生成1或2
+        // 添加SpriteRenderer并设置小鸟图片
+        SpriteRenderer sr = birdOverlay.AddComponent<SpriteRenderer>();
+        int randomValue = Random.Range(1, 3); // 生成1或2
 
-        // sr.sprite = Resources.Load<Sprite>("Images/Bird" + randomValue);
+        AnimationClip animClipA = null;
+        AnimationClip animClipB = null;
 
-        // 添加动画
-        var birdAnimation = birdOverlay.AddComponent<SkeletonAnimation>();
+        // 根据随机值选择不同的小鸟资源
+        if (randomValue == 1)
+        {
+            sr.sprite =Resources.Load<Sprite>("Animation/zaoZeQue-1-yaQue-shanQue-Standby_00");
+            // 为第一种小鸟加载动画片段 (请确保路径和文件名正确)
+            animClipA = Resources.Load<AnimationClip>("Animation/try");
+            animClipB = Resources.Load<AnimationClip>("Animation/try2");
+        }
+        else // randomValue == 2
+        {
+            sr.sprite =Resources.Load<Sprite>("Animation/yaQue-yaQue-shanQue-Standby_000");
+            // 为第二种小鸟加载动画片段 (请确保路径和文件名正确)
+            animClipA = Resources.Load<AnimationClip>("Animation/YaQue_standby");
+            animClipB = Resources.Load<AnimationClip>("Animation/YaQue_standby1");
+        }
 
-        // 初始设置为动画1
-        birdAnimation.skeletonDataAsset = Resources.Load<SkeletonDataAsset>("Birds/YaQue/ReferenceAssets/shanQue_Standby1");
-        //birdAnimation.AnimationState.Complete += AnimationCompleteHandler;
+        // 检查动画片段是否成功加载
+        if (animClipA == null || animClipB == null)
+        {
+            Debug.LogError($"未能为小鸟类型 {randomValue} 加载动画片段。请检查 Resources/Animations/ 文件夹下的文件名和路径。例如: Bird{randomValue}_AnimA.anim 和 Bird{randomValue}_AnimB.anim");
+        }
+        else
+        {
+            // 添加并初始化动画播放器组件
+            BirdAnimationPlayer player = birdOverlay.AddComponent<BirdAnimationPlayer>();
+            player.Initialize(animClipA, animClipB, 8f); // 8秒延迟
+        }
 
-        // 添加动画控制器组件
-        BirdAnimationController animController = birdOverlay.AddComponent<BirdAnimationController>();
-        animController.Initialize(birdAnimation);
+        // 使用 Unity 默认的 Sprite 材质
+        sr.material = new Material(Shader.Find("Sprites/Default"));
+        sr.sortingLayerName = "Behavior";
+        sr.sortingOrder = cell.CellRenderer.sortingOrder + 1; // 确保盖在上面
 
-        // 使用格子的材质
-        // sr.material = cell.CellRenderer.material;
-        // sr.sortingLayerName = "Behavior";
-        // sr.sortingOrder = cell.CellRenderer.sortingOrder + 1; // 确保盖在上面
-
-        Debug.Log("在BirdSquare上添加了鸟的动画。");
+        Debug.Log($"在BirdSquare上为小鸟 (类型 {randomValue}) 添加了动画播放器。");
     }
 
     private void CreateChatBox(SquareCell cell)
@@ -121,28 +136,6 @@ public class BirdSquareBehavior : IGridTypeBehavior
         cell.chatObject = chatBox;
     }
 
-    private void AnimationCompleteHandler(TrackEntry trackEntry)
-    {
-        // 获取完成的动画名称
-        string animationName = trackEntry?.Animation?.Name;
-
-        // 如果没有动画名称，直接返回
-        if (string.IsNullOrEmpty(animationName))
-            return;
-
-        Debug.Log($"动画 {animationName} 已完成播放");
-
-        // 如果有需要，可以在这里添加特定动画完成后的逻辑
-        // 例如，根据不同的动画名称执行不同的操作
-        if (animationName.Contains("Standby2"))
-        {
-            // 可以在这里添加动画2完成后的特殊逻辑
-            // 注意：如果BirdAnimationController已经在处理动画序列，
-            // 这里可能不需要额外的逻辑
-        }
-    }
-
-
     private void CreateScorePopup(SquareCell cell)
     {
         var scorePopup = new GameObject("ScorePopup");
@@ -153,6 +146,14 @@ public class BirdSquareBehavior : IGridTypeBehavior
         spriteRenderer.sortingLayerName = "Behavior";
         spriteRenderer.sortingOrder = 5; // 确保在鸟和对话框上方
                                          // scorePopup.transform.localPosition = new Vector3(0, 0.5f, -0.1f);
-        
+
+    }
+
+    private void PlayDefaultAnimation(GameObject gameObject)
+    {
+        gameObject.AddComponent<Animation>();
+
+
+
     }
 }
