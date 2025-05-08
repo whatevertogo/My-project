@@ -26,7 +26,7 @@ public class PlantedFeatherBehavior : IGridTypeBehavior
         
         // 移除羽毛对象
         var feather = cell.transform.Find("Feather");
-        if (feather != null)
+        if (feather is not null)
         {
             Object.Destroy(feather.gameObject);
         }

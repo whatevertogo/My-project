@@ -219,7 +219,6 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     /// <param name="type"></param>
     public void SetGridType(GridType type)
     {
-        //todo-激活不同type的逻辑
         this.cellType = type;
         hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
         SetHoverHandler(hoverHandler);

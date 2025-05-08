@@ -25,12 +25,16 @@ public class PauseGame : MonoBehaviour
     {
         if (Time.timeScale == 1f)
         {
-            textMeshProUGUI.text = "继续游戏"; // 更新文本为“继续游戏”
+            Sprite newSprite = Resources.Load<Sprite>("UI/Play");
+            button.image.sprite = newSprite;
+            //textMeshProUGUI.text = "继续游戏"; // 更新文本为“继续游戏”
             Time.timeScale = 0f; // 暂停游戏
         }
         else
-        {
-            textMeshProUGUI.text = "暂停游戏"; // 更新文本为“暂停游戏”
+        {   
+            Sprite newSprite = Resources.Load<Sprite>("UI/stop_Press");
+            button.image.sprite = newSprite;
+            //textMeshProUGUI.text = "暂停游戏"; // 更新文本为“暂停游戏”
             Time.timeScale = 1f; // 恢复游戏
         }
     }

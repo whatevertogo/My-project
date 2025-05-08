@@ -16,6 +16,11 @@ public class PlantPineConeEffect : CardEffect
         if (!CanUse(targetCell)) return;
 
         // 将格子转为松树格子
+        if (targetCell.GetGridType() == GridType.PlantedTree)
+        {
+            Debug.Log("该格子已经种植了树木，无法再次种植。");
+            return;
+        }
         targetCell.SetGridType(GridType.PlantedTree);
         var cellPineCone = new GameObject("CellPineCone"); // 创建松树对象
 

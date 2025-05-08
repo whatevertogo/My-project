@@ -44,7 +44,7 @@ public class ChunkManager : Singleton<ChunkManager>
     {
         InitializeChunks(GridManager.Instance.cells);
         //TODO- 可视化所有区块（调试用）
-        VisualizeAllChunks(chunkWrapperPrefab);
+        // VisualizeAllChunks(chunkWrapperPrefab);
     }
 
     // 初始化区块，将地图的所有格子划分为区块

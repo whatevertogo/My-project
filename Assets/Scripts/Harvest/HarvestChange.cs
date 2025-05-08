@@ -94,7 +94,7 @@ public class HarvestChange : MonoBehaviour
     public HarvestType harvestType;                // 资源类型
     public TextMeshProUGUI harvestText;             // 显示资源数量的文本
     public Color highlightColor = Color.red;        // 高亮颜色
-    public float highlightDuration = 2f;            // 高亮持续时间
+    public float highlightDuration = 1.5f;            // 高亮持续时间
     public bool useBoldText = true;                 // 是否使用粗体
     public Ease colorEase = Ease.OutQuad;            // 颜色变化效果
     
@@ -103,7 +103,6 @@ public class HarvestChange : MonoBehaviour
 
     void Start()
     {
-        harvestText.color = Color.yellow;
         if (harvestText != null)
         {
             originalColor = harvestText.color;
@@ -140,7 +139,7 @@ public class HarvestChange : MonoBehaviour
         }
     }
 
-    private void OnHarvestChanged(object sender, HarvestManager.OnHarvestChangedEventArgs e)
+    /* private void OnHarvestChanged(object sender, HarvestManager.OnHarvestChangedEventArgs e)
     {
         if (e.HarvestType == harvestType)
         {
@@ -151,7 +150,32 @@ public class HarvestChange : MonoBehaviour
             }
 
             // 使用 DOTween 动画改变颜色
-            harvestText.DOColor(highlightColor, 0.3f).SetEase(colorEase);
+            harvestText.DOColor(highlightColor, 0.3f).SetEase(colorEase) 
+            .OnComplete(() => Debug.Log("Color changed to: " + harvestText.color));
+
+            StartCoroutine(ResetTextAfterDelay(highlightDuration));
+        }
+    } */
+
+    private void OnHarvestChanged(object sender, HarvestManager.OnHarvestChangedEventArgs e)
+    {
+        if (e.HarvestType == harvestType)
+        {
+            // 更新文本内容
+            harvestText.text = e.Amount.ToString();
+
+            // 去掉富文本修改颜色
+            harvestText.richText = false;
+            harvestText.DOColor(highlightColor, 0.3f).SetEase(colorEase)
+                .OnComplete(() =>
+                {
+                    Debug.Log("Color changed to: " + harvestText.color);
+                    if (useBoldText)
+                    {
+                        harvestText.richText = true;
+                        harvestText.text = $"<b>{harvestText.text}</b>";
+                    }
+                });
 
             StartCoroutine(ResetTextAfterDelay(highlightDuration));
         }

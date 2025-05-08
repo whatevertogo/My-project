@@ -17,6 +17,12 @@ public class PlantTreeEffect : CardEffect
     {
         if (!CanUse(targetCell)) return;
 
+        if (targetCell.GetGridType() == GridType.PlantedTree)
+        {
+            Debug.Log("该格子已经种植了树木，无法再次种植。");
+            return;
+        }
+
         // 将格子转为树格子
         targetCell.SetGridType(GridType.PlantedTree);
 
@@ -49,7 +55,7 @@ public class PlantTreeEffect : CardEffect
         CellTree.transform.localScale = new Vector3(0.2f, 0f, 0.2f); // Y轴初始为0
         spriteRenderer.transform.localScale = new Vector3(0.2f, 0f, 0.2f);
 
-         // 添加从下往上生长的动画
+        // 添加从下往上生长的动画
         CellTree.transform.DOKill();  // 停止任何现有的动画
         CellTree.transform.DOScaleY(0.2f, 1f)  // Y轴从0增长到0.2
             .SetEase(Ease.OutBounce); // 弹性效果
@@ -58,7 +64,7 @@ public class PlantTreeEffect : CardEffect
         spriteRenderer.DOFade(0, 0); // 初始透明
         spriteRenderer.DOFade(1, 1f); // 1秒内完全显示
 
-        int randomRotation = Random.Range(0, 2)*2-1;
+        int randomRotation = Random.Range(0, 2) * 2 - 1;
         float rotationAngle = randomRotation * 5;
         // 添加轻微摇摆动画
         CellTree.transform.DORotate(new Vector3(-10, 0, randomRotation), 0.5f) // 先往右摆

@@ -97,7 +97,7 @@ public class BirdSquareBehavior : IGridTypeBehavior
         }
 
         // 检查 Animator Controller 是否成功加载
-        if (animatorController == null)
+        if (animatorController is null)
         {
             Debug.LogError($"未能为小鸟类型 {randomValue} 加载 RuntimeAnimatorController。请检查 Resources/AnimationControllers/ 文件夹下的文件名和路径。例如: Bird{randomValue}AnimatorController.controller");
         }
@@ -106,7 +106,6 @@ public class BirdSquareBehavior : IGridTypeBehavior
             // 添加并初始化动画播放器组件
             BirdAnimationPlayer player = birdOverlay.AddComponent<BirdAnimationPlayer>();
             // Animator 组件会在 BirdAnimationPlayer 的 Awake 中自动获取或添加
-            // 如果Animator组件已经在birdOverlay上，并且已经预设了Controller,则不需要传入animatorController
             player.Initialize(stateNameA, stateNameB, 8f, animatorController); // 8秒延迟
         }
 
@@ -115,7 +114,6 @@ public class BirdSquareBehavior : IGridTypeBehavior
         sr.sortingLayerName = "Behavior";
         sr.sortingOrder = cell.CellRenderer.sortingOrder + 1; // 确保盖在上面
 
-        // Debug.Log($"在BirdSquare上为小鸟 (类型 {randomValue}) 添加了动画播放器 (Animator)。"); // 日志已在BirdAnimationPlayer中处理或移除
     }
 
     private void CreateChatBox(SquareCell cell)

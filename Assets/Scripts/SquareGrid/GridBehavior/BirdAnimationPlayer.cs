@@ -76,7 +76,8 @@ public class BirdAnimationPlayer : MonoBehaviour
             yield return null;
             float stateALength = GetCurrentAnimatorStateLength(0);
             if (stateALength <= 0)
-            { // 如果长度无效则回退
+            {
+                // 如果长度无效则回退
                 Debug.LogWarning($"[{gameObject.name}] 状态 {stateNameA} 的长度为0或无效。等待1秒作为回退。", this.gameObject);
                 stateALength = 1f;
             }

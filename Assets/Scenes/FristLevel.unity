@@ -206,6 +206,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 385087391}
+  - component: {fileID: 385087393}
   - component: {fileID: 385087392}
   m_Layer: 5
   m_Name: CoreZone
@@ -287,6 +288,27 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &385087393
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 385087390}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 670adbac0348e284e8aa904e90530699, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &385929469
 GameObject:
   m_ObjectHideFlags: 0
@@ -720,7 +742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   harvestType: 3
   harvestText: {fileID: 612093511}
-  highlightColor: {r: 1, g: 0, b: 0, a: 1}
+  highlightColor: {r: 0.5137255, g: 0.31764707, b: 0.20000002, a: 1}
   highlightDuration: 2
   useBoldText: 1
   colorEase: 6
@@ -788,8 +810,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc3e08ddf381e3428be1cd72af37a73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveCooldown: 1
-  moveDuration: 0.68
+  moveCooldown: 3
+  moveDuration: 0.6
   input: {x: 0, y: 0}
   PlayerAnimationController: {fileID: 621430832}
 --- !u!114 &621430827
@@ -1100,7 +1122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   harvestType: 3
   harvestText: {fileID: 612093511}
-  highlightColor: {r: 1, g: 0, b: 0, a: 1}
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
   highlightDuration: 2
   useBoldText: 1
   colorEase: 6
@@ -1236,7 +1258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   harvestType: 2
   harvestText: {fileID: 1035267424}
-  highlightColor: {r: 1, g: 0, b: 0, a: 1}
+  highlightColor: {r: 1, g: 1, b: 1, a: 1}
   highlightDuration: 2
   useBoldText: 1
   colorEase: 6
@@ -1314,8 +1336,8 @@ RectTransform:
   m_GameObject: {fileID: 909222366}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1606219759}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1344,7 +1366,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u8FD4\u56DE\u4E3B\u83DC\u5355"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a35b5ef9c0ddfcf418fbf41be7bb7d3d, type: 2}
   m_sharedMaterial: {fileID: 1776429567854914187, guid: a35b5ef9c0ddfcf418fbf41be7bb7d3d, type: 2}
@@ -2338,8 +2360,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 4bf48e997a0a63a40b87468f0507c65e, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2597,7 +2619,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u6682\u505C\u6E38\u620F"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a35b5ef9c0ddfcf418fbf41be7bb7d3d, type: 2}
   m_sharedMaterial: {fileID: 1776429567854914187, guid: a35b5ef9c0ddfcf418fbf41be7bb7d3d, type: 2}
@@ -2970,7 +2992,7 @@ RectTransform:
   m_GameObject: {fileID: 2135297068}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1857835930}
@@ -3045,8 +3067,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 1b2a9849c64fe1d4faa4243f2fafbf67, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3088,9 +3110,37 @@ PrefabInstance:
       propertyPath: harvestType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 289895437816299254, guid: fa09156e4cbe0c24fa2b6eb11327b1a0, type: 3}
+      propertyPath: highlightColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 289895437816299254, guid: fa09156e4cbe0c24fa2b6eb11327b1a0, type: 3}
+      propertyPath: highlightColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 289895437816299254, guid: fa09156e4cbe0c24fa2b6eb11327b1a0, type: 3}
+      propertyPath: highlightColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1823689065393938260, guid: fa09156e4cbe0c24fa2b6eb11327b1a0, type: 3}
       propertyPath: m_Name
       value: "\u6811\u679D\u7EC4"
+      objectReference: {fileID: 0}
+    - target: {fileID: 5149403843737771622, guid: fa09156e4cbe0c24fa2b6eb11327b1a0, type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5149403843737771622, guid: fa09156e4cbe0c24fa2b6eb11327b1a0, type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5149403843737771622, guid: fa09156e4cbe0c24fa2b6eb11327b1a0, type: 3}
+      propertyPath: m_fontColor.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5149403843737771622, guid: fa09156e4cbe0c24fa2b6eb11327b1a0, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 8120162974376115762, guid: fa09156e4cbe0c24fa2b6eb11327b1a0, type: 3}
       propertyPath: m_Pivot.x

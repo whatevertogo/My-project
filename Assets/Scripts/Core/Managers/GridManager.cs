@@ -66,11 +66,13 @@ public class GridManager : Singleton<GridManager>
     private void RandomSetFeatherType()
     {
 
-
         // 1. 过滤出可作为羽毛的格子（这里只允许普通格子）
         var candidates = AllCells
             .Where(cell => cell.GetGridType() == GridType.SimpleSquare && cell.IsPlaceable)
             .ToList();
+
+        // 2. 如果候选格子不足，直接返回
+        if (candidates.Count == 0) return;
 
         // 2. 随机抽取指定数量的格子
         int count = Mathf.Min(FeatherCount, candidates.Count);
@@ -79,6 +81,7 @@ public class GridManager : Singleton<GridManager>
             // Unity 推荐的洗牌算法：Fisher-Yates
             int randomIndex = UnityEngine.Random.Range(i, candidates.Count);
             (candidates[i], candidates[randomIndex]) = (candidates[randomIndex], candidates[i]);
+
             candidates[i].SetGridType(GridType.Feather);
         }
     }
@@ -231,8 +234,8 @@ public class GridManager : Singleton<GridManager>
                 }
             }
         }
-        
-        
+
+
         /* 已在中心点创建了家，这部分代码不再需要
         var home = new GameObject("home");
         home.transform.SetParent(cellHome.transform);
