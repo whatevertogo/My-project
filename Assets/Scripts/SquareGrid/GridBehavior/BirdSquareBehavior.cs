@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 using HexGame.Harvest;
 using Spine.Unity;
 using Spine;
@@ -8,6 +7,7 @@ public class BirdSquareBehavior : IGridTypeBehavior
 {
     public void ApplyBehavior(SquareCell cell)
     {
+        GridManager.Instance.AllDontMoveCells.Add(cell);
         // 只在格子被探索后添加小鸟
         if (!cell.IsExplored) return;
 

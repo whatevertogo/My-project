@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
+
 public class BirdSquareHoverHandler : ICellHoverHandler
 {
     private readonly DefaultHoverHandler defaultHandler = new DefaultHoverHandler();
@@ -10,25 +11,19 @@ public class BirdSquareHoverHandler : ICellHoverHandler
     {
         // 输出日志信息，显示当前悬停的格子坐标，并提示显示小鸟特效
         Debug.Log(message: $"鸟格子 {cell.Coordinates} 悬停，显示小鸟特效！");
-        
-        // 已经有chatObject但可能被隐藏，显示它
-        if (cell.chatObject != null)
-        {
-            cell.chatObject.SetActive(true);
-        }
-        // 启用悬停效果
-        defaultHandler.OnHoverEnter(cell);
+        // 自定义逻辑
+        defaultHandler.OnHoverEnter(cell); // 调用默认逻辑
+        cell.chatObject.SetActive(true);
+        PlayChatAppearAnimation(cell.chatObject); // 显示对话框
     }
 
     public void OnHoverExit(SquareCell cell)
     {
         Debug.Log($"鸟格子 {cell.Coordinates} 悬停结束！");
         defaultHandler.OnHoverExit(cell); // 调用默认逻辑
-        
-        // 隐藏对话框但不销毁它
-        if (cell.chatObject != null)
+        if (cell.IsCreateChatBox)
         {
-            cell.chatObject.SetActive(false);
+            cell.chatObject.SetActive(false); // 隐藏对话框
         }
     }
     private void AnimateChatAppear(GameObject chatObject)
@@ -47,7 +42,7 @@ public class BirdSquareHoverHandler : ICellHoverHandler
     private void PlayChatAppearAnimation(GameObject chatObject)
     {
         var spriteRenderer = chatObject.GetComponent<SpriteRenderer>();
-        if (spriteRenderer == null) return;
+        if (spriteRenderer is null) return;
 
         DOTween.Kill(chatObject.transform);
         DOTween.Kill(spriteRenderer);

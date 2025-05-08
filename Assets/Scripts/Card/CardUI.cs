@@ -247,7 +247,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         SetSortingOrder(hoverSortingOrder);
         AnimateTo(originalPosition + moveOffset, 1.1f);
         MyTweenUtils.FadeIn(TextArea, 0.2f);
-        MyTweenUtils.FadeIn(cardCanvasGroup, 0.1f, 0.6f);
+        //MyTweenUtils.FadeIn(cardCanvasGroup, 0.1f, 0.6f);
     }
 
     private void AnimateToNormal()
@@ -255,7 +255,7 @@ public class CardUI : UIHoverClick, IBeginDragHandler, IDragHandler, IEndDragHan
         SetSortingOrder(originalSortingOrder);
         AnimateTo(originalPosition, 1.0f);
         MyTweenUtils.FadeOut(TextArea, 0.2f);
-        MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
+        //MyTweenUtils.FadeOut(cardCanvasGroup, 0.1f, 1f);
     }
 
     private void DoClickBounce()
