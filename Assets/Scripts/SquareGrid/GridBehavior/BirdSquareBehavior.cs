@@ -69,7 +69,7 @@ public class BirdSquareBehavior : IGridTypeBehavior
         birdOverlay.transform.SetParent(cell.transform, false);
 
         // 设置位置、缩放和旋转
-        birdOverlay.transform.localScale = Vector3.one * 0.4f;
+        birdOverlay.transform.localScale = Vector3.one * 0.2f;
         birdOverlay.transform.localPosition = new Vector3(0, 0.4f, -0.1f);
         birdOverlay.transform.localRotation = Quaternion.Euler(-10, 0, 0);
 
@@ -80,7 +80,6 @@ public class BirdSquareBehavior : IGridTypeBehavior
         string stateNameA = "AnimA"; // Animator Controller中的状态名
         string stateNameB = "AnimB"; // Animator Controller中的状态名
         RuntimeAnimatorController animatorController = null;
-        birdOverlay.transform.localScale = Vector3.one * 0.5f;
 
         // 根据随机值选择不同的小鸟资源
         if (randomValue == 1)
