@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using DG.Tweening;
 
 namespace HexGame.Harvest
 {
@@ -15,6 +17,7 @@ namespace HexGame.Harvest
 
         [Header("动画设置")]
         [SerializeField] private float growthDuration = 10f; // 总生长时间
+        [SerializeField] private GameObject harvestEffectPrefab; //动效的预制体
 
         public void SetCooldownTime(float time)
         {
@@ -43,6 +46,11 @@ namespace HexGame.Harvest
                 Debug.LogError("Harvestable组件必须附加到带有SquareCell的物体上");
                 enabled = false;
                 return;
+            }
+            harvestEffectPrefab = Resources.Load<GameObject>("UI/HarvestEffectPrefab");
+            if (harvestEffectPrefab == null)
+            {
+                Debug.LogError("收获效果预制体未找到");
             }
         }
         /* private void Start()
@@ -168,6 +176,25 @@ namespace HexGame.Harvest
         {
             if (canHarvest) return 0;
             return currentCooldown / cooldownTime;
+        }
+    
+    private void TriggerHarvestEffect()
+        {
+            if (harvestEffectPrefab != null)
+            {
+                // 实例化动效预制体
+                GameObject effect = Instantiate(harvestEffectPrefab, transform.position, Quaternion.identity, transform);
+                TextMeshProUGUI effectText = effect.GetComponentInChildren<TextMeshProUGUI>();
+                Image effectImage = effect.GetComponentInChildren<Image>();
+
+                if (effectText != null) effectText.text = $"+{harvestAmount}";
+                if (effectImage != null)
+                    effectImage.sprite = Resources.Load<Sprite>($"UI/{resourceType}_Icon");
+
+                // DOTween浮动动画
+                effect.transform.DOMoveY(effect.transform.position.y + 1.5f, 0.8f).SetEase(Ease.OutQuad);
+                effect.GetComponent<CanvasGroup>().DOFade(0, 0.8f).SetEase(Ease.OutQuad).OnComplete(() => Destroy(effect));
+            }
         }
     }
 
