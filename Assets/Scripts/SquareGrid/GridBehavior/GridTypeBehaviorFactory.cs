@@ -9,6 +9,7 @@ public static class GridTypeBehaviorFactory
             GridType.Feather => new PlantedFeatherBehavior(),
             GridType.SimpleSquare => new SimpleSquareBehavior(),
             GridType.PlantedTree => new PlantedTreeBehavior(),
+            GridType.None => new SimpleSquareBehavior(),
             _ => throw new System.ArgumentOutOfRangeException(nameof(gridType), gridType, null)
         };
     }

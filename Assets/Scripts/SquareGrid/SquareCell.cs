@@ -8,7 +8,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     public SquareCoordinates Coordinates { get; set; }
     public readonly float duration = 1f;
 
-    [ReadOnly] public GridType cellType = GridType.None; // 默认值为None
+    public GridType cellType = GridType.None; // 默认值为None
     public SpriteRenderer CellRenderer;
 
     private Harvestable harvestableComponent;
@@ -19,7 +19,7 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
     private readonly SquareCell[] neighborsAndSelf = new SquareCell[9];
 
     private ICellHoverHandler hoverHandler;
-    private IGridTypeBehavior gridTypeBehavior;
+    public IGridTypeBehavior gridTypeBehavior;
     public GameObject chatObject; // 对话框对象
     public HarvestType harvestTypeWanted = HarvestType.None; // 需要的HarvestType
 
@@ -123,6 +123,14 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         }
     }
 
+    private void Update()
+    {
+        if (cellType == GridType.SimpleSquare)
+        {
+            gridTypeBehavior = GridTypeBehaviorFactory.GetBehavior(GridType.SimpleSquare);
+        }
+    }
+
     /// <summary>
     /// 获取指定方向的邻居格子
     /// </summary>
@@ -222,7 +230,16 @@ public class SquareCell : MonoBehaviour, ISquareCell, IInteract
         this.cellType = type;
         hoverHandler = CellHoverHandlerFactory.GetHandler(cellType);
         SetHoverHandler(hoverHandler);
+        // 通过工厂模式获取不同的行为类
         gridTypeBehavior = GridTypeBehaviorFactory.GetBehavior(cellType);
+        if (type == GridType.Feather)
+        {
+            gridTypeBehavior = GridTypeBehaviorFactory.GetBehavior(GridType.Feather);
+        }
+        if (type == GridType.SimpleSquare)
+        {
+            gridTypeBehavior = GridTypeBehaviorFactory.GetBehavior(GridType.SimpleSquare);
+        }
         gridTypeBehavior.ApplyBehavior(this);
     }
 
